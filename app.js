@@ -161,6 +161,16 @@ function adminLogin() {
 }
 
 function initAdminDashboard() {
+  // Populate stats
+  const statTotal = document.getElementById('stat-total');
+  const statToday = document.getElementById('stat-today');
+  const statArticles = document.getElementById('stat-articles');
+  const statPhotos = document.getElementById('stat-photos');
+  if (statTotal) statTotal.textContent = localStorage.getItem('visitTotal') || '0';
+  if (statToday) statToday.textContent = localStorage.getItem('visitToday') || '0';
+  if (statArticles) statArticles.textContent = newsArticles.length;
+  if (statPhotos) statPhotos.textContent = viewerPhotos.length;
+
   const list = document.getElementById('admin-articles-list');
   if (!list) return;
 
@@ -427,6 +437,26 @@ function showPhoto(id) {
   showPage('photo-detail');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+// ========== VISIT TRACKING ==========
+function trackVisit() {
+  // Total visits
+  const total = parseInt(localStorage.getItem('visitTotal') || '0') + 1;
+  localStorage.setItem('visitTotal', total);
+
+  // Today's visits
+  const today = new Date().toDateString();
+  const lastDay = localStorage.getItem('visitDay');
+  let todayCount = parseInt(localStorage.getItem('visitToday') || '0');
+  if (lastDay !== today) {
+    todayCount = 0;
+    localStorage.setItem('visitDay', today);
+  }
+  todayCount++;
+  localStorage.setItem('visitToday', todayCount);
+}
+
+trackVisit();
 
 // ========== INIT ==========
 showPage('home');
