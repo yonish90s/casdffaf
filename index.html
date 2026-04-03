@@ -142,12 +142,12 @@
       <input type="text" id="photo-name" placeholder="שמך (לא חובה)" class="admin-input">
       <input type="text" id="photo-caption" placeholder="כיתוב לתמונה" class="admin-input">
       <div style="display: flex; gap: 8px; align-items: center;">
-        <button type="button" class="btn-primary" style="white-space: nowrap;" onclick="document.getElementById('photo-file').click()">בחר תמונה מהגלריה</button>
+        <button type="button" style="padding: 10px 18px; border-radius: 8px; border: 1px solid #ccc; background: #e5e5ea; color: #1d1d1f; font-size: 0.9rem; font-weight: 600; cursor: pointer; white-space: nowrap;" onclick="document.getElementById('photo-file').click()">בחר תמונה מהגלריה</button>
         <span id="photo-filename" style="font-size: 0.85rem; color: #666;">לא נבחרה תמונה</span>
         <input type="file" id="photo-file" accept="image/*" style="display:none;" onchange="handlePhotoSelect(event)">
       </div>
       <input type="hidden" id="photo-data">
-      <button class="btn-primary" style="width: 100%;" onclick="submitViewerPhoto()">🚀 פרסם תמונה</button>
+      <button style="padding: 10px 18px; border-radius: 8px; border: 1px solid #ccc; background: #e5e5ea; color: #1d1d1f; font-size: 0.9rem; font-weight: 600; cursor: pointer; width: auto;" onclick="submitViewerPhoto()">🚀 פרסם תמונה</button>
     </div>
   </div>
 
