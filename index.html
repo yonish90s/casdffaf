@@ -22,7 +22,7 @@
     
     <nav class="apple-nav-links">
       <button onclick="showPage('home')" class="apple-nav-item">כתבות</button>
-      <button onclick="filterCategory('אחר')" class="apple-nav-item">אחר</button>
+      <button onclick="showPage('photos')" class="apple-nav-item">אחר</button>
     </nav>
   </div>
 </header>
@@ -127,6 +127,36 @@
 <div id="page-article" class="page" style="max-width: 860px; padding-top: 40px;">
   <button class="back-btn" onclick="goBack()" style="margin-bottom: 30px;">&rarr; חזור לחדשות</button>
   <article class="article-detail" id="article-content"></article>
+</div>
+
+<!-- VIEWER PHOTOS PAGE -->
+<div id="page-photos" class="page" style="max-width: 1100px; padding-top: 40px;">
+  <div class="admin-header" style="margin-bottom: 24px;">
+    <h2 style="font-size: 2rem; font-weight: 800;">תמונות הגולשים</h2>
+  </div>
+
+  <!-- Upload form -->
+  <div style="background: #f5f5f7; border-radius: 16px; padding: 24px; margin-bottom: 40px;">
+    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 16px;">📸 העלה תמונה משלך</h3>
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <input type="text" id="photo-name" placeholder="שמך (לא חובה)" class="admin-input">
+      <input type="text" id="photo-caption" placeholder="כיתוב לתמונה" class="admin-input">
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <button type="button" class="btn-primary" style="white-space: nowrap;" onclick="document.getElementById('photo-file').click()">בחר תמונה מהגלריה</button>
+        <span id="photo-filename" style="font-size: 0.85rem; color: #666;">לא נבחרה תמונה</span>
+        <input type="file" id="photo-file" accept="image/*" style="display:none;" onchange="handlePhotoSelect(event)">
+      </div>
+      <input type="hidden" id="photo-data">
+      <button class="btn-primary" style="width: 100%;" onclick="submitViewerPhoto()">🚀 פרסם תמונה</button>
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <div id="photos-grid" class="main-news-layout" style="margin-top: 0;">
+    <div class="news-feed" id="photos-feed">
+      <!-- Populated by JS -->
+    </div>
+  </div>
 </div>
 
 <!-- ADMIN LOGIN PAGE -->

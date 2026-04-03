@@ -37,6 +37,7 @@ function showPage(page) {
   document.getElementById(`page-${page}`).classList.add('active');
 
   if (page === 'home') renderNewsLayout();
+  if (page === 'photos') renderPhotos();
   if (page === 'admin') {
     if (!isAdmin) {
       showPage('admin-login');
@@ -291,6 +292,71 @@ function handleImageUpload(event) {
     img.src = e.target.result;
   };
   reader.readAsDataURL(file);
+}
+
+// ========== VIEWER PHOTOS ==========
+let viewerPhotos = JSON.parse(localStorage.getItem('viewerPhotos') || '[]');
+
+function handlePhotoSelect(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  document.getElementById('photo-filename').textContent = file.name;
+  showToast('מעבד תמונה...');
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const MAX_WIDTH = 800;
+      let width = img.width, height = img.height;
+      if (width > MAX_WIDTH) { height = Math.round(height * MAX_WIDTH / width); width = MAX_WIDTH; }
+      canvas.width = width; canvas.height = height;
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+      document.getElementById('photo-data').value = canvas.toDataURL('image/jpeg', 0.7);
+      showToast('תמונה מוכנה ✅');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function submitViewerPhoto() {
+  const data = document.getElementById('photo-data').value;
+  if (!data) { showToast('יש לבחור תמונה תחילה'); return; }
+  const caption = document.getElementById('photo-caption').value || 'תמונת גולש';
+  const name = document.getElementById('photo-name').value || 'גולש/ת אנונימי';
+  const now = new Date();
+  const timeStr = `היום, ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
+  viewerPhotos.unshift({ id: Date.now(), image: data, title: caption, author: name, time: timeStr });
+  localStorage.setItem('viewerPhotos', JSON.stringify(viewerPhotos));
+  document.getElementById('photo-caption').value = '';
+  document.getElementById('photo-name').value = '';
+  document.getElementById('photo-data').value = '';
+  document.getElementById('photo-filename').textContent = 'לא נבחרה תמונה';
+  renderPhotos();
+  showToast('התמונה פורסמה בהצלחה! 🎉');
+}
+
+function renderPhotos() {
+  const feed = document.getElementById('photos-feed');
+  if (!feed) return;
+  if (viewerPhotos.length === 0) {
+    feed.innerHTML = '<p style="color:#86868b; padding: 40px 0; text-align:center;">עדיין אין תמונות. היה הראשון להעלות! 📸</p>';
+    return;
+  }
+  feed.innerHTML = viewerPhotos.map(p => `
+    <div class="feed-item">
+      <div class="feed-image" style="background-image: url('${p.image}')"></div>
+      <div class="feed-content">
+        <h2 class="feed-title">${escHtml(p.title)}</h2>
+        <div class="feed-meta">
+          <span class="author-name">${escHtml(p.author)}</span>
+          <span class="meta-sep">|</span>
+          <span class="meta-date">${escHtml(p.time)}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
 }
 
 // ========== INIT ==========
