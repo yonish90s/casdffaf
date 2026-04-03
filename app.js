@@ -103,9 +103,11 @@ function showArticle(id) {
     <div class="article-hero-img" style="background-image: url('${a.image}')"></div>
     <div class="article-body">
       <p class="article-intro">${escHtml(a.snippet || a.title)}</p>
+      ${a.content ? `<div style="white-space: pre-line; margin-top: 20px;">${escHtml(a.content)}</div>` : `
       <p>זהו טקסט דמה להמחשת הכתבה. במערכת חדשות מלאה, אזור זה יישאב ממסד הנתונים ויכיל פסקאות, ציטוטים מורחבים, גלריות תמונות ואפשרויות לשיתוף ברשתות חברתיות.</p>
       <p>חברת הטכנולוגיה המובילה חשפה לאחרונה את כל העדכונים של המערכת המיוחלת החדשה. באירוע שערכה, השתתפו אלפי עיתונאי טכנולוגיה מכל העולם, שזכו לראות את כלי התוכנה המתקדמים ואת החומרה.</p>
       <p>בנוסף, הושם דגש מיוחד על יכולות בינה מלאכותית, פרטיות ואבטחת מידע, עם שיפורים שיהפכו כל פעולה ליעילה, נוחה ומאובטחת יותר מתמיד.</p>
+      `}
     </div>
   `;
 
@@ -169,6 +171,7 @@ function openArticleEditor(id = null) {
     document.getElementById('edit-time').value = a.time;
     document.getElementById('edit-image').value = a.image || '';
     document.getElementById('edit-snippet').value = a.snippet || '';
+    document.getElementById('edit-content').value = a.content || '';
     document.getElementById('edit-isTop').checked = !!a.isTop;
   } else {
     editorTitle.textContent = 'יצירת כתבה חדשה';
@@ -179,6 +182,7 @@ function openArticleEditor(id = null) {
     document.getElementById('edit-time').value = 'היום, 12:00';
     document.getElementById('edit-image').value = 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&q=80&w=800';
     document.getElementById('edit-snippet').value = '';
+    document.getElementById('edit-content').value = '';
     document.getElementById('edit-isTop').checked = false;
   }
   
@@ -201,6 +205,7 @@ function saveAdminArticle() {
     time: document.getElementById('edit-time').value,
     image: document.getElementById('edit-image').value,
     snippet: document.getElementById('edit-snippet').value,
+    content: document.getElementById('edit-content').value,
     isTop: isTop ? (newsArticles.filter(a => a.isTop).length + 1) : false
   };
 
