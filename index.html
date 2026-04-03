@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>החנות הדיגיטלית</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- APPLE GLOBAL NAVBAR -->
+<header class="navbar-apple">
+  <div class="nav-inner-apple">
+    <div class="apple-logo" onclick="showPage('home')" title="דף הבית">
+      <svg viewBox="0 0 384 512" width="16" height="20" fill="currentColor">
+        <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.3 48.6-.7 90.4-86 102.3-122.9-46.7-18-71.1-61-71.4-87.7M236.4 82.5c20.1-24.8 33.7-59.5 30-94-28.7 1.2-64.8 19.3-85.7 44.5-16.7 20-32.2 55.4-27.7 88.8 32.2 2.5 63.3-14.5 83.4-39.3"/>
+      </svg>
+    </div>
+    
+    <nav class="apple-nav-links">
+      <button onclick="showPage('home')" class="apple-nav-item">כתבות</button>
+    </nav>
+  </div>
+</header>
+
+<!-- HOME PAGE (NEWS LAYOUT) -->
+<div id="page-home" class="page active" style="padding-top: 0; max-width: 100%;">
+  
+  <section class="top-news-grid" id="top-news-grid">
+    <!-- Populated by JS -->
+  </section>
+
+  <div class="ad-banner-horizontal">
+    <div class="ad-placeholder">
+      <span style="font-size: 1.5rem; font-weight:700;">דניאל דמארי מחלק קורסים בחינם</span>
+    </div>
+  </div>
+
+  <div class="main-news-layout">
+    
+    <div class="news-feed" id="news-feed-list">
+      <!-- Populated by JS -->
+    </div>
+    
+    <aside class="news-sidebar">
+      <div class="sidebar-ad">
+        <img src="https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&q=80&w=600" alt="Sidebar Ad" style="width:100%; object-fit:cover; aspect-ratio:3/4; border-radius:4px;">
+        <span style="position:absolute; top:4px; right:4px; background:#fff; padding:2px 4px; font-size:10px; border:1px solid #ccc;">מודעה</span>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<!-- BROWSE PAGE -->
+<div id="page-browse" class="page">
+  <div class="browse-header">
+    <h2><span class="gradient-text">כל המוצרים</span></h2>
+    <div class="filters">
+      <input type="text" id="search-input" placeholder="חפש מוצר..." oninput="applyFilters()" />
+      <select id="category-filter" onchange="applyFilters()">
+        <option value="">כל הקטגוריות</option>
+        <option value="קורסים">🎓 קורסים</option>
+        <option value="תבניות">🎨 תבניות</option>
+        <option value="ספרים דיגיטליים">📖 ספרים דיגיטליים</option>
+        <option value="מוזיקה">🎵 מוזיקה</option>
+        <option value="גרפיקה">🖼️ גרפיקה</option>
+        <option value="תוכנות">💻 תוכנות</option>
+      </select>
+      <select id="sort-filter" onchange="applyFilters()">
+        <option value="newest">החדשים ביותר</option>
+        <option value="price-low">מחיר: נמוך לגבוה</option>
+        <option value="price-high">מחיר: גבוה לנמוך</option>
+      </select>
+    </div>
+  </div>
+  <div class="products-grid" id="browse-products"></div>
+  <p class="no-results hidden" id="no-results">לא נמצאו מוצרים</p>
+</div>
+
+<!-- SELL PAGE -->
+<div id="page-sell" class="page">
+  <div class="form-container">
+    <div class="form-header">
+      <div class="form-icon">🏷️</div>
+      <h2><span class="gradient-text">הוסף מוצר דיגיטלי</span></h2>
+      <p class="sub">מלא את הפרטים והמוצר יפורסם מיידית</p>
+    </div>
+    <form id="sell-form" onsubmit="submitProduct(event)">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>שם המוצר *</label>
+          <input type="text" id="product-name" required placeholder="לדוגמה: קורס React מתקדם" />
+        </div>
+        <div class="form-group">
+          <label>קטגוריה *</label>
+          <select id="product-category" required>
+            <option value="">בחר קטגוריה</option>
+            <option value="קורסים">🎓 קורסים</option>
+            <option value="תבניות">🎨 תבניות</option>
+            <option value="ספרים דיגיטליים">📖 ספרים דיגיטליים</option>
+            <option value="מוזיקה">🎵 מוזיקה</option>
+            <option value="גרפיקה">🖼️ גרפיקה</option>
+            <option value="תוכנות">💻 תוכנות</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>מחיר (₪) *</label>
+          <input type="number" id="product-price" required min="1" placeholder="0" />
+        </div>
+        <div class="form-group">
+          <label>תמונת תצוגה (URL)</label>
+          <input type="url" id="product-image" placeholder="https://..." />
+        </div>
+        <div class="form-group full">
+          <label>תיאור *</label>
+          <textarea id="product-desc" required rows="4" placeholder="תאר את המוצר הדיגיטלי שלך..."></textarea>
+        </div>
+        <div class="form-group full">
+          <label>קישור להורדה (פנימי — לא מוצג לקונים) *</label>
+          <input type="url" id="product-download" required placeholder="https://drive.google.com/..." />
+        </div>
+      </div>
+      <button type="submit" class="btn-primary full-width">🚀 פרסם מוצר</button>
+    </form>
+  </div>
+</div>
+
+<!-- ARTICLE PAGE -->
+<div id="page-article" class="page" style="max-width: 860px; padding-top: 40px;">
+  <button class="back-btn" onclick="goBack()" style="margin-bottom: 30px;">&rarr; חזור לחדשות</button>
+  <article class="article-detail" id="article-content"></article>
+</div>
+
+<!-- ADMIN LOGIN PAGE -->
+<div id="page-admin-login" class="page">
+  <div class="admin-login-box">
+    <h2>התחברות מנהל</h2>
+    <input type="password" id="admin-pass" placeholder="הזן סיסמה (נסה: admin)" class="admin-input" />
+    <button class="btn-primary" style="width:100%" onclick="adminLogin()">התחבר</button>
+  </div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div id="page-admin" class="page" style="max-width: 1000px;">
+  <div class="admin-header">
+    <h2>ניהול כתבות</h2>
+    <button class="btn-primary" onclick="openArticleEditor()">+ כתבה חדשה</button>
+  </div>
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>כותרת</th>
+        <th>קטגוריה</th>
+        <th>מחבר</th>
+        <th>פעולות</th>
+      </tr>
+    </thead>
+    <tbody id="admin-articles-list">
+      <!-- Populated by JS -->
+    </tbody>
+  </table>
+  
+  <div id="admin-editor" class="hidden" style="margin-top: 40px; border-top: 1px solid #e5e5ea; padding-top: 24px;">
+    <h3>עריכת כתבה</h3>
+    <div style="display:flex; flex-direction:column; gap:16px;">
+      <input type="hidden" id="edit-id" value="">
+      <input type="text" id="edit-title" placeholder="כותרת הכתבה" class="admin-input" required>
+      <input type="text" id="edit-category" placeholder="קטגוריה" class="admin-input" required>
+      <input type="text" id="edit-author" placeholder="יוצר/כתב" class="admin-input" required>
+      <input type="text" id="edit-time" placeholder="זמן פרסום (למשל: היום, 10:00)" class="admin-input" required>
+      <input type="url" id="edit-image" placeholder="URL תמונה" class="admin-input" required>
+      <textarea id="edit-snippet" placeholder="תקציר / קטע הכתבה" rows="4" class="admin-input" required></textarea>
+      <label style="display: flex; gap: 8px;"><input type="checkbox" id="edit-isTop"> סמן ככתבה פופולרית (תוצג בראש האתר)</label>
+      <div style="display:flex; gap:12px;">
+        <button class="btn-primary" onclick="saveAdminArticle()">שמור כתבה</button>
+        <button class="btn-secondary" onclick="document.getElementById('admin-editor').classList.add('hidden')" style="background:#f5f5f7; border:none; padding:12px 24px; border-radius:980px; font-weight:600; cursor:pointer;">ביטול</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APPLE STYLE FOOTER -->
+<footer class="apple-footer">
+  <div class="footer-content">
+    <div class="footer-columns">
+      <div class="footer-col">
+        <h4>חדשות</h4>
+        <ul>
+          <li><a href="#" onclick="showPage('home')">ראשי</a></li>
+          <li><a href="#" onclick="filterCategory('מחשבים')">מחשבים</a></li>
+          <li><a href="#" onclick="filterCategory('סמארטפונים')">סמארטפונים</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>סיקור חברות</h4>
+        <ul>
+          <li><a href="#" onclick="filterCategory('אפל')">אפל</a></li>
+          <li><a href="#" onclick="filterCategory('גוגל')">גוגל</a></li>
+          <li><a href="#" onclick="filterCategory('מיקרוסופט')">מיקרוסופט</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>ניהול</h4>
+        <ul>
+          <li><a href="#" onclick="showPage('admin-login')">התחבר מנהל</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>כל הזכויות שמורות © 2026 חדשות. נבנה על מנת לספק את העדכונים החדשים ביותר.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
