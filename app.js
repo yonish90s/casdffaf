@@ -52,24 +52,38 @@ function goBack() {
 }
 
 // ========== RENDER NEWS ==========
-function renderNewsLayout() {
+let currentPage = 1;
+const ARTICLES_PER_PAGE = 10;
+
+function renderNewsLayout(page = 1) {
+  currentPage = page;
   const topGrid = document.getElementById('top-news-grid');
   const feedList = document.getElementById('news-feed-list');
+  const paginationEl = document.getElementById('news-pagination');
   if(!topGrid || !feedList) return;
 
+  // Top 3 hero cards only on first page
   const topArticles = newsArticles.filter(x => x.isTop).sort((a,b) => a.isTop - b.isTop);
-  const feedArticles = newsArticles.filter(x => !x.isTop);
-
-  topGrid.innerHTML = topArticles.map(a => `
-    <div class="top-news-card" onclick="showArticle(${a.id})">
-      <div class="top-news-bg" style="background-image: url('${a.image}')"></div>
-      <div class="top-news-overlay">
-        <h3>${escHtml(a.title)}</h3>
+  if (page === 1) {
+    topGrid.innerHTML = topArticles.map(a => `
+      <div class="top-news-card" onclick="showArticle(${a.id})">
+        <div class="top-news-bg" style="background-image: url('${a.image}')"></div>
+        <div class="top-news-overlay">
+          <h3>${escHtml(a.title)}</h3>
+        </div>
       </div>
-    </div>
-  `).join('');
+    `).join('');
+    topGrid.style.display = '';
+  } else {
+    topGrid.style.display = 'none';
+  }
 
-  feedList.innerHTML = feedArticles.map(a => `
+  const feedArticles = newsArticles.filter(x => !x.isTop);
+  const totalPages = Math.max(1, Math.ceil(feedArticles.length / ARTICLES_PER_PAGE));
+  const start = (page - 1) * ARTICLES_PER_PAGE;
+  const pageArticles = feedArticles.slice(start, start + ARTICLES_PER_PAGE);
+
+  feedList.innerHTML = pageArticles.map(a => `
     <div class="feed-item" onclick="showArticle(${a.id})">
       <div class="feed-image" style="background-image: url('${a.image}')"></div>
       <div class="feed-content">
@@ -79,6 +93,22 @@ function renderNewsLayout() {
       </div>
     </div>
   `).join('');
+
+  // Render pagination buttons
+  if (paginationEl) {
+    if (totalPages <= 1) {
+      paginationEl.innerHTML = '';
+    } else {
+      paginationEl.innerHTML = Array.from({ length: totalPages }, (_, i) => i + 1).map(p => `
+        <button onclick="renderNewsLayout(${p}); window.scrollTo({top:0,behavior:'smooth'});"
+          style="padding: 8px 16px; border-radius: 980px; border: 1px solid ${p === page ? '#0071e3' : '#ccc'};
+          background: ${p === page ? '#0071e3' : '#fff'}; color: ${p === page ? '#fff' : '#1d1d1f'};
+          font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;">
+          ${p}
+        </button>
+      `).join('');
+    }
+  }
 }
 
 function filterCategory(cat) {
@@ -296,43 +326,57 @@ function handleImageUpload(event) {
 
 // ========== VIEWER PHOTOS ==========
 let viewerPhotos = JSON.parse(localStorage.getItem('viewerPhotos') || '[]');
+let pendingPhotoImages = []; // holds base64 strings for the current upload session
 
 function handlePhotoSelect(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  document.getElementById('photo-filename').textContent = file.name;
-  showToast('מעבד תמונה...');
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const img = new Image();
-    img.onload = function() {
-      const canvas = document.createElement('canvas');
-      const MAX_WIDTH = 800;
-      let width = img.width, height = img.height;
-      if (width > MAX_WIDTH) { height = Math.round(height * MAX_WIDTH / width); width = MAX_WIDTH; }
-      canvas.width = width; canvas.height = height;
-      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-      document.getElementById('photo-data').value = canvas.toDataURL('image/jpeg', 0.7);
-      showToast('תמונה מוכנה ✅');
+  const files = Array.from(event.target.files);
+  if (!files.length) return;
+  pendingPhotoImages = [];
+  document.getElementById('photo-filename').textContent = `מעבד ${files.length} תמונות...`;
+  showToast('מעבד תמונות...');
+
+  let processed = 0;
+  files.forEach((file, index) => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 800;
+        let width = img.width, height = img.height;
+        if (width > MAX_WIDTH) { height = Math.round(height * MAX_WIDTH / width); width = MAX_WIDTH; }
+        canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        pendingPhotoImages[index] = canvas.toDataURL('image/jpeg', 0.7);
+        processed++;
+        if (processed === files.length) {
+          document.getElementById('photo-filename').textContent = `${files.length} תמונות מוכנות ✅`;
+          showToast(`${files.length} תמונות מוכנות ✅`);
+        }
+      };
+      img.src = e.target.result;
     };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
+    reader.readAsDataURL(file);
+  });
 }
 
 function submitViewerPhoto() {
-  const data = document.getElementById('photo-data').value;
-  if (!data) { showToast('יש לבחור תמונה תחילה'); return; }
-  const caption = document.getElementById('photo-caption').value || 'תמונת גולש';
+  const images = pendingPhotoImages.filter(Boolean);
+  if (!images.length) { showToast('יש לבחור תמונה תחילה'); return; }
+  const caption = document.getElementById('photo-caption').value || 'תמונות גולש';
   const name = document.getElementById('photo-name').value || 'גולש/ת אנונימי';
   const now = new Date();
   const timeStr = `היום, ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
-  viewerPhotos.unshift({ id: Date.now(), image: data, title: caption, author: name, time: timeStr });
+  // Last image is the cover (front)
+  const cover = images[images.length - 1];
+  viewerPhotos.unshift({ id: Date.now(), images, cover, title: caption, author: name, time: timeStr });
   localStorage.setItem('viewerPhotos', JSON.stringify(viewerPhotos));
+  // Reset
   document.getElementById('photo-caption').value = '';
   document.getElementById('photo-name').value = '';
   document.getElementById('photo-data').value = '';
   document.getElementById('photo-filename').textContent = 'לא נבחרה תמונה';
+  pendingPhotoImages = [];
   renderPhotos();
   showToast('התמונה פורסמה בהצלחה! 🎉');
 }
@@ -345,18 +389,43 @@ function renderPhotos() {
     return;
   }
   feed.innerHTML = viewerPhotos.map(p => `
-    <div class="feed-item">
-      <div class="feed-image" style="background-image: url('${p.image}')"></div>
+    <div class="feed-item" onclick="showPhoto(${p.id})" style="cursor:pointer;">
+      <div class="feed-image" style="background-image: url('${p.cover}')"></div>
       <div class="feed-content">
         <h2 class="feed-title">${escHtml(p.title)}</h2>
         <div class="feed-meta">
           <span class="author-name">${escHtml(p.author)}</span>
           <span class="meta-sep">|</span>
           <span class="meta-date">${escHtml(p.time)}</span>
+          ${p.images && p.images.length > 1 ? `<span class="meta-sep">|</span><span style="color:#86868b;">📷 ${p.images.length} תמונות</span>` : ''}
         </div>
       </div>
     </div>
   `).join('');
+}
+
+function showPhoto(id) {
+  const p = viewerPhotos.find(x => x.id === id);
+  if (!p) return;
+  const images = p.images || [p.cover];
+  document.getElementById('photo-detail-content').innerHTML = `
+    <div style="margin-bottom: 24px;">
+      <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: #86868b; letter-spacing: 1px;">תמונות גולשים</span>
+      <h1 style="font-size: 2rem; font-weight: 800; margin: 8px 0;">${escHtml(p.title)}</h1>
+      <div class="feed-meta" style="margin-bottom: 16px;">
+        <span class="author-name" style="font-weight:700;">${escHtml(p.author)}</span>
+        <span class="meta-sep">|</span>
+        <span class="meta-date">${escHtml(p.time)}</span>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      ${images.map((img, i) => `
+        <img src="${img}" alt="תמונה ${i+1}" style="width:100%; border-radius: 12px; display:block;" />
+      `).join('')}
+    </div>
+  `;
+  showPage('photo-detail');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ========== INIT ==========
