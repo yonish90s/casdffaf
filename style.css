@@ -369,10 +369,11 @@ body {
 
 .feed-image {
   width: 250px;
-  height: 160px;
+  height: 180px;
   flex-shrink: 0;
-  background-size: cover;
+  background-size: contain;
   background-position: center;
+  background-repeat: no-repeat;
   border-radius: 4px;
   background-color: #f5f5f7;
 }
