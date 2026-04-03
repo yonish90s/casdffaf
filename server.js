@@ -10,6 +10,9 @@ const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 app.use(cors({ origin: FRONTEND_URL }));
 app.use(express.json());
 
+// Serve static frontend files (HTML/CSS/JS)
+app.use(express.static(__dirname));
+
 // =============================================
 // Products database (server-side, with private download URLs)
 // Add your real download links here — they are NEVER exposed to the browser
