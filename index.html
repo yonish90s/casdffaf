@@ -170,7 +170,14 @@
       <input type="text" id="edit-category" placeholder="קטגוריה" class="admin-input" required>
       <input type="text" id="edit-author" placeholder="יוצר/כתב" class="admin-input" required>
       <input type="text" id="edit-time" placeholder="זמן פרסום (למשל: היום, 10:00)" class="admin-input" required>
-      <input type="url" id="edit-image" placeholder="URL תמונה" class="admin-input" required>
+      <div style="display:flex; flex-direction:column; gap:4px;">
+        <label style="font-size: 0.85rem; font-weight: 600; color: #1d1d1f;">תמונה (אפשר להדביק קישור או להעלות):</label>
+        <div style="display:flex; gap:8px;">
+          <input type="text" id="edit-image" placeholder="URL תמונה או קוד..." class="admin-input" style="flex:1;" required>
+          <button type="button" class="btn-secondary" style="padding: 0 16px; border-radius: 8px; border: 1px solid #ccc; background: white; cursor: pointer; white-space: nowrap;" onclick="document.getElementById('edit-image-upload').click()">העלה תמונה מהמכשיר</button>
+          <input type="file" id="edit-image-upload" accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
+        </div>
+      </div>
       <textarea id="edit-snippet" placeholder="תקציר / קטע הכתבה" rows="4" class="admin-input" required></textarea>
       <textarea id="edit-content" placeholder="תוכן הכתבה המלא (יופיע כשנכנסים לכתבה)" rows="10" class="admin-input"></textarea>
       <label style="display: flex; gap: 8px;"><input type="checkbox" id="edit-isTop"> סמן ככתבה פופולרית (תוצג בראש האתר)</label>

@@ -257,5 +257,41 @@ function escHtml(str) {
     .replace(/'/g, '&#39;');
 }
 
+function handleImageUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  // Show a loading toast
+  showToast('מעבד תמונה...');
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const MAX_WIDTH = 800; // compress dimension
+      let width = img.width;
+      let height = img.height;
+
+      if (width > MAX_WIDTH) {
+        height = Math.round(height * (MAX_WIDTH / width));
+        width = MAX_WIDTH;
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      
+      // Compress to 70% quality JPEG => Greatly saves LocalStorage space
+      const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+      document.getElementById('edit-image').value = compressedDataUrl;
+      showToast('התמונה מוכנה! ✅');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
 // ========== INIT ==========
 showPage('home');
