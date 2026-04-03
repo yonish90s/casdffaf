@@ -115,14 +115,15 @@ function showArticle(id) {
 
 // ========== ADMIN DASHBOARD ==========
 function adminLogin() {
+  const user = document.getElementById('admin-user')?.value;
   const pass = document.getElementById('admin-pass')?.value;
-  if (pass === 'admin') {
+  if (user === 'admin' && pass === 'admin') {
     localStorage.setItem('isAdmin', 'true');
     isAdmin = true;
     showToast('✅ מנהל התחבר בהצלחה');
     showPage('admin');
   } else {
-    showToast('❌ סיסמה שגויה');
+    showToast('❌ שם משתמש או סיסמה שגויים');
   }
 }
 
