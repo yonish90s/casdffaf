@@ -75,24 +75,39 @@ function showPage(page) {
 }
 
 // ========== BOOKING LOGIC ==========
+// ========== BOOKING LOGIC ==========
 function initBookingWidget() {
   const grid = document.getElementById('book-time-grid');
   if (!grid) return;
+  const day = document.getElementById('book-day').value;
+  const appts = JSON.parse(localStorage.getItem('appointments') || '[]');
   
   let html = '';
+  selectedTime = ''; // Reset selection on day change
+  
   for (let h = 7; h <= 18; h++) {
     const time = `${h.toString().padStart(2, '0')}:00`;
-    html += `<div class="time-slot" onclick="selectTime(this)" style="padding:10px; border:1px solid #d2d2d7; border-radius:10px; text-align:center; cursor:pointer; font-size:0.9rem; font-weight:600; transition:0.2s; background:#fff; color:#1d1d1f;">${time}</div>`;
+    // Check if this slot is already booked for this specific day
+    const isBooked = appts.some(a => a.day === day && a.time === time);
+    
+    if (isBooked) {
+      html += `<div class="time-slot booked" style="padding:10px; border:1px solid #eee; border-radius:10px; text-align:center; font-size:0.9rem; font-weight:600; background:#f5f5f7; color:#d2d2d7; cursor:not-allowed; text-decoration:line-through;">${time}</div>`;
+    } else {
+      html += `<div class="time-slot" onclick="selectTime(this)" style="padding:10px; border:1px solid #d2d2d7; border-radius:10px; text-align:center; cursor:pointer; font-size:0.9rem; font-weight:600; transition:0.2s; background:#fff; color:#1d1d1f;">${time}</div>`;
+    }
   }
   grid.innerHTML = html;
 }
 
 let selectedTime = '';
 function selectTime(el) {
+  if (el.classList.contains('booked')) return;
   document.querySelectorAll('.time-slot').forEach(s => {
-    s.style.borderColor = '#d2d2d7';
-    s.style.backgroundColor = '#fff';
-    s.style.color = '#1d1d1f';
+    if (!s.classList.contains('booked')) {
+      s.style.borderColor = '#d2d2d7';
+      s.style.backgroundColor = '#fff';
+      s.style.color = '#1d1d1f';
+    }
   });
   el.style.borderColor = '#0071e3';
   el.style.backgroundColor = 'rgba(0, 113, 227, 0.05)';
@@ -103,7 +118,7 @@ function selectTime(el) {
 function openBookingModal() {
   const day = document.getElementById('book-day').value;
   if (!selectedTime) {
-    showToast('❌ נא לבחור שעה');
+    showToast('❌ נא לבחור שעה פנויה');
     return;
   }
   
@@ -119,12 +134,14 @@ function submitBooking(e) {
   e.preventDefault();
   const name = document.getElementById('book-name').value;
   const phone = document.getElementById('book-phone').value;
+  const request = document.getElementById('book-request').value;
   const day = document.getElementById('book-day').value;
   
   const appt = {
     id: Date.now(),
     name,
     phone,
+    request,
     day,
     time: selectedTime,
     created: new Date().toLocaleString('he-IL')
@@ -134,9 +151,10 @@ function submitBooking(e) {
   appts.push(appt);
   localStorage.setItem('appointments', JSON.stringify(appts));
   
-  showToast('✅ התור נקבע בהצלחה! ניצור איתך קשר.');
+  showToast('✅ התור נקבע בהצלחה!');
   closeBookingModal();
   e.target.reset();
+  initBookingWidget(); // Refresh grid to remove booked slot
 }
 
 // ========== ADMIN CALENDAR ==========
@@ -151,15 +169,22 @@ function renderAdminCalendar() {
   }
   
   list.innerHTML = appts.reverse().map(a => `
-    <div style="background:#f5f5f7; border-radius:12px; padding:20px; display:flex; justify-content:space-between; align-items:center; border:1px solid var(--border-subtle); text-align:right;">
-      <div>
-        <div style="font-weight:800; font-size:1.1rem; color:#1d1d1f; margin-bottom:4px;">${escHtml(a.name)}</div>
-        <div style="font-size:0.95rem; color:#86868b;">📞 ${escHtml(a.phone)}</div>
+    <div style="background:#f5f5f7; border-radius:12px; padding:24px; border:1px solid var(--border-subtle); text-align:right;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;">
+        <div>
+          <div style="font-weight:800; font-size:1.2rem; color:#1d1d1f; margin-bottom:4px;">${escHtml(a.name)}</div>
+          <div style="font-size:0.95rem; color:#86868b;">📞 ${escHtml(a.phone)}</div>
+        </div>
+        <div style="text-align:left;">
+          <div style="font-weight:800; color:#0071e3; font-size:1.1rem;">יום ${escHtml(a.day)} | ${escHtml(a.time)}</div>
+          <div style="font-size:0.75rem; color:#86868b; margin-top:6px;">נקבע ב: ${a.created}</div>
+        </div>
       </div>
-      <div style="text-align:left;">
-        <div style="font-weight:800; color:#0071e3; font-size:1.1rem;">יום ${escHtml(a.day)} | ${escHtml(a.time)}</div>
-        <div style="font-size:0.75rem; color:#86868b; margin-top:6px;">נקבע ב: ${a.created}</div>
-      </div>
+      ${a.request ? `
+        <div style="background:#fff; border-radius:10px; padding:16px; border:1px solid #e1e1e6; font-size:1rem; color:#424245; line-height:1.5;">
+          <strong>בקשה:</strong> ${escHtml(a.request)}
+        </div>
+      ` : ''}
     </div>
   `).join('');
 }

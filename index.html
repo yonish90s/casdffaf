@@ -59,7 +59,7 @@
     <h2 style="font-size:2rem; font-weight:800; margin-bottom:24px; display:flex; align-items:center; gap:12px;">📅 קביעת תור</h2>
     <div class="booking-widget">
       <label style="display:block; font-size:1rem; font-weight:700; color:#86868b; margin-bottom:8px;">בחר יום:</label>
-      <select id="book-day" style="width:100%; margin-bottom:24px; padding:16px; border-radius:12px; border:1px solid #d2d2d7; font-size: 1rem;">
+      <select id="book-day" onchange="initBookingWidget()" style="width:100%; margin-bottom:24px; padding:16px; border-radius:12px; border:1px solid #d2d2d7; font-size: 1rem;">
         <option>ראשון</option><option>שני</option><option>שלישי</option><option>רביעי</option><option>חמישי</option><option>שישי</option><option>שבת</option>
       </select>
       <label style="display:block; font-size:1rem; font-weight:700; color:#86868b; margin-bottom:8px;">בחר שעה:</label>
@@ -450,9 +450,13 @@
         <label style="display:block; font-size:0.9rem; font-weight:700; margin-bottom:8px; color: #1d1d1f;">שם מלא</label>
         <input type="text" id="book-name" required class="admin-input" placeholder="הכנס את שמך" style="width:100%; border-radius:12px; border:1px solid #d2d2d7; padding:12px;">
       </div>
-      <div style="margin-bottom: 24px; text-align: right;">
+      <div style="margin-bottom: 20px; text-align: right;">
         <label style="display:block; font-size:0.9rem; font-weight:700; margin-bottom:8px; color: #1d1d1f;">טלפון</label>
         <input type="tel" id="book-phone" required class="admin-input" placeholder="הכנס מספר טלפון" style="width:100%; border-radius:12px; border:1px solid #d2d2d7; padding:12px;">
+      </div>
+      <div style="margin-bottom: 24px; text-align: right;">
+        <label style="display:block; font-size:0.9rem; font-weight:700; margin-bottom:8px; color: #1d1d1f;">בקשה / הודעה</label>
+        <textarea id="book-request" class="admin-input" placeholder="ציין כאן את פרטי הבקשה..." style="width:100%; border-radius:12px; border:1px solid #d2d2d7; padding:12px; font-family:inherit; min-height:80px; resize:none; outline:none;"></textarea>
       </div>
       <button type="submit" class="btn-primary full-width" style="width:100%; height: 56px; font-size: 1.1rem; font-weight:700;">✅ קבע תור עכשיו</button>
     </form>
