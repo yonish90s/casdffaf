@@ -1628,6 +1628,10 @@ body {
 
 /* ========== MOBILE REFINEMENTS ========== */
 @media (max-width: 768px) {
+  #top-news-grid {
+    display: none !important;
+  }
+
   /* Tables Mobile */
   .admin-table {
     display: block;
