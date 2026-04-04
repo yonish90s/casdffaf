@@ -26,11 +26,20 @@ const defaultPdfStoreItems = [
   { title: 'מדריך השקעות בשוק ההון', type: 'PDF', price: '₪150', desc: 'הצעדים הראשונים בדרך לחופש כלכלי.', link: '#' },
   { title: 'תבנית דף נחיתה לעסקים', type: 'קובץ', price: '₪99', desc: 'תבנית רספונסיבית הממוקדת בהמרות.', link: '#' },
   { title: 'קורס סקיצות ב-iPad', type: 'סרטון', price: '₪130', desc: 'למד לצייר ולאייר דיגיטלית ב-Procreate.', link: '#' },
-  { title: 'מדריך קריפטו 101', type: 'PDF', price: 'חינם', desc: 'הבנה בסיסית של בלוקצ\'יין ומטבעות דיגיטליים.', link: '#' }
+  { title: 'מדריך קריפטו 101', type: 'PDF', price: 'חינם', desc: 'הבנה בסיסית של בלוקצ\'יין ומטבעות דיגיטליים.', link: '#' },
+  { title: 'ערכת פונטים פרימיום', type: 'קובץ', price: '₪45', desc: 'אוסף פונטים בעברית ובאנגלית למעצבים.', link: '#' },
+  { title: 'מדריך ניהול קמפיינים', type: 'PDF', price: '₪110', desc: 'איך לנהל פרסום ממומן בפייסבוק וגוגל.', link: '#' },
+  { title: 'תבנית תיק עבודות (Portfolio)', type: 'קובץ', price: '₪79', desc: 'תבנית דף HTML/CSS נקייה להצגת עבודות.', link: '#' },
+  { title: 'ספריית סאונד ומוזיקה', type: 'קובץ', price: '₪150', desc: 'מאות אפקטים ומוזיקת רקע לסרטונים.', link: '#' },
+  { title: 'מדריך עריכת וידאו ב-Premiere', type: 'PDF', price: '₪85', desc: 'כל הטיפים לעריכה מהירה ומקצועית.', link: '#' },
+  { title: 'תוכנת ניקוי קבצים Pro', type: 'תוכנה', price: '₪30', desc: 'כלי קטן ויעיל לניקוי קבצי זבל מהמחשב.', link: '#' },
+  { title: 'צ\'ק ליסט השקת מוצר', type: 'מדריך', price: 'חינם', desc: 'השלבים הקריטיים לפני שמוציאים מוצר לשוק.', link: '#' },
+  { title: 'מערכת ניהול תקציב משפחתי', type: 'קובץ', price: '₪25', desc: 'טבלת אקסל חכמה לניהול הוצאות והכנסות.', link: '#' },
+  { title: 'מדריך בניית קהילה באינסטגרם', type: 'PDF', price: '₪60', desc: 'איך להשיג עוקבים אמיתיים ופעילים.', link: '#' }
 ];
 
 let storedPdfItems = localStorage.getItem('pdfStoreItems');
-if (!storedPdfItems) {
+if (!storedPdfItems || JSON.parse(storedPdfItems).length === 0) {
   localStorage.setItem('pdfStoreItems', JSON.stringify(defaultPdfStoreItems));
 }
 
