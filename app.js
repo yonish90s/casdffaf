@@ -157,6 +157,31 @@ function initAdminDashboard() {
   const statTotal = document.getElementById('stat-total');
   const statToday = document.getElementById('stat-today');
   const statArticles = document.getElementById('stat-articles');
+  const statMessages = document.getElementById('stat-messages');
+
+  let msgs = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+  if (statTotal) statTotal.textContent = localStorage.getItem('visitTotal') || '0';
+  if (statToday) statToday.textContent = localStorage.getItem('visitToday') || '0';
+  if (statArticles) statArticles.textContent = newsArticles.length;
+  if (statMessages) statMessages.textContent = msgs.length;
+
+  const msgList = document.getElementById('admin-messages-list');
+  if (msgList) {
+    if (msgs.length === 0) {
+      msgList.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px; color:#86868b;">אין הודעות חדשות</td></tr>';
+    } else {
+      msgList.innerHTML = msgs.map((m, i) => `
+        <tr>
+          <td style="white-space: nowrap;">${escHtml(m.date)}</td>
+          <td><strong>${escHtml(m.name)}</strong></td>
+          <td style="white-space: pre-wrap;">${escHtml(m.body)}</td>
+          <td>
+            <button class="remove-btn" style="padding: 4px 12px; font-size: 0.85rem; border: none; background: transparent;" onclick="deleteMessage(${i})">מחק</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+  }
 
 
   const list = document.getElementById('admin-articles-list');
@@ -174,6 +199,16 @@ function initAdminDashboard() {
       </td>
     </tr>
   `).join('');
+}
+
+function deleteMessage(index) {
+  if (confirm('האם אתה בטוח שברצונך למחוק הודעה זו?')) {
+    let msgs = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+    msgs.splice(index, 1);
+    localStorage.setItem('contactMessages', JSON.stringify(msgs));
+    initAdminDashboard();
+    showToast('ההודעה נמחקה');
+  }
 }
 
 function deleteArticle(id) {
@@ -357,22 +392,25 @@ function submitContactForm(e) {
   const name = document.getElementById('contact-name').value;
   const body = document.getElementById('contact-body').value;
   
-  // Create a mailto link dynamically
-  const subject = encodeURIComponent('פנייה מהאתר: ' + name);
-  const bodyText = encodeURIComponent(body + '\n\nנשלח מאת: ' + name);
-  const mailtoLink = `mailto:yonisharabi19955@gmail.com?subject=${subject}&body=${bodyText}`;
+  // Save message to localStorage
+  let msgs = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+  const now = new Date();
+  const dateStr = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()} ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
+  
+  msgs.unshift({ name, body, date: dateStr });
+  localStorage.setItem('contactMessages', JSON.stringify(msgs));
   
   // Close modal and show toast
   closeContactModal();
-  showToast('הבקשה נוצרה! מעביר לשליחת המייל...');
+  showToast('ההודעה נשלחה בהצלחה למערכת! ✅');
   
   // Clear form
   e.target.reset();
   
-  // Redirect to mailto link
-  setTimeout(() => {
-    window.location.href = mailtoLink;
-  }, 1000);
+  // Update admin dash if it's currently open
+  if (document.getElementById('page-admin').classList.contains('active')) {
+    initAdminDashboard();
+  }
 }
 
 // ========== INIT ==========
