@@ -1,12 +1,4 @@
 // ========== DATA ==========
-const categoryEmojis = {
-  'קורסים': '🎓',
-  'תבניות': '🎨',
-  'ספרים דיגיטליים': '📖',
-  'מוזיקה': '🎵',
-  'גרפיקה': '🖼️',
-  'תוכנות': '💻',
-};
 
 const defaultNewsArticles = [
   { id: 1, title: 'לנובו מרעננת את סדרת ניידי ה-ThinkPad עם חמישה דגמים חדשים', image: 'https://images.unsplash.com/photo-1531297122539-5692f69f1092?auto=format&fit=crop&q=80&w=800', category: 'מחשבים', isTop: 1, author: 'יאן לנגרמן', time: 'היום, 18:30' },
@@ -37,7 +29,7 @@ function showPage(page) {
   document.getElementById(`page-${page}`).classList.add('active');
 
   if (page === 'home') renderNewsLayout();
-  if (page === 'photos') renderPhotos();
+
   if (page === 'admin') {
     if (!isAdmin) {
       showPage('admin-login');
@@ -165,11 +157,7 @@ function initAdminDashboard() {
   const statTotal = document.getElementById('stat-total');
   const statToday = document.getElementById('stat-today');
   const statArticles = document.getElementById('stat-articles');
-  const statPhotos = document.getElementById('stat-photos');
-  if (statTotal) statTotal.textContent = localStorage.getItem('visitTotal') || '0';
-  if (statToday) statToday.textContent = localStorage.getItem('visitToday') || '0';
-  if (statArticles) statArticles.textContent = newsArticles.length;
-  if (statPhotos) statPhotos.textContent = viewerPhotos.length;
+
 
   const list = document.getElementById('admin-articles-list');
   if (!list) return;
@@ -334,109 +322,6 @@ function handleImageUpload(event) {
   reader.readAsDataURL(file);
 }
 
-// ========== VIEWER PHOTOS ==========
-let viewerPhotos = JSON.parse(localStorage.getItem('viewerPhotos') || '[]');
-let pendingPhotoImages = []; // holds base64 strings for the current upload session
-
-function handlePhotoSelect(event) {
-  const files = Array.from(event.target.files);
-  if (!files.length) return;
-  pendingPhotoImages = [];
-  document.getElementById('photo-filename').textContent = `מעבד ${files.length} תמונות...`;
-  showToast('מעבד תמונות...');
-
-  let processed = 0;
-  files.forEach((file, index) => {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const img = new Image();
-      img.onload = function() {
-        const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 800;
-        let width = img.width, height = img.height;
-        if (width > MAX_WIDTH) { height = Math.round(height * MAX_WIDTH / width); width = MAX_WIDTH; }
-        canvas.width = width; canvas.height = height;
-        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-        pendingPhotoImages[index] = canvas.toDataURL('image/jpeg', 0.7);
-        processed++;
-        if (processed === files.length) {
-          document.getElementById('photo-filename').textContent = `${files.length} תמונות מוכנות ✅`;
-          showToast(`${files.length} תמונות מוכנות ✅`);
-        }
-      };
-      img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-function submitViewerPhoto() {
-  const images = pendingPhotoImages.filter(Boolean);
-  if (!images.length) { showToast('יש לבחור תמונה תחילה'); return; }
-  const caption = document.getElementById('photo-caption').value || 'תמונות גולש';
-  const name = document.getElementById('photo-name').value || 'גולש/ת אנונימי';
-  const now = new Date();
-  const timeStr = `היום, ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
-  // Last image is the cover (front)
-  const cover = images[images.length - 1];
-  viewerPhotos.unshift({ id: Date.now(), images, cover, title: caption, author: name, time: timeStr });
-  localStorage.setItem('viewerPhotos', JSON.stringify(viewerPhotos));
-  // Reset
-  document.getElementById('photo-caption').value = '';
-  document.getElementById('photo-name').value = '';
-  document.getElementById('photo-data').value = '';
-  document.getElementById('photo-filename').textContent = 'לא נבחרה תמונה';
-  pendingPhotoImages = [];
-  renderPhotos();
-  showToast('התמונה פורסמה בהצלחה! 🎉');
-}
-
-function renderPhotos() {
-  const feed = document.getElementById('photos-feed');
-  if (!feed) return;
-  if (viewerPhotos.length === 0) {
-    feed.innerHTML = '<p style="color:#86868b; padding: 40px 0; text-align:center;">עדיין אין תמונות. היה הראשון להעלות! 📸</p>';
-    return;
-  }
-  feed.innerHTML = viewerPhotos.map(p => `
-    <div class="feed-item" onclick="showPhoto(${p.id})" style="cursor:pointer;">
-      <div class="feed-image" style="background-image: url('${p.cover}')"></div>
-      <div class="feed-content">
-        <h2 class="feed-title">${escHtml(p.title)}</h2>
-        <div class="feed-meta">
-          <span class="author-name">${escHtml(p.author)}</span>
-          <span class="meta-sep">|</span>
-          <span class="meta-date">${escHtml(p.time)}</span>
-          ${p.images && p.images.length > 1 ? `<span class="meta-sep">|</span><span style="color:#86868b;">📷 ${p.images.length} תמונות</span>` : ''}
-        </div>
-      </div>
-    </div>
-  `).join('');
-}
-
-function showPhoto(id) {
-  const p = viewerPhotos.find(x => x.id === id);
-  if (!p) return;
-  const images = p.images || [p.cover];
-  document.getElementById('photo-detail-content').innerHTML = `
-    <div style="margin-bottom: 24px;">
-      <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: #86868b; letter-spacing: 1px;">תמונות גולשים</span>
-      <h1 style="font-size: 2rem; font-weight: 800; margin: 8px 0;">${escHtml(p.title)}</h1>
-      <div class="feed-meta" style="margin-bottom: 16px;">
-        <span class="author-name" style="font-weight:700;">${escHtml(p.author)}</span>
-        <span class="meta-sep">|</span>
-        <span class="meta-date">${escHtml(p.time)}</span>
-      </div>
-    </div>
-    <div style="display: flex; flex-direction: column; gap: 16px;">
-      ${images.map((img, i) => `
-        <img src="${img}" alt="תמונה ${i+1}" style="width:100%; border-radius: 12px; display:block;" />
-      `).join('')}
-    </div>
-  `;
-  showPage('photo-detail');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
 
 // ========== VISIT TRACKING ==========
 function trackVisit() {

@@ -49,79 +49,6 @@
   </div>
 </div>
 
-<!-- BROWSE PAGE -->
-<div id="page-browse" class="page">
-  <div class="browse-header">
-    <h2><span class="gradient-text">כל המוצרים</span></h2>
-    <div class="filters">
-      <input type="text" id="search-input" placeholder="חפש מוצר..." oninput="applyFilters()" />
-      <select id="category-filter" onchange="applyFilters()">
-        <option value="">כל הקטגוריות</option>
-        <option value="קורסים">🎓 קורסים</option>
-        <option value="תבניות">🎨 תבניות</option>
-        <option value="ספרים דיגיטליים">📖 ספרים דיגיטליים</option>
-        <option value="מוזיקה">🎵 מוזיקה</option>
-        <option value="גרפיקה">🖼️ גרפיקה</option>
-        <option value="תוכנות">💻 תוכנות</option>
-      </select>
-      <select id="sort-filter" onchange="applyFilters()">
-        <option value="newest">החדשים ביותר</option>
-        <option value="price-low">מחיר: נמוך לגבוה</option>
-        <option value="price-high">מחיר: גבוה לנמוך</option>
-      </select>
-    </div>
-  </div>
-  <div class="products-grid" id="browse-products"></div>
-  <p class="no-results hidden" id="no-results">לא נמצאו מוצרים</p>
-</div>
-
-<!-- SELL PAGE -->
-<div id="page-sell" class="page">
-  <div class="form-container">
-    <div class="form-header">
-      <div class="form-icon">🏷️</div>
-      <h2><span class="gradient-text">הוסף מוצר דיגיטלי</span></h2>
-      <p class="sub">מלא את הפרטים והמוצר יפורסם מיידית</p>
-    </div>
-    <form id="sell-form" onsubmit="submitProduct(event)">
-      <div class="form-grid">
-        <div class="form-group">
-          <label>שם המוצר *</label>
-          <input type="text" id="product-name" required placeholder="לדוגמה: קורס React מתקדם" />
-        </div>
-        <div class="form-group">
-          <label>קטגוריה *</label>
-          <select id="product-category" required>
-            <option value="">בחר קטגוריה</option>
-            <option value="קורסים">🎓 קורסים</option>
-            <option value="תבניות">🎨 תבניות</option>
-            <option value="ספרים דיגיטליים">📖 ספרים דיגיטליים</option>
-            <option value="מוזיקה">🎵 מוזיקה</option>
-            <option value="גרפיקה">🖼️ גרפיקה</option>
-            <option value="תוכנות">💻 תוכנות</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>מחיר (₪) *</label>
-          <input type="number" id="product-price" required min="1" placeholder="0" />
-        </div>
-        <div class="form-group">
-          <label>תמונת תצוגה (URL)</label>
-          <input type="url" id="product-image" placeholder="https://..." />
-        </div>
-        <div class="form-group full">
-          <label>תיאור *</label>
-          <textarea id="product-desc" required rows="4" placeholder="תאר את המוצר הדיגיטלי שלך..."></textarea>
-        </div>
-        <div class="form-group full">
-          <label>קישור להורדה (פנימי — לא מוצג לקונים) *</label>
-          <input type="url" id="product-download" required placeholder="https://drive.google.com/..." />
-        </div>
-      </div>
-      <button type="submit" class="btn-primary full-width">🚀 פרסם מוצר</button>
-    </form>
-  </div>
-</div>
 
 <!-- ARTICLE PAGE -->
 <div id="page-article" class="page" style="max-width: 860px; padding-top: 40px;">
@@ -129,41 +56,6 @@
   <article class="article-detail" id="article-content"></article>
 </div>
 
-<!-- VIEWER PHOTOS PAGE -->
-<div id="page-photos" class="page" style="max-width: 1100px; padding-top: 40px;">
-  <div class="admin-header" style="margin-bottom: 24px;">
-    <h2 style="font-size: 2rem; font-weight: 800;">תמונות הגולשים</h2>
-  </div>
-
-  <!-- Upload form -->
-  <div style="background: #f5f5f7; border-radius: 16px; padding: 24px; margin-bottom: 40px;">
-    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 16px;">📸 העלה תמונה משלך</h3>
-    <div style="display: flex; flex-direction: column; gap: 12px;">
-      <input type="text" id="photo-name" placeholder="שמך (לא חובה)" class="admin-input">
-      <div style="display: flex; gap: 8px; align-items: center;">
-        <button type="button" style="padding: 10px 18px; border-radius: 8px; border: 1px solid #ccc; background: #e5e5ea; color: #1d1d1f; font-size: 0.9rem; font-weight: 600; cursor: pointer; white-space: nowrap;" onclick="document.getElementById('photo-file').click()">בחר תמונה מהגלריה</button>
-        <button style="padding: 10px 18px; border-radius: 8px; border: 1px solid #ccc; background: #e5e5ea; color: #1d1d1f; font-size: 0.9rem; font-weight: 600; cursor: pointer; white-space: nowrap;" onclick="submitViewerPhoto()">🚀 פרסם תמונה</button>
-        <span id="photo-filename" style="font-size: 0.85rem; color: #666;">לא נבחרה תמונה</span>
-        <input type="file" id="photo-file" accept="image/*" multiple style="display:none;" onchange="handlePhotoSelect(event)">
-      </div>
-      <input type="hidden" id="photo-data">
-      <input type="text" id="photo-caption" placeholder="כיתוב לתמונה" class="admin-input">
-    </div>
-  </div>
-
-  <!-- Grid -->
-  <div id="photos-grid" class="main-news-layout" style="margin-top: 0;">
-    <div class="news-feed" id="photos-feed">
-      <!-- Populated by JS -->
-    </div>
-  </div>
-</div>
-
-<!-- PHOTO DETAIL PAGE -->
-<div id="page-photo-detail" class="page" style="max-width: 860px; padding-top: 40px;">
-  <button class="back-btn" onclick="showPage('photos')" style="margin-bottom: 30px;">&rarr; חזור לתמונות</button>
-  <div id="photo-detail-content"></div>
-</div>
 
 <!-- ADMIN LOGIN PAGE -->
 <div id="page-admin-login" class="page">
@@ -192,10 +84,7 @@
       <div style="font-size:2.5rem; font-weight:800;" id="stat-articles">0</div>
       <div style="color:#86868b; font-size:0.9rem; margin-top:4px;">כתבות פעילות</div>
     </div>
-    <div style="flex:1; min-width:180px; background:#f5f5f7; border-radius:16px; padding:24px; text-align:center;">
-      <div style="font-size:2.5rem; font-weight:800;" id="stat-photos">0</div>
-      <div style="color:#86868b; font-size:0.9rem; margin-top:4px;">תמונות גולשים</div>
-    </div>
+
   </div>
 
   <div class="admin-header">
