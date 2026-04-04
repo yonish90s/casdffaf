@@ -558,7 +558,41 @@ function openPdfItemEditor(index = null) {
     document.getElementById('pdf-edit-price').value = '';
     document.getElementById('pdf-edit-link').value = '';
   }
+  const statusEl = document.getElementById('pdf-upload-status');
+  if (statusEl) statusEl.style.display = 'none';
   document.getElementById('pdf-item-editor').scrollIntoView({ behavior: 'smooth' });
+}
+
+function handlePdfFileUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const MAX_SIZE_MB = 5;
+  const statusEl = document.getElementById('pdf-upload-status');
+
+  if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+    statusEl.textContent = `❌ הקובץ גדול מדי (${(file.size / 1024 / 1024).toFixed(1)}MB). יש להשתמש בקישור חיצוני לקבצים מעל 5MB.`;
+    statusEl.style.color = '#ef4444';
+    statusEl.style.display = 'block';
+    return;
+  }
+
+  statusEl.textContent = '⏳ טוען קובץ...';
+  statusEl.style.color = '#0071e3';
+  statusEl.style.display = 'block';
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('pdf-edit-link').value = e.target.result;
+    statusEl.textContent = `✅ הקובץ "${file.name}" הועלה בהצלחה! (${(file.size / 1024).toFixed(0)}KB)`;
+    statusEl.style.color = '#22c55e';
+    showToast('הקובץ מוכן! אל תשכח לשמור.');
+  };
+  reader.onerror = function() {
+    statusEl.textContent = '❌ שגיאה בטעינת הקובץ. נסה שוב.';
+    statusEl.style.color = '#ef4444';
+  };
+  reader.readAsDataURL(file);
 }
 
 function editPdfItem(index) { openPdfItemEditor(index); }
