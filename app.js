@@ -402,9 +402,10 @@ function viewMessage(index) {
   if (!m) return;
   currentViewMessageIndex = index;
   document.getElementById('view-msg-name').textContent = m.name;
+  document.getElementById('view-msg-phone').textContent = 'טלפון: ' + (m.phone || 'לא הוזן');
   document.getElementById('view-msg-date').textContent = m.date;
   document.getElementById('view-msg-body').textContent = m.body;
-  document.getElementById('message-view-modal').classList.add('show');
+  document.getElementById('message-view-modal').classList.add('active');
 }
 
 function closeMessageViewModal() {
@@ -902,6 +903,7 @@ function closeContactModal() {
 function submitContactForm(e) {
   e.preventDefault();
   const name = document.getElementById('contact-name').value;
+  const phone = document.getElementById('contact-phone').value;
   const body = document.getElementById('contact-body').value;
   
   // Save message to localStorage
@@ -909,7 +911,7 @@ function submitContactForm(e) {
   const now = new Date();
   const dateStr = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()} ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
   
-  msgs.unshift({ name, body, date: dateStr });
+  msgs.unshift({ name, phone, body, date: dateStr });
   localStorage.setItem('contactMessages', JSON.stringify(msgs));
   
   // Close modal and show toast
