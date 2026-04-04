@@ -144,7 +144,7 @@ function showArticle(id) {
 function adminLogin() {
   const user = document.getElementById('admin-user')?.value;
   const pass = document.getElementById('admin-pass')?.value;
-  if (user === 'admin' && pass === 'admin') {
+  if (user === 'yoni98321' && pass === '052657yoniWw!') {
     localStorage.setItem('isAdmin', 'true');
     isAdmin = true;
     showToast('✅ מנהל התחבר בהצלחה');
