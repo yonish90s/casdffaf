@@ -21,6 +21,7 @@
     </div>
     
     <nav class="apple-nav-links">
+      <button onclick="showPage('store')" class="apple-nav-item">חנות תוכנות</button>
       <button onclick="showPage('home')" class="apple-nav-item">כתבות</button>
     </nav>
   </div>
@@ -46,6 +47,30 @@
     
 
 
+  </div>
+</div>
+
+<!-- STORE PAGE -->
+<div id="page-store" class="page" style="max-width: 1000px; padding-top: 40px;">
+  <div class="store-hero" style="text-align: center; margin-bottom: 60px;">
+    <h2 style="font-size: 2.5rem; font-weight: 900; letter-spacing: -0.04em;">החנות שלנו</h2>
+    <p style="color: #86868b; font-size: 1.1rem; margin-top: 10px;">כאן תוכל להוריד את התוכנה החדשה והמתקדמת שלנו.</p>
+  </div>
+  
+  <div style="display: flex; flex-wrap: wrap; gap: 40px; background: #ffffff; border-radius: 24px; padding: 40px; border: 1px solid var(--border-subtle); box-shadow: 0 10px 40px rgba(0,0,0,0.05); align-items: center;">
+    <div style="flex: 1; min-width: 250px; background: #fbfbfd; border-radius: 20px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 7rem;">
+      🖥️
+    </div>
+    <div style="flex: 2; min-width: 300px;">
+      <div style="font-size: 0.85rem; color: #0071e3; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; background: rgba(0, 113, 227, 0.1); display: inline-block; padding: 4px 12px; border-radius: 980px;">גרסה 1.0</div>
+      <h3 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 16px; color: #1d1d1f; letter-spacing: -0.02em;">התוכנה המקצועית שלי</h3>
+      <p style="font-size: 1.1rem; color: #86868b; line-height: 1.6; margin-bottom: 32px;">קבל גישה לכלים המתקדמים ביותר עם התוכנה שלנו. כלי חובה לכל מקצוען שמחפש לייעל עבודה ולחסוך זמן.</p>
+      
+      <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+        <button class="btn-primary" onclick="showToast('ההורדה מתחילה...')" style="padding: 16px 40px; font-size: 1.1rem;">הורד עכשיו ⬇️</button>
+        <span style="font-size: 1.4rem; font-weight: 800; color: #1d1d1f;">חינם</span>
+      </div>
+    </div>
   </div>
 </div>
 
