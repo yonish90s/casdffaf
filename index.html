@@ -93,88 +93,117 @@
 </div>
 
 <!-- ADMIN DASHBOARD -->
-<div id="page-admin" class="page" style="max-width: 1000px;">
-
-  <!-- Stats -->
-  <div style="display:flex; gap:16px; margin-bottom:32px; flex-wrap:wrap;">
-    <div style="flex:1; min-width:180px; background:#f5f5f7; border-radius:16px; padding:24px; text-align:center;">
-      <div style="font-size:2.5rem; font-weight:800;" id="stat-total">0</div>
-      <div style="color:#86868b; font-size:0.9rem; margin-top:4px;">סה״כ כניסות לאתר</div>
-    </div>
-    <div style="flex:1; min-width:180px; background:#f5f5f7; border-radius:16px; padding:24px; text-align:center;">
-      <div style="font-size:2.5rem; font-weight:800;" id="stat-today">0</div>
-      <div style="color:#86868b; font-size:0.9rem; margin-top:4px;">כניסות היום</div>
-    </div>
-    <div style="flex:1; min-width:180px; background:#f5f5f7; border-radius:16px; padding:24px; text-align:center;">
-      <div style="font-size:2.5rem; font-weight:800;" id="stat-articles">0</div>
-      <div style="color:#86868b; font-size:0.9rem; margin-top:4px;">כתבות פעילות</div>
-    </div>
-    <div style="flex:1; min-width:180px; background:#f5f5f7; border-radius:16px; padding:24px; text-align:center;">
-      <div style="font-size:2.5rem; font-weight:800; color: #0071e3;" id="stat-messages">0</div>
-      <div style="color:#86868b; font-size:0.9rem; margin-top:4px;">הודעות חדשות</div>
-    </div>
-  </div>
-
-  <div class="admin-header" style="margin-top: 40px; border-top: 1px solid #e5e5ea; padding-top: 24px;">
-    <h2>תיבת הודעות נכנסות</h2>
-  </div>
-  <table class="admin-table" style="margin-bottom: 40px;">
-    <thead>
-      <tr>
-        <th>תאריך</th>
-        <th>מאת</th>
-        <th>הודעה</th>
-        <th>פעולות</th>
-      </tr>
-    </thead>
-    <tbody id="admin-messages-list">
-      <!-- Populated by JS -->
-    </tbody>
-  </table>
-
-  <div class="admin-header">
-    <h2>ניהול כתבות</h2>
-    <button class="btn-primary" onclick="openArticleEditor()">+ כתבה חדשה</button>
-  </div>
-  <table class="admin-table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>כותרת</th>
-        <th>קטגוריה</th>
-        <th>מחבר</th>
-        <th>פעולות</th>
-      </tr>
-    </thead>
-    <tbody id="admin-articles-list">
-      <!-- Populated by JS -->
-    </tbody>
-  </table>
-  
-  <div id="admin-editor" class="hidden" style="margin-top: 40px; border-top: 1px solid #e5e5ea; padding-top: 24px;">
-    <h3>עריכת כתבה</h3>
-    <div style="display:flex; flex-direction:column; gap:16px;">
-      <input type="hidden" id="edit-id" value="">
-      <input type="text" id="edit-title" placeholder="כותרת הכתבה" class="admin-input" required>
-      <input type="text" id="edit-category" placeholder="קטגוריה" class="admin-input" required>
-      <input type="text" id="edit-author" placeholder="יוצר/כתב" class="admin-input" required>
-      <input type="text" id="edit-time" placeholder="זמן פרסום (למשל: היום, 10:00)" class="admin-input" required>
-      <div style="display:flex; flex-direction:column; gap:4px;">
-        <label style="font-size: 0.85rem; font-weight: 600; color: #1d1d1f;">תמונה (אפשר להדביק קישור או להעלות):</label>
-        <div style="display:flex; gap:8px;">
-          <input type="text" id="edit-image" placeholder="URL תמונה או קוד..." class="admin-input" style="flex:1;" required>
-          <button type="button" class="btn-secondary" style="padding: 0 16px; border-radius: 8px; border: 1px solid #ccc; background: white; cursor: pointer; white-space: nowrap;" onclick="document.getElementById('edit-image-upload').click()">העלה תמונה מהמכשיר</button>
-          <input type="file" id="edit-image-upload" accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
+<div id="page-admin" class="page" style="max-width: 1200px;">
+  <div style="display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap;">
+    
+    <!-- MAIN CONTENT -->
+    <div style="flex: 1; min-width: 300px;">
+      
+      <!-- DASHBOARD TAB -->
+      <div id="admin-section-dashboard" class="admin-section">
+        <!-- Stats -->
+        <div style="display:flex; gap:16px; margin-bottom:32px; flex-wrap:wrap;">
+          <div style="flex:1; min-width:180px; background:#f5f5f7; border-radius:16px; padding:24px; text-align:center;">
+            <div style="font-size:2.5rem; font-weight:800;" id="stat-total">0</div>
+            <div style="color:#86868b; font-size:0.9rem; margin-top:4px;">סה״כ כניסות לאתר</div>
+          </div>
+          <div style="flex:1; min-width:180px; background:#f5f5f7; border-radius:16px; padding:24px; text-align:center;">
+            <div style="font-size:2.5rem; font-weight:800;" id="stat-today">0</div>
+            <div style="color:#86868b; font-size:0.9rem; margin-top:4px;">כניסות היום</div>
+          </div>
+          <div style="flex:1; min-width:180px; background:#f5f5f7; border-radius:16px; padding:24px; text-align:center;">
+            <div style="font-size:2.5rem; font-weight:800;" id="stat-articles">0</div>
+            <div style="color:#86868b; font-size:0.9rem; margin-top:4px;">כתבות פעילות</div>
+          </div>
+          <div style="flex:1; min-width:180px; background:#f5f5f7; border-radius:16px; padding:24px; text-align:center;">
+            <div style="font-size:2.5rem; font-weight:800; color: #0071e3;" id="stat-messages">0</div>
+            <div style="color:#86868b; font-size:0.9rem; margin-top:4px;">הודעות חדשות</div>
+          </div>
         </div>
       </div>
-      <textarea id="edit-snippet" placeholder="תקציר / קטע הכתבה" rows="4" class="admin-input" required></textarea>
-      <textarea id="edit-content" placeholder="תוכן הכתבה המלא (יופיע כשנכנסים לכתבה)" rows="10" class="admin-input"></textarea>
-      <label style="display: flex; gap: 8px;"><input type="checkbox" id="edit-isTop"> סמן ככתבה פופולרית (תוצג בראש האתר)</label>
-      <div style="display:flex; gap:12px;">
-        <button class="btn-primary" onclick="saveAdminArticle()">שמור כתבה</button>
-        <button class="btn-secondary" onclick="document.getElementById('admin-editor').classList.add('hidden')" style="background:#f5f5f7; border:none; padding:12px 24px; border-radius:980px; font-weight:600; cursor:pointer;">ביטול</button>
+
+      <!-- MESSAGES TAB -->
+      <div id="admin-section-messages" class="admin-section" style="display: none;">
+        <div class="admin-header">
+          <h2>תיבת הודעות נכנסות</h2>
+        </div>
+        <table class="admin-table" style="margin-bottom: 40px;">
+          <thead>
+            <tr>
+              <th>תאריך</th>
+              <th>מאת</th>
+              <th>הודעה</th>
+              <th>פעולות</th>
+            </tr>
+          </thead>
+          <tbody id="admin-messages-list">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ARTICLES TAB -->
+      <div id="admin-section-articles" class="admin-section" style="display: none;">
+        <div class="admin-header">
+          <h2>ניהול כתבות</h2>
+          <button class="btn-primary" onclick="openArticleEditor()">+ כתבה חדשה</button>
+        </div>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>כותרת</th>
+              <th>קטגוריה</th>
+              <th>מחבר</th>
+              <th>פעולות</th>
+            </tr>
+          </thead>
+          <tbody id="admin-articles-list">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+        
+        <div id="admin-editor" class="hidden" style="margin-top: 40px; border-top: 1px solid #e5e5ea; padding-top: 24px;">
+          <h3>עריכת כתבה</h3>
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <input type="hidden" id="edit-id" value="">
+            <input type="text" id="edit-title" placeholder="כותרת הכתבה" class="admin-input" required>
+            <input type="text" id="edit-category" placeholder="קטגוריה" class="admin-input" required>
+            <input type="text" id="edit-author" placeholder="יוצר/כתב" class="admin-input" required>
+            <input type="text" id="edit-time" placeholder="זמן פרסום (למשל: היום, 10:00)" class="admin-input" required>
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <label style="font-size: 0.85rem; font-weight: 600; color: #1d1d1f;">תמונה (אפשר להדביק קישור או להעלות):</label>
+              <div style="display:flex; gap:8px;">
+                <input type="text" id="edit-image" placeholder="URL תמונה או קוד..." class="admin-input" style="flex:1;" required>
+                <button type="button" class="btn-secondary" style="padding: 0 16px; border-radius: 8px; border: 1px solid #ccc; background: white; cursor: pointer; white-space: nowrap;" onclick="document.getElementById('edit-image-upload').click()">העלה תמונה מהמכשיר</button>
+                <input type="file" id="edit-image-upload" accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
+              </div>
+            </div>
+            <textarea id="edit-snippet" placeholder="תקציר / קטע הכתבה" rows="4" class="admin-input" required></textarea>
+            <textarea id="edit-content" placeholder="תוכן הכתבה המלא (יופיע כשנכנסים לכתבה)" rows="10" class="admin-input"></textarea>
+            <label style="display: flex; gap: 8px;"><input type="checkbox" id="edit-isTop"> סמן ככתבה פופולרית (תוצג בראש האתר)</label>
+            <div style="display:flex; gap:12px;">
+              <button class="btn-primary" onclick="saveAdminArticle()">שמור כתבה</button>
+              <button class="btn-secondary" onclick="document.getElementById('admin-editor').classList.add('hidden')" style="background:#f5f5f7; border:none; padding:12px 24px; border-radius:980px; font-weight:600; cursor:pointer;">ביטול</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- SIDEBAR -->
+    <aside style="width: 250px; flex-shrink: 0; background: #ffffff; border-radius: 16px; padding: 24px; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-soft);">
+      <h3 style="margin-bottom: 20px; font-size: 1.2rem; font-weight: 800;">תפריט מנהלי</h3>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <button class="admin-nav-btn active" onclick="switchAdminTab('dashboard', this)">ראשי (סטטיסטיקות)</button>
+        <button class="admin-nav-btn" onclick="switchAdminTab('articles', this)">ניהול כתבות</button>
+        <button class="admin-nav-btn" onclick="switchAdminTab('messages', this)" style="display: flex; justify-content: space-between; align-items: center;">
+          תיבת הודעות
+          <span id="nav-msg-count" style="background: var(--primary); color: white; padding: 2px 8px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">0</span>
+        </button>
+      </div>
+    </aside>
+
   </div>
 </div>
 
@@ -219,6 +248,23 @@
       </div>
       <button type="submit" class="btn-primary full-width" style="margin-top: 8px;">🚀 שלח מייל למערכת</button>
     </form>
+  </div>
+
+<!-- MESSAGE VIEW MODAL -->
+<div id="message-view-modal" class="modal-overlay">
+  <div class="modal-content" style="max-width: 600px;">
+    <button class="modal-close" onclick="closeMessageViewModal()">✕</button>
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 24px;">
+      <div>
+        <h2 id="view-msg-name" style="margin-bottom: 4px;">שם השולח</h2>
+        <div id="view-msg-date" style="color: #86868b; font-size: 0.9rem;">תאריך</div>
+      </div>
+    </div>
+    <div id="view-msg-body" style="background: #fcfcfd; border-radius: 12px; padding: 24px; font-size: 1.1rem; line-height: 1.6; white-space: pre-wrap; margin-bottom: 32px; text-align: right; border: 1px solid var(--border-subtle); color: #1d1d1f;"></div>
+    <div style="display: flex; gap: 16px;">
+      <button class="btn-primary" onclick="closeMessageViewModal()" style="flex:1; padding: 14px;">סגור הודעה</button>
+      <button class="btn-secondary" onclick="deleteMessageFromModal()" style="color: #ef4444; border-color: #ef4444; padding: 14px 24px;">מחק הודעה</button>
+    </div>
   </div>
 </div>
 

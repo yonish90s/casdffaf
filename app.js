@@ -166,16 +166,20 @@ function initAdminDashboard() {
   if (statMessages) statMessages.textContent = msgs.length;
 
   const msgList = document.getElementById('admin-messages-list');
+  const navMsgCount = document.getElementById('nav-msg-count');
+  if (navMsgCount) navMsgCount.textContent = msgs.length;
+
   if (msgList) {
     if (msgs.length === 0) {
       msgList.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px; color:#86868b;">אין הודעות חדשות</td></tr>';
     } else {
       msgList.innerHTML = msgs.map((m, i) => `
-        <tr>
+        <tr class="hover-row" style="transition: background 0.2s; cursor: pointer;" onclick="viewMessage(${i})" onmouseover="this.style.background='#f5f5f7'" onmouseout="this.style.background='transparent'">
           <td style="white-space: nowrap;">${escHtml(m.date)}</td>
           <td><strong>${escHtml(m.name)}</strong></td>
-          <td style="white-space: pre-wrap;">${escHtml(m.body)}</td>
-          <td>
+          <td style="white-space: pre-wrap;">${escHtml(m.body).substring(0, 60)}${m.body.length > 60 ? '...' : ''}</td>
+          <td style="display: flex; gap: 8px;" onclick="event.stopPropagation()">
+            <button class="btn-primary" style="padding: 4px 12px; font-size: 0.85rem;" onclick="viewMessage(${i})">הצג</button>
             <button class="remove-btn" style="padding: 4px 12px; font-size: 0.85rem; border: none; background: transparent;" onclick="deleteMessage(${i})">מחק</button>
           </td>
         </tr>
@@ -201,6 +205,15 @@ function initAdminDashboard() {
   `).join('');
 }
 
+function switchAdminTab(tabId, btnEl) {
+  document.querySelectorAll('.admin-section').forEach(el => el.style.display = 'none');
+  document.getElementById('admin-section-' + tabId).style.display = 'block';
+  if (btnEl) {
+    document.querySelectorAll('.admin-nav-btn').forEach(btn => btn.classList.remove('active'));
+    btnEl.classList.add('active');
+  }
+}
+
 function deleteMessage(index) {
   if (confirm('האם אתה בטוח שברצונך למחוק הודעה זו?')) {
     let msgs = JSON.parse(localStorage.getItem('contactMessages') || '[]');
@@ -208,6 +221,37 @@ function deleteMessage(index) {
     localStorage.setItem('contactMessages', JSON.stringify(msgs));
     initAdminDashboard();
     showToast('ההודעה נמחקה');
+  }
+}
+
+let currentViewMessageIndex = -1;
+
+function viewMessage(index) {
+  let msgs = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+  const m = msgs[index];
+  if (!m) return;
+  currentViewMessageIndex = index;
+  document.getElementById('view-msg-name').textContent = m.name;
+  document.getElementById('view-msg-date').textContent = m.date;
+  document.getElementById('view-msg-body').textContent = m.body;
+  document.getElementById('message-view-modal').classList.add('show');
+}
+
+function closeMessageViewModal() {
+  document.getElementById('message-view-modal').classList.remove('show');
+  currentViewMessageIndex = -1;
+}
+
+function deleteMessageFromModal() {
+  if (currentViewMessageIndex >= 0) {
+    if (confirm('האם אתה בטוח שברצונך למחוק הודעה זו?')) {
+      let msgs = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+      msgs.splice(currentViewMessageIndex, 1);
+      localStorage.setItem('contactMessages', JSON.stringify(msgs));
+      initAdminDashboard();
+      closeMessageViewModal();
+      showToast('ההודעה נמחקה');
+    }
   }
 }
 
