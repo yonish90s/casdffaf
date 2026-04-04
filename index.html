@@ -35,8 +35,22 @@
 
 
 
-  <div class="main-news-layout" style="margin-top: 40px;">
-    
+  <div class="main-news-layout" style="margin-top: 40px; display: grid; grid-template-columns: 280px 1fr 280px; gap: 32px;">
+    <!-- RIGHT SIDEBAR: Appointments -->
+    <aside class="news-sidebar-right">
+      <div class="sidebar-card" style="background:#fff; border-radius:18px; border:1px solid var(--border-subtle); padding:24px; box-shadow:var(--shadow-soft);">
+        <h3 style="font-size:1.3rem; font-weight:800; margin-bottom:16px; display:flex; align-items:center; gap:8px;">📅 קביעת תור</h3>
+        <div class="booking-widget">
+          <label style="display:block; font-size:0.85rem; font-weight:700; color:#86868b; margin-bottom:8px;">בחר יום:</label>
+          <select id="book-day" style="width:100%; margin-bottom:16px; padding:12px; border-radius:12px; border:1px solid #d2d2d7;">
+            <option>ראשון</option><option>שני</option><option>שלישי</option><option>רביעי</option><option>חמישי</option><option>שישי</option><option>שבת</option>
+          </select>
+          <label style="display:block; font-size:0.85rem; font-weight:700; color:#86868b; margin-bottom:8px;">בחר שעה:</label>
+          <div id="book-time-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:20px; max-height:150px; overflow-y:auto;"></div>
+          <button class="btn-primary" style="width:100%;" onclick="openBookingModal()">המשך לקביעה</button>
+        </div>
+      </div>
+    </aside>
     <div class="news-feed" id="news-feed-list">
       <!-- Populated by JS -->
     </div>
@@ -333,6 +347,7 @@
       <h3 style="margin-bottom: 20px; font-size: 1.2rem; font-weight: 800;">תפריט מנהלי</h3>
       <div style="display: flex; flex-direction: column; gap: 8px;">
         <button class="admin-nav-btn active" onclick="switchAdminTab('dashboard', this)">ראשי (סטטיסטיקות)</button>
+        <button class="admin-nav-btn" onclick="switchAdminTab('calendar', this)">יומן תורים</button>
         <button class="admin-nav-btn" onclick="switchAdminTab('store', this)">ניהול חנות</button>
         <button class="admin-nav-btn" onclick="switchAdminTab('pdfstore', this)">ניהול חנות PDF</button>
         <button class="admin-nav-btn" onclick="switchAdminTab('articles', this)">ניהול כתבות</button>
@@ -341,6 +356,16 @@
           <span id="nav-msg-count" style="background: var(--primary); color: white; padding: 2px 8px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">0</span>
         </button>
       </div>
+      <div id="admin-section-calendar" class="admin-section" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+          <h2>📅 יומן תורים</h2>
+          <button class="btn-secondary" onclick="clearAppointments()" style="color:#ef4444; border-color:#ef4444; font-size:0.85rem;">מחק את כל התורים</button>
+        </div>
+        <div id="admin-calendar-list" style="display: grid; gap: 16px; margin-top: 20px;">
+          <!-- Appointments listed here -->
+        </div>
+      </div>
+
     </aside>
 
   </div>
@@ -411,6 +436,26 @@
       <button class="btn-primary" onclick="closeMessageViewModal()" style="flex:1; padding: 16px; font-size: 1.1rem;">סגור הודעה</button>
       <button class="btn-secondary" onclick="deleteMessageFromModal()" style="color: #ef4444; border-color: #ef4444; padding: 16px 24px; font-size: 1.1rem;">מחק</button>
     </div>
+  </div>
+</div>
+
+<!-- BOOKING MODAL -->
+<div id="booking-modal" class="modal-overlay">
+  <div class="modal-content" style="max-width: 400px; padding: 40px; border-radius: 28px;">
+    <button class="modal-close" onclick="closeBookingModal()" style="background:#f5f5f7; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; border:none; position:absolute; top:20px; left:20px; cursor:pointer;">✕</button>
+    <h2 id="booking-modal-title" style="font-size:1.8rem; font-weight:800; margin-bottom:8px; text-align:right;">פרטי התור</h2>
+    <p id="booking-selected-info" style="color: #86868b; margin-bottom: 32px; font-size: 1rem; text-align:right; font-weight:500;"></p>
+    <form id="booking-form" onsubmit="submitBooking(event)">
+      <div style="margin-bottom: 20px; text-align: right;">
+        <label style="display:block; font-size:0.9rem; font-weight:700; margin-bottom:8px; color: #1d1d1f;">שם מלא</label>
+        <input type="text" id="book-name" required class="admin-input" placeholder="הכנס את שמך" style="width:100%; border-radius:12px; border:1px solid #d2d2d7; padding:12px;">
+      </div>
+      <div style="margin-bottom: 24px; text-align: right;">
+        <label style="display:block; font-size:0.9rem; font-weight:700; margin-bottom:8px; color: #1d1d1f;">טלפון</label>
+        <input type="tel" id="book-phone" required class="admin-input" placeholder="הכנס מספר טלפון" style="width:100%; border-radius:12px; border:1px solid #d2d2d7; padding:12px;">
+      </div>
+      <button type="submit" class="btn-primary full-width" style="width:100%; height: 56px; font-size: 1.1rem; font-weight:700;">✅ קבע תור עכשיו</button>
+    </form>
   </div>
 </div>
 

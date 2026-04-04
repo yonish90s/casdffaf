@@ -60,7 +60,10 @@ function showPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(`page-${page}`).classList.add('active');
 
-  if (page === 'home') renderNewsLayout();
+  if (page === 'home') {
+    renderNewsLayout();
+    initBookingWidget();
+  }
   if (page === 'store') renderStoreLayout();
   if (page === 'pdf-store') renderPdfStoreGrid();
 
@@ -72,6 +75,105 @@ function showPage(page) {
     initAdminDashboard();
   }
 }
+
+// ========== BOOKING LOGIC ==========
+function initBookingWidget() {
+  const grid = document.getElementById('book-time-grid');
+  if (!grid) return;
+  
+  let html = '';
+  for (let h = 7; h <= 18; h++) {
+    const time = `${h.toString().padStart(2, '0')}:00`;
+    html += `<div class="time-slot" onclick="selectTime(this)" style="padding:10px; border:1px solid #d2d2d7; border-radius:10px; text-align:center; cursor:pointer; font-size:0.9rem; font-weight:600; transition:0.2s; background:#fff; color:#1d1d1f;">${time}</div>`;
+  }
+  grid.innerHTML = html;
+}
+
+let selectedTime = '';
+function selectTime(el) {
+  document.querySelectorAll('.time-slot').forEach(s => {
+    s.style.borderColor = '#d2d2d7';
+    s.style.backgroundColor = '#fff';
+    s.style.color = '#1d1d1f';
+  });
+  el.style.borderColor = '#0071e3';
+  el.style.backgroundColor = 'rgba(0, 113, 227, 0.05)';
+  el.style.color = '#0071e3';
+  selectedTime = el.textContent;
+}
+
+function openBookingModal() {
+  const day = document.getElementById('book-day').value;
+  if (!selectedTime) {
+    showToast('❌ נא לבחור שעה');
+    return;
+  }
+  
+  document.getElementById('booking-selected-info').textContent = `יום ${day} בשעה ${selectedTime}`;
+  document.getElementById('booking-modal').classList.add('active');
+}
+
+function closeBookingModal() {
+  document.getElementById('booking-modal').classList.remove('active');
+}
+
+function submitBooking(e) {
+  e.preventDefault();
+  const name = document.getElementById('book-name').value;
+  const phone = document.getElementById('book-phone').value;
+  const day = document.getElementById('book-day').value;
+  
+  const appt = {
+    id: Date.now(),
+    name,
+    phone,
+    day,
+    time: selectedTime,
+    created: new Date().toLocaleString('he-IL')
+  };
+  
+  const appts = JSON.parse(localStorage.getItem('appointments') || '[]');
+  appts.push(appt);
+  localStorage.setItem('appointments', JSON.stringify(appts));
+  
+  showToast('✅ התור נקבע בהצלחה! ניצור איתך קשר.');
+  closeBookingModal();
+  e.target.reset();
+}
+
+// ========== ADMIN CALENDAR ==========
+function renderAdminCalendar() {
+  const list = document.getElementById('admin-calendar-list');
+  if (!list) return;
+  const appts = JSON.parse(localStorage.getItem('appointments') || '[]');
+  
+  if (appts.length === 0) {
+    list.innerHTML = '<div style="text-align:center; padding:40px; color:#86868b;">אין תורים קבועים ביומן.</div>';
+    return;
+  }
+  
+  list.innerHTML = appts.reverse().map(a => `
+    <div style="background:#f5f5f7; border-radius:12px; padding:20px; display:flex; justify-content:space-between; align-items:center; border:1px solid var(--border-subtle); text-align:right;">
+      <div>
+        <div style="font-weight:800; font-size:1.1rem; color:#1d1d1f; margin-bottom:4px;">${escHtml(a.name)}</div>
+        <div style="font-size:0.95rem; color:#86868b;">📞 ${escHtml(a.phone)}</div>
+      </div>
+      <div style="text-align:left;">
+        <div style="font-weight:800; color:#0071e3; font-size:1.1rem;">יום ${escHtml(a.day)} | ${escHtml(a.time)}</div>
+        <div style="font-size:0.75rem; color:#86868b; margin-top:6px;">נקבע ב: ${a.created}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function clearAppointments() {
+  if (confirm('האם אתה בטוח שברצונך למחוק את כל התורים?')) {
+    localStorage.removeItem('appointments');
+    renderAdminCalendar();
+    showToast('🗑️ היומן נוקה');
+  }
+}
+
 
 function goBack() {
   showPage(previousPage);
@@ -255,6 +357,7 @@ function switchAdminTab(tabId, btnEl) {
     document.querySelectorAll('.admin-nav-btn').forEach(btn => btn.classList.remove('active'));
     btnEl.classList.add('active');
   }
+  if (tabId === 'calendar') renderAdminCalendar();
   if (tabId === 'pdfstore') renderPdfAdminList();
 }
 
