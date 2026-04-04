@@ -94,8 +94,52 @@
 
 <!-- ARTICLE PAGE -->
 <div id="page-article" class="page" style="max-width: 860px; padding-top: 40px;">
-  <button class="back-btn" onclick="goBack()" style="margin-bottom: 30px;">&rarr; חזור לחדשות</button>
+  <button class="back-btn" onclick="goBack()" style="margin-bottom: 30px;">&rarr; חזור</button>
   <article class="article-detail" id="article-content"></article>
+</div>
+
+<!-- PRODUCT DETAIL PAGE -->
+<div id="page-product-detail" class="page" style="max-width: 1200px; padding-top: 60px;">
+  <button class="back-btn" onclick="goBack()" style="margin-bottom: 40px; border:none; background:none; color:#0066cc; font-weight:600; cursor:pointer; font-size:1rem;">&rarr; חזור לחנות</button>
+  
+  <div class="product-pdp-container">
+    <!-- Left: Info -->
+    <div class="product-info-column">
+      <h1 id="pdp-title" class="pdp-title">שם המוצר יופיע כאן</h1>
+      <div class="pdp-rating">⭐⭐⭐⭐⭐ <span style="font-size: 0.9rem; color:#86868b; margin-right:8px;">4.8 (1062 חוות דעת)</span></div>
+      
+      <div class="pdp-price-container">
+        <span class="pdp-price" id="pdp-price">₪78.38</span>
+        <div class="pdp-discount-info">מחיר כולל מע"מ</div>
+      </div>
+
+      <div class="pdp-variants">
+        <div style="font-weight:700; margin-bottom:12px;">בחר סוג:</div>
+        <div class="variant-chips">
+          <div class="chip active">יחידה אחת</div>
+          <div class="chip">זוג</div>
+          <div class="chip">רביעייה (מומלץ)</div>
+        </div>
+      </div>
+
+      <p id="pdp-desc" class="pdp-description">תיאור המוצר המפורט יופיע כאן...</p>
+
+      <div class="pdp-actions">
+        <button class="btn-primary" style="flex:1; height:56px; font-size:1.1rem;" onclick="showToast('✅ המוצר נוסף לסל!')">הוסף לסל הקניות</button>
+        <button class="btn-secondary" style="flex:1; height:56px; font-size:1.1rem;" onclick="handleDownload()">הורדה מהירה ⬇️</button>
+      </div>
+    </div>
+
+    <!-- Right: Visuals -->
+    <div class="product-visual-column">
+      <div class="main-image-wrapper">
+        <img id="pdp-main-image" src="" alt="תמונת מוצר" />
+      </div>
+      <div class="thumbnail-list" id="pdp-thumbnails">
+        <!-- Thumbnails -->
+      </div>
+    </div>
+  </div>
 </div>
 
 

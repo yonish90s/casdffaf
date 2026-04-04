@@ -540,7 +540,7 @@ function renderPdfStoreGrid() {
     return;
   }
   grid.innerHTML = items.map((item, i) => `
-    <div class="pdf-card" onclick="${item.link ? `window.open('${item.link}', '_blank')` : `showToast('הקישור עוד לא הוגדר')`}">
+    <div class="pdf-card" onclick="showProductDetail(${i})">
       <div class="pdf-card-icon">${typeEmoji[item.type] || '📄'}</div>
       <div class="pdf-card-type">${escHtml(item.type)}</div>
       <div class="pdf-card-title">${escHtml(item.title)}</div>
@@ -548,6 +548,59 @@ function renderPdfStoreGrid() {
       <div class="pdf-card-price">${escHtml(item.price || 'חינם')}</div>
     </div>
   `).join('');
+}
+
+let currentProductLink = '';
+function showProductDetail(index) {
+  const items = getPdfItems();
+  const item = items[index];
+  if (!item) return;
+  
+  currentProductLink = item.link || '';
+  
+  document.getElementById('pdp-title').textContent = item.title;
+  document.getElementById('pdp-price').textContent = item.price || 'חינם';
+  document.getElementById('pdp-desc').textContent = item.desc || '';
+  
+  // Use category stock images as placeholder images
+  const stockImages = {
+    'PDF': 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=800',
+    'תוכנה': 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800',
+    'סרטון': 'https://images.unsplash.com/photo-1492724441997-5dc865305da7?auto=format&fit=crop&q=80&w=800',
+    'קובץ': 'https://images.unsplash.com/photo-1544391490-01c6db9f5a70?auto=format&fit=crop&q=80&w=800',
+    'מדריך': 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&q=80&w=800'
+  };
+  
+  const mainImg = document.getElementById('pdp-main-image');
+  if (mainImg) mainImg.src = stockImages[item.type] || stockImages['PDF'];
+  
+  // Fill thumbnails with variations of the main image or just repeats for now
+  const thumbs = document.getElementById('pdp-thumbnails');
+  if (thumbs) {
+    thumbs.innerHTML = [0,1,2,3].map(n => `
+      <div class="pdp-thumb ${n===0?'active':''}" onclick="updatePdpImage(this)">
+        <img src="${mainImg.src}" />
+      </div>
+    `).join('');
+  }
+  
+  showPage('product-detail');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updatePdpImage(el) {
+  document.querySelectorAll('.pdp-thumb').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const mainImg = document.getElementById('pdp-main-image');
+  if (mainImg) mainImg.src = el.querySelector('img').src;
+}
+
+function handleDownload() {
+  if (currentProductLink) {
+    window.open(currentProductLink, '_blank');
+  } else {
+    showToast('הקישור עדיין לא הוגדר למוצר זה.');
+  }
 }
 
 function renderPdfAdminList() {
