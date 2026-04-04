@@ -343,5 +343,37 @@ function trackVisit() {
 
 trackVisit();
 
+// ========== CONTACT MODAL ==========
+function openContactModal() {
+  document.getElementById('contact-modal').classList.add('show');
+}
+
+function closeContactModal() {
+  document.getElementById('contact-modal').classList.remove('show');
+}
+
+function submitContactForm(e) {
+  e.preventDefault();
+  const name = document.getElementById('contact-name').value;
+  const body = document.getElementById('contact-body').value;
+  
+  // Create a mailto link dynamically
+  const subject = encodeURIComponent('פנייה מהאתר: ' + name);
+  const bodyText = encodeURIComponent(body + '\n\nנשלח מאת: ' + name);
+  const mailtoLink = `mailto:yonisharabi19955@gmail.com?subject=${subject}&body=${bodyText}`;
+  
+  // Close modal and show toast
+  closeContactModal();
+  showToast('הבקשה נוצרה! מעביר לשליחת המייל...');
+  
+  // Clear form
+  e.target.reset();
+  
+  // Redirect to mailto link
+  setTimeout(() => {
+    window.location.href = mailtoLink;
+  }, 1000);
+}
+
 // ========== INIT ==========
 showPage('home');

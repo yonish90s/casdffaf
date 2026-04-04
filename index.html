@@ -140,7 +140,7 @@
       <div class="footer-col">
         <h4>צרו קשר</h4>
         <ul>
-          <li><a href="mailto:yonisharabi19955@gmail.com">אימייל למערכת</a></li>
+          <li><a href="#" onclick="openContactModal(); return false;">אימייל למערכת</a></li>
           <li><a href="#" onclick="showToast('הטלפון שלנו עדיין לא פעיל')">התקשר אלינו</a></li>
         </ul>
       </div>
@@ -156,6 +156,26 @@
     </div>
   </div>
 </footer>
+
+<!-- CONTACT MODAL -->
+<div id="contact-modal" class="modal-overlay">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeContactModal()">✕</button>
+    <h2>שלח לנו הודעה</h2>
+    <p style="color: #86868b; margin-bottom: 24px; font-size: 0.95rem;">נשמח לענות על כל שאלה או בקשה.</p>
+    <form id="contact-form" onsubmit="submitContactForm(event)">
+      <div style="margin-bottom: 16px; text-align: right;">
+        <label style="display:block; font-size:0.9rem; font-weight:600; margin-bottom:8px; color: #1d1d1f;">שם מלא</label>
+        <input type="text" id="contact-name" required class="admin-input" placeholder="הכנס את שמך">
+      </div>
+      <div style="margin-bottom: 16px; text-align: right;">
+        <label style="display:block; font-size:0.9rem; font-weight:600; margin-bottom:8px; color: #1d1d1f;">הודעה</label>
+        <textarea id="contact-body" required class="admin-input" rows="5" placeholder="כתוב את הודעתך כאן..."></textarea>
+      </div>
+      <button type="submit" class="btn-primary full-width" style="margin-top: 8px;">🚀 שלח מייל למערכת</button>
+    </form>
+  </div>
+</div>
 
 <!-- TOAST NOTIFICATION -->
 <div id="toast" class="toast"></div>
