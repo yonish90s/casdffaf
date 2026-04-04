@@ -29,6 +29,8 @@ function showPage(page) {
   document.getElementById(`page-${page}`).classList.add('active');
 
   if (page === 'home') renderNewsLayout();
+  if (page === 'store') renderStoreLayout();
+  if (page === 'pdf-store') renderPdfStoreGrid();
 
   if (page === 'admin') {
     if (!isAdmin) {
@@ -202,6 +204,16 @@ function initAdminDashboard() {
       </td>
     </tr>
   `).join('');
+
+  const sc = JSON.parse(localStorage.getItem('storeConfig')) || { title: 'התוכנה המקצועית שלי', version: 'גרסה 1.0', desc: 'קבל גישה לכלים המתקדמים ביותר עם התוכנה שלנו. כלי חובה לכל מקצוען שמחפש לייעל עבודה ולחסוך זמן.', image: '', downloadLink: '' };
+  const storeTitleInput = document.getElementById('store-edit-title');
+  if(storeTitleInput) {
+    storeTitleInput.value = sc.title || '';
+    document.getElementById('store-edit-version').value = sc.version || '';
+    document.getElementById('store-edit-desc').value = sc.desc || '';
+    document.getElementById('store-edit-image').value = sc.image || '';
+    document.getElementById('store-edit-download').value = sc.downloadLink || '';
+  }
 }
 
 function switchAdminTab(tabId, btnEl) {
@@ -211,6 +223,7 @@ function switchAdminTab(tabId, btnEl) {
     document.querySelectorAll('.admin-nav-btn').forEach(btn => btn.classList.remove('active'));
     btnEl.classList.add('active');
   }
+  if (tabId === 'pdfstore') renderPdfAdminList();
 }
 
 function deleteMessage(index) {
@@ -400,8 +413,192 @@ function handleImageUpload(event) {
   reader.readAsDataURL(file);
 }
 
+// ========== STORE MANAGEMENT ==========
+function renderStoreLayout() {
+  const c = JSON.parse(localStorage.getItem('storeConfig')) || { title: 'התוכנה המקצועית שלי', version: 'גרסה 1.0', desc: 'קבל גישה לכלים המתקדמים ביותר עם התוכנה שלנו. כלי חובה לכל מקצוען שמחפש לייעל עבודה ולחסוך זמן.', image: '', downloadLink: '' };
+  const titleEl = document.getElementById('store-render-title');
+  const versionEl = document.getElementById('store-render-version');
+  const descEl = document.getElementById('store-render-desc');
+  const imgEl = document.getElementById('store-render-image');
+  const emojiEl = document.getElementById('store-render-emoji');
+  
+  if(titleEl) titleEl.textContent = c.title || 'התוכנה המקצועית שלי';
+  if(versionEl) versionEl.textContent = c.version || 'גרסה 1.0';
+  if(descEl) descEl.textContent = c.desc || '';
+  
+  if(c.image) {
+    if(imgEl) { imgEl.src = c.image; imgEl.style.display = 'block'; }
+    if(emojiEl) emojiEl.style.display = 'none';
+  } else {
+    if(imgEl) imgEl.style.display = 'none';
+    if(emojiEl) emojiEl.style.display = 'block';
+  }
+}
 
-// ========== VISIT TRACKING ==========
+function saveStoreConfig() {
+  const title = document.getElementById('store-edit-title').value;
+  const version = document.getElementById('store-edit-version').value;
+  const desc = document.getElementById('store-edit-desc').value;
+  const image = document.getElementById('store-edit-image').value;
+  const downloadLink = document.getElementById('store-edit-download').value;
+  
+  const config = { title, version, desc, image, downloadLink };
+  localStorage.setItem('storeConfig', JSON.stringify(config));
+  
+  renderStoreLayout();
+  showToast('הגדרות החנות נשמרו בהצלחה!');
+}
+
+function handleStoreImageUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  showToast('מעבד תמונה...');
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const MAX_WIDTH = 600;
+      let width = img.width;
+      let height = img.height;
+
+      if (width > MAX_WIDTH) {
+        height = Math.round(height * (MAX_WIDTH / width));
+        width = MAX_WIDTH;
+      }
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+      document.getElementById('store-edit-image').value = compressedDataUrl;
+      showToast('התמונה מוכנה! ✅');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function downloadStoreSoftware() {
+  const c = JSON.parse(localStorage.getItem('storeConfig')) || {};
+  if(c.downloadLink) {
+    window.open(c.downloadLink, '_blank');
+  } else {
+    showToast('ההורדה תתחיל בקרוב...');
+  }
+}
+
+// ========== PDF STORE ==========
+const typeEmoji = { 'PDF': '📄', 'תוכנה': '🖥️', 'סרטון': '📹', 'קובץ': '📁', 'מדריך': '📚' };
+
+function getPdfItems() {
+  return JSON.parse(localStorage.getItem('pdfStoreItems') || '[]');
+}
+
+function savePdfItems(items) {
+  localStorage.setItem('pdfStoreItems', JSON.stringify(items));
+}
+
+function renderPdfStoreGrid() {
+  const grid = document.getElementById('pdf-store-grid');
+  if (!grid) return;
+  const items = getPdfItems();
+  if (items.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:80px; color:#86868b; font-size:1.1rem;">אין פריטים בחנות עדיין. המנהל יוסיף בקרוב!</div>';
+    return;
+  }
+  grid.innerHTML = items.map((item, i) => `
+    <div class="pdf-card" onclick="${item.link ? `window.open('${item.link}', '_blank')` : `showToast('הקישור עוד לא הוגדר')`}">
+      <div class="pdf-card-icon">${typeEmoji[item.type] || '📄'}</div>
+      <div class="pdf-card-type">${escHtml(item.type)}</div>
+      <div class="pdf-card-title">${escHtml(item.title)}</div>
+      ${item.desc ? `<div class="pdf-card-desc">${escHtml(item.desc)}</div>` : ''}
+      <div class="pdf-card-price">${escHtml(item.price || 'חינם')}</div>
+    </div>
+  `).join('');
+}
+
+function renderPdfAdminList() {
+  const list = document.getElementById('pdf-admin-list');
+  if (!list) return;
+  const items = getPdfItems();
+  if (items.length === 0) {
+    list.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:32px; color:#86868b;">אין פריטים עדיין. לחץ "הוסף פריט".</div>';
+    return;
+  }
+  list.innerHTML = items.map((item, i) => `
+    <div style="background:#f5f5f7; border-radius:12px; padding:16px; display:flex; flex-direction:column; gap:8px; position:relative;">
+      <div style="font-size:2rem; text-align:center;">${typeEmoji[item.type] || '📄'}</div>
+      <div style="font-weight:700; font-size:0.9rem; text-align:center; color:#1d1d1f;">${escHtml(item.title)}</div>
+      <div style="font-size:0.8rem; color:#86868b; text-align:center;">${escHtml(item.type)} · ${escHtml(item.price || 'חינם')}</div>
+      <div style="display:flex; gap:6px; justify-content:center; margin-top:4px;">
+        <button class="btn-primary" style="padding:4px 10px; font-size:0.78rem;" onclick="editPdfItem(${i})">ערוך</button>
+        <button class="remove-btn" style="padding:4px 10px; font-size:0.78rem; border:none; background:transparent;" onclick="deletePdfItem(${i})">מחק</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openPdfItemEditor(index = null) {
+  document.getElementById('pdf-item-editor').classList.remove('hidden');
+  if (index !== null) {
+    const items = getPdfItems();
+    const item = items[index];
+    document.getElementById('pdf-edit-id').value = index;
+    document.getElementById('pdf-edit-title').value = item.title || '';
+    document.getElementById('pdf-edit-desc').value = item.desc || '';
+    document.getElementById('pdf-edit-type').value = item.type || 'PDF';
+    document.getElementById('pdf-edit-price').value = item.price || '';
+    document.getElementById('pdf-edit-link').value = item.link || '';
+  } else {
+    document.getElementById('pdf-edit-id').value = '';
+    document.getElementById('pdf-edit-title').value = '';
+    document.getElementById('pdf-edit-desc').value = '';
+    document.getElementById('pdf-edit-type').value = 'PDF';
+    document.getElementById('pdf-edit-price').value = '';
+    document.getElementById('pdf-edit-link').value = '';
+  }
+  document.getElementById('pdf-item-editor').scrollIntoView({ behavior: 'smooth' });
+}
+
+function editPdfItem(index) { openPdfItemEditor(index); }
+
+function savePdfItem() {
+  const title = document.getElementById('pdf-edit-title').value.trim();
+  if (!title) { showToast('יש להזין שם פריט'); return; }
+  const items = getPdfItems();
+  const idVal = document.getElementById('pdf-edit-id').value;
+  const newItem = {
+    title,
+    desc: document.getElementById('pdf-edit-desc').value,
+    type: document.getElementById('pdf-edit-type').value,
+    price: document.getElementById('pdf-edit-price').value,
+    link: document.getElementById('pdf-edit-link').value,
+  };
+  if (idVal !== '') {
+    items[parseInt(idVal)] = newItem;
+  } else {
+    items.push(newItem);
+  }
+  savePdfItems(items);
+  renderPdfAdminList();
+  renderPdfStoreGrid();
+  document.getElementById('pdf-item-editor').classList.add('hidden');
+  showToast('הפריט נשמר!');
+}
+
+function deletePdfItem(index) {
+  if (confirm('למחוק פריט זה?')) {
+    const items = getPdfItems();
+    items.splice(index, 1);
+    savePdfItems(items);
+    renderPdfAdminList();
+    renderPdfStoreGrid();
+    showToast('הפריט נמחק');
+  }
+}
+
+
 function trackVisit() {
   // Total visits
   const total = parseInt(localStorage.getItem('visitTotal') || '0') + 1;
