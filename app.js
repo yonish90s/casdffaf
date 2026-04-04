@@ -966,5 +966,22 @@ function submitContactForm(e) {
   }
 }
 
+// ========== THEME LOGIC ==========
+function initTheme() {
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark-theme');
+  }
+}
+
+function toggleTheme() {
+  const body = document.body;
+  body.classList.toggle('dark-theme');
+  const isDark = body.classList.contains('dark-theme');
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  showToast(isDark ? '🌙 מצב כהה הופעל' : '☀️ מצב בהיר הופעל');
+}
+
 // ========== INIT ==========
+initTheme();
 showPage('home');

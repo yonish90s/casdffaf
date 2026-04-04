@@ -37,6 +37,97 @@
   --transition-bounce: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* ========== DARK THEME OVERRIDES (Ultra Premium) ========== */
+body.dark-theme {
+  --bg-main: #000000;
+  --bg-glass: rgba(28, 28, 30, 0.8);
+  --bg-glass-hover: rgba(44, 44, 46, 0.9);
+  
+  --border-subtle: rgba(255, 255, 255, 0.1);
+  --border-glow: rgba(0, 113, 227, 0.3);
+  
+  --text-main: #f5f5f7;
+  --text-muted: #a1a1a6;
+  --text-dim: #86868b;
+  
+  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-theme .navbar-apple {
+  background: var(--bg-glass);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+body.dark-theme .apple-nav-item {
+  color: var(--text-main);
+}
+
+body.dark-theme .sidebar-card,
+body.dark-theme .modal-content,
+body.dark-theme .product-detail,
+body.dark-theme .sidebar-ad,
+body.dark-theme .admin-sidebar,
+body.dark-theme .admin-content,
+body.dark-theme .edit-article-container,
+body.dark-theme .message-view-modal .modal-content {
+  background: #1c1c1e !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: var(--text-main) !important;
+}
+
+body.dark-theme .admin-input,
+body.dark-theme select,
+body.dark-theme input {
+  background: #2c2c2e !important;
+  border-color: #3a3a3c !important;
+  color: #fff !important;
+}
+
+body.dark-theme .top-news-card {
+  background: #1c1c1e;
+}
+
+body.dark-theme .news-card {
+  background: #1c1c1e;
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-theme .apple-footer {
+  background: #1c1c1e;
+  border-top: 1px solid var(--border-subtle);
+}
+
+body.dark-theme #theme-toggle {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-theme .time-slot:not(.booked) {
+  background: #2c2c2e !important;
+  color: #fff !important;
+  border-color: #3a3a3c !important;
+}
+
+body.dark-theme .time-slot.booked {
+  background: #1c1c1e !important;
+  color: #444 !important;
+  border-color: #222 !important;
+}
+
+body.dark-theme .chip {
+  background: #2c2c2e;
+  border-color: #3a3a3c;
+  color: #fff;
+}
+
+body.dark-theme .pdp-thumb {
+  background: #2c2c2e;
+  border-color: #3a3a3c;
+}
+
+body.dark-theme .pdp-thumb.active {
+  border-color: var(--primary);
+}
+
 html {
   scroll-behavior: smooth;
 }
