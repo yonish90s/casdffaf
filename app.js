@@ -11,9 +11,33 @@ const defaultNewsArticles = [
   { id: 8, title: 'טלגרם מציגה: עורך טקסט מבוסס AI, שדרוג לסקרים ותמיכה בתמונות חיים', image: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=800', author: 'יאן לנגרמן', time: 'היום, 09:19', snippet: 'גרסת טלגרם החדשה כוללת חידושים בולטים הנוגעים לכלי הבינה המלאכותית ולנוחות השיתוף בפלטפורמה.', category: 'אפליקציות' }
 ];
 
+const defaultPdfStoreItems = [
+  { title: 'מדריך פייתון למתחילים', type: 'PDF', price: '₪49', desc: 'למד לתכנת מאפס עם דוגמאות מעשיות.', link: '#' },
+  { title: 'ערכת UI בסגנון אפל', type: 'קובץ', price: 'חינם', desc: 'אייקונים, פונטים ותבניות Figma נקיות.', link: '#' },
+  { title: 'קורס וידאו React 2024', type: 'סרטון', price: '₪199', desc: '15 שעות של תוכן מקצועי על פיתוח אפליקציות.', link: '#' },
+  { title: 'מערכת ניהול משימות Pro', type: 'תוכנה', price: '₪89', desc: 'תוכנה לניהול זמן ופרויקטים למקצוענים.', link: '#' },
+  { title: 'מדריך אבטחת מידע', type: 'PDF', price: '₪120', desc: 'כלים ושיטות להגנה על האתר והשרת שלך.', link: '#' },
+  { title: 'ספריית רכיבי CSS', type: 'קובץ', price: '₪29', desc: 'עשרות כפתורים, תפריטים ואנימציות מוכנות.', link: '#' },
+  { title: 'מדריך בניית אתרים ב-Vite', type: 'PDF', price: '₪35', desc: 'המדריך המקיף לפיתוח מהיר ומודרני.', link: '#' },
+  { title: 'צ\'ק ליסט קידום אתרים (SEO)', type: 'מדריך', price: 'חינם', desc: 'כל מה שצריך לעשות כדי להגיע לעמוד הראשון.', link: '#' },
+  { title: 'ערכת כלי סייבר למנהלים', type: 'כלי', price: '₪450', desc: 'חבילת כלים לניטור וניהול איומים ברשת.', link: '#' },
+  { title: 'מדריך פוטושופ למעצבים', type: 'PDF', price: '₪75', desc: 'טיפים וטריקים לעיבוד תמונה מתקדם.', link: '#' },
+  { title: 'תוכנת הקלטת מסך 4K', type: 'תוכנה', price: '₪55', desc: 'הקלטה באיכות גבוהה עם עורך וידאו מובנה.', link: '#' },
+  { title: 'מדריך השקעות בשוק ההון', type: 'PDF', price: '₪150', desc: 'הצעדים הראשונים בדרך לחופש כלכלי.', link: '#' },
+  { title: 'תבנית דף נחיתה לעסקים', type: 'קובץ', price: '₪99', desc: 'תבנית רספונסיבית הממוקדת בהמרות.', link: '#' },
+  { title: 'קורס סקיצות ב-iPad', type: 'סרטון', price: '₪130', desc: 'למד לצייר ולאייר דיגיטלית ב-Procreate.', link: '#' },
+  { title: 'מדריך קריפטו 101', type: 'PDF', price: 'חינם', desc: 'הבנה בסיסית של בלוקצ\'יין ומטבעות דיגיטליים.', link: '#' }
+];
+
+let storedPdfItems = localStorage.getItem('pdfStoreItems');
+if (!storedPdfItems) {
+  localStorage.setItem('pdfStoreItems', JSON.stringify(defaultPdfStoreItems));
+}
+
+const SERVER_URL = 'http://localhost:4242';
+
 let storedArticles = localStorage.getItem('newsArticles');
 let newsArticles = storedArticles ? JSON.parse(storedArticles) : [...defaultNewsArticles];
-
 if (!storedArticles) {
   localStorage.setItem('newsArticles', JSON.stringify(newsArticles));
 }
@@ -21,7 +45,6 @@ if (!storedArticles) {
 let nextId = newsArticles.length ? Math.max(...newsArticles.map(a => a.id)) + 1 : 1;
 let isAdmin = localStorage.getItem('isAdmin') === 'true';
 let previousPage = 'home';
-const SERVER_URL = 'http://localhost:4242';
 
 // ========== NAVIGATION ==========
 function showPage(page) {
