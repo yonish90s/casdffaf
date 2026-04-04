@@ -263,9 +263,6 @@ function renderNewsLayout(page = 1) {
         </div>
       </div>
     `).join('');
-    topGrid.style.display = '';
-  } else {
-    topGrid.style.display = 'none';
   }
 
   const feedArticles = newsArticles.filter(x => !x.isTop);
