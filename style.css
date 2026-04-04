@@ -1706,3 +1706,36 @@ body {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* ========== IPAD OPTIMIZATIONS (Tablet View) ========== */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .top-news-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px !important;
+    padding: 20px !important;
+  }
+  
+  .main-news-layout {
+    flex-direction: column !important;
+    gap: 40px !important;
+    padding: 0 40px !important;
+  }
+  
+  .news-feed {
+    width: 100% !important;
+  }
+  
+  .sidebar-ad {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  .pdf-store-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .product-detail {
+    grid-template-columns: 1fr !important;
+    padding: 40px !important;
+  }
+}
