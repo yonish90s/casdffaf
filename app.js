@@ -178,8 +178,7 @@ function initAdminDashboard() {
           <td style="white-space: nowrap;">${escHtml(m.date)}</td>
           <td><strong>${escHtml(m.name)}</strong></td>
           <td style="white-space: pre-wrap;">${escHtml(m.body).substring(0, 60)}${m.body.length > 60 ? '...' : ''}</td>
-          <td style="display: flex; gap: 8px;" onclick="event.stopPropagation()">
-            <button class="btn-primary" style="padding: 4px 12px; font-size: 0.85rem;" onclick="viewMessage(${i})">הצג</button>
+          <td onclick="event.stopPropagation()">
             <button class="remove-btn" style="padding: 4px 12px; font-size: 0.85rem; border: none; background: transparent;" onclick="deleteMessage(${i})">מחק</button>
           </td>
         </tr>

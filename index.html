@@ -251,19 +251,26 @@
   </div>
 
 <!-- MESSAGE VIEW MODAL -->
-<div id="message-view-modal" class="modal-overlay">
-  <div class="modal-content" style="max-width: 600px;">
-    <button class="modal-close" onclick="closeMessageViewModal()">✕</button>
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 24px;">
-      <div>
-        <h2 id="view-msg-name" style="margin-bottom: 4px;">שם השולח</h2>
-        <div id="view-msg-date" style="color: #86868b; font-size: 0.9rem;">תאריך</div>
-      </div>
+<div id="message-view-modal" class="modal-overlay" style="background: rgba(0,0,0,0.5);">
+  <div class="modal-content" style="position: fixed; left: 0; top: 0; bottom: 0; margin: 0; width: 450px; max-width: 100vw; border-radius: 0; display: flex; flex-direction: column; padding: 40px 32px; background: #ffffff; animation: slideInLeft 0.3s forwards; box-shadow: 10px 0 30px rgba(0,0,0,0.1);">
+    <style>
+      @keyframes slideInLeft {
+        from { transform: translateX(-100%); }
+        to { transform: translateX(0); }
+      }
+    </style>
+    <button class="modal-close" onclick="closeMessageViewModal()" style="position: absolute; top: 24px; left: 24px; background: #f5f5f7; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">✕</button>
+    
+    <div style="flex: 1; overflow-y: auto; padding-top: 20px;">
+      <h2 id="view-msg-name" style="margin-top: 10px; margin-bottom: 4px; font-size: 1.8rem; font-weight: 800;">שם השולח</h2>
+      <div id="view-msg-date" style="color: #86868b; font-size: 0.95rem; margin-bottom: 24px;">תאריך</div>
+      
+      <div id="view-msg-body" style="background: #fbfbfd; border-radius: 12px; padding: 24px; font-size: 1.1rem; line-height: 1.6; white-space: pre-wrap; margin-bottom: 40px; text-align: right; border: 1px solid var(--border-subtle); color: #1d1d1f; box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);"></div>
     </div>
-    <div id="view-msg-body" style="background: #fcfcfd; border-radius: 12px; padding: 24px; font-size: 1.1rem; line-height: 1.6; white-space: pre-wrap; margin-bottom: 32px; text-align: right; border: 1px solid var(--border-subtle); color: #1d1d1f;"></div>
-    <div style="display: flex; gap: 16px;">
-      <button class="btn-primary" onclick="closeMessageViewModal()" style="flex:1; padding: 14px;">סגור הודעה</button>
-      <button class="btn-secondary" onclick="deleteMessageFromModal()" style="color: #ef4444; border-color: #ef4444; padding: 14px 24px;">מחק הודעה</button>
+    
+    <div style="display: flex; gap: 16px; margin-top: auto; padding-top: 24px; border-top: 1px solid var(--border-subtle);">
+      <button class="btn-primary" onclick="closeMessageViewModal()" style="flex:1; padding: 16px; font-size: 1.1rem;">סגור הודעה</button>
+      <button class="btn-secondary" onclick="deleteMessageFromModal()" style="color: #ef4444; border-color: #ef4444; padding: 16px 24px; font-size: 1.1rem;">מחק</button>
     </div>
   </div>
 </div>
