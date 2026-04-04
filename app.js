@@ -247,26 +247,9 @@ const ARTICLES_PER_PAGE = 10;
 
 function renderNewsLayout(page = 1) {
   currentPage = page;
-  const topGrid = document.getElementById('top-news-grid');
   const feedList = document.getElementById('news-feed-list');
   const paginationEl = document.getElementById('news-pagination');
-  if(!topGrid || !feedList) return;
-
-  // Top 3 hero cards only on first page
-  const topArticles = newsArticles.filter(x => x.isTop).sort((a,b) => a.isTop - b.isTop);
-  if (page === 1) {
-    topGrid.innerHTML = topArticles.map(a => `
-      <div class="top-news-card" onclick="showArticle(${a.id})">
-        <div class="top-news-bg" style="background-image: url('${a.image}')"></div>
-        <div class="top-news-overlay">
-          <h3>${escHtml(a.title)}</h3>
-        </div>
-      </div>
-    `).join('');
-    topGrid.style.display = '';
-  } else {
-    topGrid.style.display = 'none';
-  }
+  if(!feedList) return;
 
   const feedArticles = newsArticles.filter(x => !x.isTop);
   const totalPages = Math.max(1, Math.ceil(feedArticles.length / ARTICLES_PER_PAGE));
