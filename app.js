@@ -550,6 +550,7 @@ function renderPdfStoreGrid() {
   `).join('');
 }
 
+let currentProductBasePrice = 0;
 let currentProductLink = '';
 function showProductDetail(index) {
   const items = getPdfItems();
@@ -558,28 +559,42 @@ function showProductDetail(index) {
   
   currentProductLink = item.link || '';
   
+  // Extract base price number
+  const priceStr = (item.price || '0').replace(/[^0-9.]/g, '');
+  currentProductBasePrice = parseFloat(priceStr) || 0;
+  
   document.getElementById('pdp-title').textContent = item.title;
   document.getElementById('pdp-price').textContent = item.price || 'חינם';
   document.getElementById('pdp-desc').textContent = item.desc || '';
   
-  // Use category stock images as placeholder images
-  const stockImages = {
-    'PDF': 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=800',
-    'תוכנה': 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800',
-    'סרטון': 'https://images.unsplash.com/photo-1492724441997-5dc865305da7?auto=format&fit=crop&q=80&w=800',
-    'קובץ': 'https://images.unsplash.com/photo-1544391490-01c6db9f5a70?auto=format&fit=crop&q=80&w=800',
-    'מדריך': 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&q=80&w=800'
+  // Reset variant chips
+  const variantContainer = document.getElementById('pdp-variant-chips');
+  if (variantContainer) {
+    variantContainer.querySelectorAll('.chip').forEach((c, idx) => {
+      c.classList.toggle('active', idx === 0);
+    });
+  }
+  
+  // Category-specific stock image IDs for better variety
+  const cidMap = {
+    'PDF': '1544716278-ca5e3f4abd8c',
+    'תוכנה': '1517694712202-14dd9538aa97',
+    'סרטון': '1492724441997-5dc865305da7',
+    'קובץ': '1544391490-01c6db9f5a70',
+    'מדריך': '1497633762265-9d179a990aa6'
   };
+  const cid = cidMap[item.type] || cidMap['PDF'];
+  const mainImgUrl = `https://images.unsplash.com/photo-${cid}?auto=format&fit=crop&q=80&w=800`;
   
   const mainImg = document.getElementById('pdp-main-image');
-  if (mainImg) mainImg.src = stockImages[item.type] || stockImages['PDF'];
+  if (mainImg) mainImg.src = mainImgUrl;
   
-  // Fill thumbnails with variations of the main image or just repeats for now
   const thumbs = document.getElementById('pdp-thumbnails');
   if (thumbs) {
-    thumbs.innerHTML = [0,1,2,3].map(n => `
-      <div class="pdp-thumb ${n===0?'active':''}" onclick="updatePdpImage(this)">
-        <img src="${mainImg.src}" />
+    // Generate 4 thumbnails total
+    thumbs.innerHTML = [1, 2, 3, 4].map((n, idx) => `
+      <div class="pdp-thumb ${idx === 0 ? 'active' : ''}" onclick="updatePdpImage(this)">
+        <img src="${mainImgUrl}&sig=${n}" />
       </div>
     `).join('');
   }
@@ -592,7 +607,19 @@ function updatePdpImage(el) {
   document.querySelectorAll('.pdp-thumb').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   const mainImg = document.getElementById('pdp-main-image');
-  if (mainImg) mainImg.src = el.querySelector('img').src;
+  const thumbImg = el.querySelector('img');
+  if (mainImg && thumbImg) mainImg.src = thumbImg.src;
+}
+
+function updatePdpVariant(el, multiplier) {
+  document.querySelectorAll('#pdp-variant-chips .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  
+  const totalPrice = Math.round(currentProductBasePrice * multiplier * 100) / 100;
+  const priceEl = document.getElementById('pdp-price');
+  if (priceEl) {
+    priceEl.textContent = totalPrice > 0 ? `₪${totalPrice.toLocaleString()}` : 'חינם';
+  }
 }
 
 function handleDownload() {

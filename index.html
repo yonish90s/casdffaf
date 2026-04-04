@@ -115,10 +115,10 @@
 
       <div class="pdp-variants">
         <div style="font-weight:700; margin-bottom:12px;">בחר סוג:</div>
-        <div class="variant-chips">
-          <div class="chip active">יחידה אחת</div>
-          <div class="chip">זוג</div>
-          <div class="chip">רביעייה (מומלץ)</div>
+        <div class="variant-chips" id="pdp-variant-chips">
+          <div class="chip active" onclick="updatePdpVariant(this, 1)">יחידה אחת</div>
+          <div class="chip" onclick="updatePdpVariant(this, 1.8)">זוג</div>
+          <div class="chip" onclick="updatePdpVariant(this, 3.2)">רביעייה (מומלץ)</div>
         </div>
       </div>
 
