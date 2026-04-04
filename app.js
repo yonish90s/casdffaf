@@ -130,6 +130,45 @@ function closeBookingModal() {
   document.getElementById('booking-modal').classList.remove('active');
 }
 
+function submitBookingDirect() {
+  const name = document.getElementById('book-name-direct').value;
+  const phone = document.getElementById('book-phone-direct').value;
+  const request = document.getElementById('book-request-direct').value;
+  const day = document.getElementById('book-day').value;
+  
+  if (!selectedTime) {
+    showToast('❌ נא לבחור שעה פנויה');
+    return;
+  }
+  if (!name || !phone) {
+    showToast('❌ נא למלא שם וטלפון');
+    return;
+  }
+
+  const appt = {
+    id: Date.now(),
+    name,
+    phone,
+    request,
+    day,
+    time: selectedTime,
+    created: new Date().toLocaleString('he-IL')
+  };
+  
+  const appts = JSON.parse(localStorage.getItem('appointments') || '[]');
+  appts.push(appt);
+  localStorage.setItem('appointments', JSON.stringify(appts));
+  
+  showToast('✅ התור נקבע בהצלחה!');
+  
+  // Clear direct inputs
+  document.getElementById('book-name-direct').value = '';
+  document.getElementById('book-phone-direct').value = '';
+  document.getElementById('book-request-direct').value = '';
+  
+  initBookingWidget(); // Refresh grid to remove booked slot
+}
+
 function submitBooking(e) {
   e.preventDefault();
   const name = document.getElementById('book-name').value;

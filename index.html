@@ -56,16 +56,43 @@
 <!-- APPOINTMENTS PAGE -->
 <div id="page-appointments" class="page" style="max-width: 800px; padding-top: 40px; margin: 0 auto;">
   <div class="sidebar-card" style="background:#fff; border-radius:18px; border:1px solid var(--border-subtle); padding:40px; box-shadow:var(--shadow-soft);">
-    <h2 style="font-size:2rem; font-weight:800; margin-bottom:12px; display:flex; align-items:center; gap:12px;">📅 קביעת תור</h2>
-    <p style="color: #86868b; margin-bottom: 24px; font-size: 1rem;">מעדיף לדבר איתנו? התקשר: <a href="tel:050-000-0000" style="color: #0071e3; font-weight: 700; text-decoration: none;">050-000-0000</a></p>
+    <h2 style="font-size:2rem; font-weight:800; margin-bottom:32px; display:flex; align-items:center; gap:12px;">📅 קביעת תור</h2>
+    
     <div class="booking-widget">
-      <label style="display:block; font-size:1rem; font-weight:700; color:#86868b; margin-bottom:8px;">בחר יום:</label>
-      <select id="book-day" onchange="initBookingWidget()" style="width:100%; margin-bottom:24px; padding:16px; border-radius:12px; border:1px solid #d2d2d7; font-size: 1rem;">
-        <option>ראשון</option><option>שני</option><option>שלישי</option><option>רביעי</option><option>חמישי</option><option>שישי</option><option>שבת</option>
-      </select>
-      <label style="display:block; font-size:1rem; font-weight:700; color:#86868b; margin-bottom:8px;">בחר שעה:</label>
-      <div id="book-time-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(100px, 1fr)); gap:12px; margin-bottom:32px;"></div>
-      <button class="btn-primary" style="width:100%; padding: 16px; font-size: 1.1rem;" onclick="openBookingModal()">המשך לקביעה</button>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:24px;">
+        <div style="text-align:right;">
+          <label style="display:block; font-size:0.85rem; font-weight:700; color:#86868b; margin-bottom:8px;">1. בחר יום:</label>
+          <select id="book-day" onchange="initBookingWidget()" style="width:100%; padding:14px; border-radius:12px; border:1px solid #d2d2d7; font-size: 1rem; outline:none; background:#fbfbfd;">
+            <option>ראשון</option><option>שני</option><option>שלישי</option><option>רביעי</option><option>חמישי</option><option>שישי</option><option>שבת</option>
+          </select>
+        </div>
+        <div style="text-align:right;">
+          <label style="display:block; font-size:0.85rem; font-weight:700; color:#86868b; margin-bottom:8px;">2. בחר שעה:</label>
+          <div id="book-time-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(80px, 1fr)); gap:8px; max-height:100px; overflow-y:auto; padding:4px;"></div>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid #f2f2f2; padding-top:32px; margin-top:32px;">
+        <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:20px; color:#1d1d1f;">3. פרטי זיהוי וחזרה:</h3>
+        
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px;">
+          <div style="text-align: right;">
+            <label style="display:block; font-size:0.9rem; font-weight:700; margin-bottom:8px; color: #1d1d1f;">שם מלא</label>
+            <input type="text" id="book-name-direct" required class="admin-input" placeholder="הכנס את שמך" style="width:100%; border-radius:12px; border:1px solid #d2d2d7; padding:12px;">
+          </div>
+          <div style="text-align: right;">
+            <label style="display:block; font-size:0.9rem; font-weight:700; margin-bottom:8px; color: #1d1d1f;">מספר טלפון</label>
+            <input type="tel" id="book-phone-direct" required class="admin-input" placeholder="הכנס מספר טלפון לחזרה" style="width:100%; border-radius:12px; border:1px solid #d2d2d7; padding:12px;">
+          </div>
+        </div>
+        
+        <div style="margin-bottom: 32px; text-align: right;">
+          <label style="display:block; font-size:0.9rem; font-weight:700; margin-bottom:8px; color: #1d1d1f;">בקשה מיוחדת (אופציונלי)</label>
+          <textarea id="book-request-direct" class="admin-input" placeholder="מה תרצה שנדע?..." style="width:100%; border-radius:12px; border:1px solid #d2d2d7; padding:12px; font-family:inherit; min-height:80px; resize:none; outline:none;"></textarea>
+        </div>
+        
+        <button class="btn-primary" style="width:100%; padding: 18px; font-size: 1.2rem; font-weight:700; height:auto; border-radius:14px;" onclick="submitBookingDirect()">✅ קבע תור עכשיו</button>
+      </div>
     </div>
   </div>
 </div>
