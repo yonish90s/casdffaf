@@ -21,6 +21,7 @@
     <nav class="apple-nav-links">
       <button onclick="showPage('store')" class="apple-nav-item">חנות תוכנות</button>
       <button onclick="showPage('pdf-store')" class="apple-nav-item">חנות וקבצי PDF</button>
+      <button onclick="showPage('appointments')" class="apple-nav-item">קביעת תור</button>
       <button onclick="showPage('home')" class="apple-nav-item">כתבות</button>
     </nav>
   </div>
@@ -33,28 +34,14 @@
     <!-- Populated by JS -->
   </section>
 
-
-
-  <div class="main-news-layout" style="margin-top: 40px; display: grid; grid-template-columns: 280px 1fr 280px; gap: 32px;">
-    <!-- RIGHT SIDEBAR: Appointments -->
-    <aside class="news-sidebar-right">
-      <div class="sidebar-card" style="background:#fff; border-radius:18px; border:1px solid var(--border-subtle); padding:24px; box-shadow:var(--shadow-soft);">
-        <h3 style="font-size:1.3rem; font-weight:800; margin-bottom:16px; display:flex; align-items:center; gap:8px;">📅 קביעת תור</h3>
-        <div class="booking-widget">
-          <label style="display:block; font-size:0.85rem; font-weight:700; color:#86868b; margin-bottom:8px;">בחר יום:</label>
-          <select id="book-day" style="width:100%; margin-bottom:16px; padding:12px; border-radius:12px; border:1px solid #d2d2d7;">
-            <option>ראשון</option><option>שני</option><option>שלישי</option><option>רביעי</option><option>חמישי</option><option>שישי</option><option>שבת</option>
-          </select>
-          <label style="display:block; font-size:0.85rem; font-weight:700; color:#86868b; margin-bottom:8px;">בחר שעה:</label>
-          <div id="book-time-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:20px; max-height:150px; overflow-y:auto;"></div>
-          <button class="btn-primary" style="width:100%;" onclick="openBookingModal()">המשך לקביעה</button>
-        </div>
+  <div class="main-news-layout" style="margin-top: 40px; display: flex; gap: 40px;">
+    
+    <div class="news-feed" style="flex:1; min-width: 0;">
+      <div id="news-feed-list">
+        <!-- Populated by JS -->
       </div>
-    </aside>
-    <div class="news-feed" id="news-feed-list">
-      <!-- Populated by JS -->
+      <div id="news-pagination" style="display:flex; justify-content:center; gap:8px; margin-top: 32px; flex-wrap:wrap;"></div>
     </div>
-    <div id="news-pagination" style="display:flex; justify-content:center; gap:8px; margin-top: 32px; flex-wrap:wrap;"></div>
     
     <aside class="news-sidebar">
       <div class="sidebar-ad" style="background:#fff; border-radius:16px; border:1px solid var(--border-subtle); padding:24px; text-align:center; box-shadow:var(--shadow-soft); display:flex; flex-direction:column; min-height: 250px; position: sticky; top: 100px;">
@@ -63,9 +50,22 @@
         <button class="btn-primary" style="margin-top:auto; width:100%; border-radius:980px;" onclick="openContactModal()">פרסם אצלנו למטה</button>
       </div>
     </aside>
-    
+  </div>
+</div>
 
-
+<!-- APPOINTMENTS PAGE -->
+<div id="page-appointments" class="page" style="max-width: 800px; padding-top: 40px; margin: 0 auto;">
+  <div class="sidebar-card" style="background:#fff; border-radius:18px; border:1px solid var(--border-subtle); padding:40px; box-shadow:var(--shadow-soft);">
+    <h2 style="font-size:2rem; font-weight:800; margin-bottom:24px; display:flex; align-items:center; gap:12px;">📅 קביעת תור</h2>
+    <div class="booking-widget">
+      <label style="display:block; font-size:1rem; font-weight:700; color:#86868b; margin-bottom:8px;">בחר יום:</label>
+      <select id="book-day" style="width:100%; margin-bottom:24px; padding:16px; border-radius:12px; border:1px solid #d2d2d7; font-size: 1rem;">
+        <option>ראשון</option><option>שני</option><option>שלישי</option><option>רביעי</option><option>חמישי</option><option>שישי</option><option>שבת</option>
+      </select>
+      <label style="display:block; font-size:1rem; font-weight:700; color:#86868b; margin-bottom:8px;">בחר שעה:</label>
+      <div id="book-time-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(100px, 1fr)); gap:12px; margin-bottom:32px;"></div>
+      <button class="btn-primary" style="width:100%; padding: 16px; font-size: 1.1rem;" onclick="openBookingModal()">המשך לקביעה</button>
+    </div>
   </div>
 </div>
 

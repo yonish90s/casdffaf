@@ -60,12 +60,10 @@ function showPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(`page-${page}`).classList.add('active');
 
-  if (page === 'home') {
-    renderNewsLayout();
-    initBookingWidget();
-  }
+  if (page === 'home') renderNewsLayout();
   if (page === 'store') renderStoreLayout();
   if (page === 'pdf-store') renderPdfStoreGrid();
+  if (page === 'appointments') initBookingWidget();
 
   if (page === 'admin') {
     if (!isAdmin) {
