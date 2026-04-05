@@ -58,12 +58,14 @@ let previousPage = 'home';
 // ========== NAVIGATION ==========
 function showPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(`page-${page}`).classList.add('active');
+  const targetPage = document.getElementById(`page-${page}`);
+  if (targetPage) targetPage.classList.add('active');
 
   if (page === 'home') renderNewsLayout();
   if (page === 'store') renderStoreLayout();
   if (page === 'pdf-store') renderPdfStoreGrid();
   if (page === 'appointments') initBookingWidget();
+  if (page === 'viewer-photos') renderViewerPhotosGrid();
 
   if (page === 'admin') {
     if (!isAdmin) {
@@ -73,6 +75,7 @@ function showPage(page) {
     initAdminDashboard();
   }
 }
+
 
 // ========== BOOKING LOGIC ==========
 // ========== BOOKING LOGIC ==========
@@ -411,14 +414,18 @@ function initAdminDashboard() {
 
 function switchAdminTab(tabId, btnEl) {
   document.querySelectorAll('.admin-section').forEach(el => el.style.display = 'none');
-  document.getElementById('admin-section-' + tabId).style.display = 'block';
+  const target = document.getElementById('admin-section-' + tabId);
+  if (target) target.style.display = 'block';
+  
   if (btnEl) {
     document.querySelectorAll('.admin-nav-btn').forEach(btn => btn.classList.remove('active'));
     btnEl.classList.add('active');
   }
   if (tabId === 'calendar') renderAdminCalendar();
   if (tabId === 'pdfstore') renderPdfAdminList();
+  if (tabId === 'viewer-photos') renderPhotoAdminList();
 }
+
 
 function deleteMessage(index) {
   if (confirm('האם אתה בטוח שברצונך למחוק הודעה זו?')) {
@@ -1034,3 +1041,135 @@ function toggleTheme() {
 // ========== INIT ==========
 initTheme();
 showPage('home');
+
+// ========== VIEWER PHOTOS LOGIC ==========
+function getViewerPhotos() {
+  return JSON.parse(localStorage.getItem('viewerPhotos') || '[]');
+}
+
+function saveViewerPhotos(photos) {
+  localStorage.setItem('viewerPhotos', JSON.stringify(photos));
+}
+
+function renderViewerPhotosGrid() {
+  const grid = document.getElementById('viewer-photos-grid');
+  if (!grid) return;
+  const photos = getViewerPhotos();
+  if (photos.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:80px; color:#86868b; font-size:1.1rem;">אין תמונות גולשים עדיין. המנהל יעלה בקרוב!</div>';
+    return;
+  }
+  grid.innerHTML = photos.map((p, i) => `
+    <div class="pdf-card" onclick="showPhotoDetail(${i})" style="overflow:hidden; padding:0; border:none; box-shadow:var(--shadow-soft); transition:transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+      <div style="width:100%; height:280px; overflow:hidden;">
+        <img src="${p.img}" style="width:100%; height:100%; object-fit:cover; transition:transform 0.5s;" />
+      </div>
+      <div style="padding:16px; background:#fff;">
+        <div class="pdf-card-title" style="margin:0; text-align:center; font-size:0.95rem;">${escHtml(p.title || 'תמונת גולש')}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function showPhotoDetail(index) {
+  const photos = getViewerPhotos();
+  const p = photos[index];
+  if (!p) return;
+  
+  document.getElementById('photo-pdp-title').textContent = p.title || 'תמונת גולש';
+  document.getElementById('photo-pdp-telegram').textContent = p.telegram || 'לא צוין';
+  document.getElementById('photo-pdp-age').textContent = p.age || 'לא צוין';
+  document.getElementById('photo-pdp-main-image').src = p.img;
+  
+  showPage('photo-detail');
+}
+
+// Admin logic for photos
+function renderPhotoAdminList() {
+  const list = document.getElementById('photo-admin-list');
+  if (!list) return;
+  const photos = getViewerPhotos();
+  if (photos.length === 0) {
+    list.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:32px; color:#86868b;">אין תמונות עדיין.</div>';
+    return;
+  }
+  list.innerHTML = photos.map((p, i) => `
+    <div style="background:#f5f5f7; border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px;">
+      <img src="${p.img}" style="width:100%; height:100px; object-fit:cover; border-radius:8px;" />
+      <div style="font-weight:700; font-size:0.8rem; text-align:center; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escHtml(p.title)}</div>
+      <div style="display:flex; gap:4px; justify-content:center;">
+        <button class="btn-primary" style="padding:4px 8px; font-size:0.75rem;" onclick="editPhoto(${i})">ערוך</button>
+        <button class="remove-btn" style="padding:4px 8px; font-size:0.75rem; border:none; background:transparent;" onclick="deletePhoto(${i})">מחק</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openPhotoEditor(index = null) {
+  const editor = document.getElementById('photo-editor');
+  if(editor) editor.classList.remove('hidden');
+  if (index !== null) {
+    const photos = getViewerPhotos();
+    const p = photos[index];
+    document.getElementById('photo-edit-id').value = index;
+    document.getElementById('photo-edit-title').value = p.title || '';
+    document.getElementById('photo-edit-telegram').value = p.telegram || '';
+    document.getElementById('photo-edit-age').value = p.age || '';
+    document.getElementById('photo-edit-img').value = p.img || '';
+  } else {
+    document.getElementById('photo-edit-id').value = '';
+    document.getElementById('photo-edit-title').value = '';
+    document.getElementById('photo-edit-telegram').value = '';
+    document.getElementById('photo-edit-age').value = '';
+    document.getElementById('photo-edit-img').value = '';
+  }
+}
+
+function handleViewerPhotoUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  showToast('מעבד תמונה...');
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const imgStr = e.target.result;
+    document.getElementById('photo-edit-img').value = imgStr;
+    showToast('תמונה עלתה!');
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveViewerPhoto() {
+  const idValue = document.getElementById('photo-edit-id').value;
+  const photo = {
+    title: document.getElementById('photo-edit-title').value,
+    telegram: document.getElementById('photo-edit-telegram').value,
+    age: document.getElementById('photo-edit-age').value,
+    img: document.getElementById('photo-edit-img').value
+  };
+  if (!photo.img) { showToast('חובה להעלות תמונה'); return; }
+  
+  const photos = getViewerPhotos();
+  if (idValue !== '') {
+    photos[parseInt(idValue)] = photo;
+    showToast('תמונה עודכנה!');
+  } else {
+    photos.unshift(photo);
+    showToast('תמונה נוספה!');
+  }
+  saveViewerPhotos(photos);
+  renderPhotoAdminList();
+  renderViewerPhotosGrid();
+  document.getElementById('photo-editor').classList.add('hidden');
+}
+
+function editPhoto(i) { openPhotoEditor(i); }
+function deletePhoto(i) {
+  if (confirm('למחוק תמונה זו?')) {
+    const photos = getViewerPhotos();
+    photos.splice(i, 1);
+    saveViewerPhotos(photos);
+    renderPhotoAdminList();
+    renderViewerPhotosGrid();
+    showToast('תמונה נמחקה');
+  }
+}
