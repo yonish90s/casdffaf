@@ -1056,8 +1056,13 @@ showPage('home');
 
 // ========== VIEWER PHOTOS LOGIC ==========
 function getViewerPhotos() {
-  return JSON.parse(localStorage.getItem('viewerPhotos') || '[]');
+  const data = localStorage.getItem('viewerPhotos');
+  if (!data || JSON.parse(data).length === 0) {
+    return defaultViewerPhotos; // Always show defaults if empty
+  }
+  return JSON.parse(data);
 }
+
 
 function saveViewerPhotos(photos) {
   localStorage.setItem('viewerPhotos', JSON.stringify(photos));
