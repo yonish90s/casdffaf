@@ -1455,6 +1455,42 @@ body {
   border-radius: 10px;
 }
 
+body.dark-theme .product-detail,
+body.dark-theme .product-pdp-container,
+body.dark-theme #page-photo-detail div[style*="background: #f5f5f7"] {
+  background: #1c1c1e !important;
+  color: #f5f5f7 !important;
+  border-color: #38383a !important;
+}
+
+body.dark-theme .main-image-wrapper {
+  background: #000 !important;
+  border-color: #38383a !important;
+}
+
+body.dark-theme .admin-sidebar,
+body.dark-theme .admin-content,
+body.dark-theme .admin-section {
+  background: #1c1c1e !important;
+  color: #f5f5f7 !important;
+}
+
+body.dark-theme .pdf-card {
+  background: #2c2c2e !important;
+  border-color: #38383a !important;
+}
+
+body.dark-theme .pdp-title,
+body.dark-theme .pdp-description,
+body.dark-theme #photo-pdp-telegram,
+body.dark-theme #photo-pdp-age {
+  color: #f5f5f7 !important;
+}
+
+body.dark-theme .pdp-price {
+  color: #0a84ff !important;
+}
+
 /* ========== IPHONE & MOBILE OPTIMIZATIONS (Premium) ========== */
 @media (max-width: 768px) {
   /* Global Adjustments */
