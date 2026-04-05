@@ -350,7 +350,39 @@
             </select>
             <input type="text" id="pdf-edit-price" placeholder="מחיר (למשל: חינם / ₪29.90)" class="admin-input">
             
-            <div style="display:flex; flex-direction:column; gap:8px;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <label style="font-size:0.85rem; font-weight:700; color:#1d1d1f;">תמונת גלריה 1 (ראשית):</label>
+                <div style="display:flex; gap:6px;">
+                  <input type="text" id="pdf-edit-img1" placeholder="URL תמונה" class="admin-input" style="flex:1;">
+                  <button type="button" class="btn-secondary" onclick="triggerImgUpload(1)" style="padding:0 12px; font-size:0.8rem;">🖼️</button>
+                </div>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <label style="font-size:0.85rem; font-weight:700; color:#1d1d1f;">תמונת גלריה 2:</label>
+                <div style="display:flex; gap:6px;">
+                  <input type="text" id="pdf-edit-img2" placeholder="URL תמונה" class="admin-input" style="flex:1;">
+                  <button type="button" class="btn-secondary" onclick="triggerImgUpload(2)" style="padding:0 12px; font-size:0.8rem;">🖼️</button>
+                </div>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <label style="font-size:0.85rem; font-weight:700; color:#1d1d1f;">תמונת גלריה 3:</label>
+                <div style="display:flex; gap:6px;">
+                  <input type="text" id="pdf-edit-img3" placeholder="URL תמונה" class="admin-input" style="flex:1;">
+                  <button type="button" class="btn-secondary" onclick="triggerImgUpload(3)" style="padding:0 12px; font-size:0.8rem;">🖼️</button>
+                </div>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <label style="font-size:0.85rem; font-weight:700; color:#1d1d1f;">תמונת גלריה 4:</label>
+                <div style="display:flex; gap:6px;">
+                  <input type="text" id="pdf-edit-img4" placeholder="URL תמונה" class="admin-input" style="flex:1;">
+                  <button type="button" class="btn-secondary" onclick="triggerImgUpload(4)" style="padding:0 12px; font-size:0.8rem;">🖼️</button>
+                </div>
+              </div>
+              <input type="file" id="pdf-image-upload-hidden" accept="image/*" style="display:none;" onchange="handleProductImageUpload(event)">
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
               <label style="font-size:0.85rem; font-weight:600; color:#1d1d1f;">קובץ PDF / קישור להורדה:</label>
               <div style="display:flex; gap:8px; align-items:center;">
                 <input type="text" id="pdf-edit-link" placeholder="קישור להורדה (Google Drive וכו')" class="admin-input" style="flex:1;">

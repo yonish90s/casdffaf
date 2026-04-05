@@ -702,15 +702,21 @@ function renderPdfStoreGrid() {
     grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:80px; color:#86868b; font-size:1.1rem;">אין פריטים בחנות עדיין. המנהל יוסיף בקרוב!</div>';
     return;
   }
-  grid.innerHTML = items.map((item, i) => `
-    <div class="pdf-card" onclick="showProductDetail(${i})">
-      <div class="pdf-card-icon">${typeEmoji[item.type] || '📄'}</div>
-      <div class="pdf-card-type">${escHtml(item.type)}</div>
-      <div class="pdf-card-title">${escHtml(item.title)}</div>
-      ${item.desc ? `<div class="pdf-card-desc">${escHtml(item.desc)}</div>` : ''}
-      <div class="pdf-card-price">${escHtml(item.price || 'חינם')}</div>
-    </div>
-  `).join('');
+  grid.innerHTML = items.map((item, i) => {
+    const icon = typeEmoji[item.type] || '📄';
+    const mainImg = (item.images && item.images.length > 0) ? item.images[0] : '';
+    
+    return `
+      <div class="pdf-card" onclick="showProductDetail(${i})">
+        ${mainImg ? `<img src="${mainImg}" style="width:100%; height:160px; object-fit:cover; border-radius:12px; margin-bottom:12px;" />` : 
+                    `<div class="pdf-card-icon">${icon}</div>`}
+        <div class="pdf-card-type">${escHtml(item.type)}</div>
+        <div class="pdf-card-title">${escHtml(item.title)}</div>
+        ${item.desc ? `<div class="pdf-card-desc">${escHtml(item.desc)}</div>` : ''}
+        <div class="pdf-card-price">${escHtml(item.price || 'חינם')}</div>
+      </div>
+    `;
+  }).join('');
 }
 
 let currentProductBasePrice = 0;
@@ -721,14 +727,32 @@ function showProductDetail(index) {
   if (!item) return;
   
   currentProductLink = item.link || '';
-  
-  // Extract base price number
   const priceStr = (item.price || '0').replace(/[^0-9.]/g, '');
   currentProductBasePrice = parseFloat(priceStr) || 0;
   
   document.getElementById('pdp-title').textContent = item.title;
   document.getElementById('pdp-price').textContent = item.price || 'חינם';
   document.getElementById('pdp-desc').textContent = item.desc || '';
+  
+  // Gallery Logic
+  const images = item.images || [];
+  const mainImg = document.getElementById('pdp-main-image');
+  const thumbList = document.getElementById('pdp-thumbnails');
+  
+  if (images.length > 0) {
+    mainImg.src = images[0];
+    thumbList.innerHTML = images.map((img, i) => `
+      <div class="pdp-thumb ${i === 0 ? 'active' : ''}" onclick="changePdpImage(this, '${img}')">
+        <img src="${img}" alt="Thumbnail ${i+1}">
+      </div>
+    `).join('');
+  } else {
+    const cidMap = { 'PDF': '1544716278-ca5e3f4abd8c', 'תוכנה': '1517694712202-14dd9538aa97', 'סרטון': '1492724441997-5dc865305da7', 'קובץ': '1544391490-01c6db9f5a70', 'מדריך': '1497633762265-9d179a990aa6' };
+    const cid = cidMap[item.type] || cidMap['PDF'];
+    const fallback = `https://images.unsplash.com/photo-${cid}?auto=format&fit=crop&q=80&w=800`;
+    mainImg.src = fallback;
+    thumbList.innerHTML = `<div class="pdp-thumb active"><img src="${fallback}"></div>`;
+  }
   
   // Reset variant chips
   const variantContainer = document.getElementById('pdp-variant-chips');
@@ -738,40 +762,13 @@ function showProductDetail(index) {
     });
   }
   
-  // Category-specific stock image IDs for better variety
-  const cidMap = {
-    'PDF': '1544716278-ca5e3f4abd8c',
-    'תוכנה': '1517694712202-14dd9538aa97',
-    'סרטון': '1492724441997-5dc865305da7',
-    'קובץ': '1544391490-01c6db9f5a70',
-    'מדריך': '1497633762265-9d179a990aa6'
-  };
-  const cid = cidMap[item.type] || cidMap['PDF'];
-  const mainImgUrl = `https://images.unsplash.com/photo-${cid}?auto=format&fit=crop&q=80&w=800`;
-  
-  const mainImg = document.getElementById('pdp-main-image');
-  if (mainImg) mainImg.src = mainImgUrl;
-  
-  const thumbs = document.getElementById('pdp-thumbnails');
-  if (thumbs) {
-    // Generate 4 thumbnails total
-    thumbs.innerHTML = [1, 2, 3, 4].map((n, idx) => `
-      <div class="pdp-thumb ${idx === 0 ? 'active' : ''}" onclick="updatePdpImage(this)">
-        <img src="${mainImgUrl}&sig=${n}" />
-      </div>
-    `).join('');
-  }
-  
   showPage('product-detail');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function updatePdpImage(el) {
+function changePdpImage(el, src) {
+  document.getElementById('pdp-main-image').src = src;
   document.querySelectorAll('.pdp-thumb').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
-  const mainImg = document.getElementById('pdp-main-image');
-  const thumbImg = el.querySelector('img');
-  if (mainImg && thumbImg) mainImg.src = thumbImg.src;
 }
 
 function updatePdpVariant(el, multiplier) {
@@ -825,6 +822,12 @@ function openPdfItemEditor(index = null) {
     document.getElementById('pdf-edit-type').value = item.type || 'PDF';
     document.getElementById('pdf-edit-price').value = item.price || '';
     document.getElementById('pdf-edit-link').value = item.link || '';
+    
+    // Load images
+    for (let i = 1; i <= 4; i++) {
+       const img = (item.images && item.images[i-1]) ? item.images[i-1] : '';
+       document.getElementById(`pdf-edit-img${i}`).value = img;
+    }
   } else {
     document.getElementById('pdf-edit-id').value = '';
     document.getElementById('pdf-edit-title').value = '';
@@ -832,6 +835,9 @@ function openPdfItemEditor(index = null) {
     document.getElementById('pdf-edit-type').value = 'PDF';
     document.getElementById('pdf-edit-price').value = '';
     document.getElementById('pdf-edit-link').value = '';
+    for (let i = 1; i <= 4; i++) {
+       document.getElementById(`pdf-edit-img${i}`).value = '';
+    }
   }
   const statusEl = document.getElementById('pdf-upload-status');
   if (statusEl) statusEl.style.display = 'none';
@@ -875,26 +881,72 @@ function editPdfItem(index) { openPdfItemEditor(index); }
 function savePdfItem() {
   const title = document.getElementById('pdf-edit-title').value.trim();
   if (!title) { showToast('יש להזין שם פריט'); return; }
-  const items = getPdfItems();
+  
   const idVal = document.getElementById('pdf-edit-id').value;
-  const newItem = {
+  const item = {
     title,
     desc: document.getElementById('pdf-edit-desc').value,
     type: document.getElementById('pdf-edit-type').value,
     price: document.getElementById('pdf-edit-price').value,
     link: document.getElementById('pdf-edit-link').value,
+    images: []
   };
-  if (idVal !== '') {
-    items[parseInt(idVal)] = newItem;
-  } else {
-    items.push(newItem);
+
+  for (let i = 1; i <= 4; i++) {
+    const img = document.getElementById(`pdf-edit-img${i}`).value;
+    if (img) item.images.push(img);
   }
+
+  const items = getPdfItems();
+  if (idVal !== '') {
+    items[parseInt(idVal)] = item;
+    showToast('המוצר עודכן בהצלחה');
+  } else {
+    items.unshift(item);
+    showToast('המוצר נוסף בהצלחה');
+  }
+
   savePdfItems(items);
   renderPdfAdminList();
   renderPdfStoreGrid();
   document.getElementById('pdf-item-editor').classList.add('hidden');
-  showToast('הפריט נשמר!');
 }
+
+let activeImgSlot = 1;
+function triggerImgUpload(slot) {
+  activeImgSlot = slot;
+  document.getElementById('pdf-image-upload-hidden').click();
+}
+
+function handleProductImageUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  showToast('מעבד תמונה...');
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const MAX_WIDTH = 800;
+      let width = img.width;
+      let height = img.height;
+      if (width > MAX_WIDTH) {
+        height *= MAX_WIDTH / width;
+        width = MAX_WIDTH;
+      }
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      const dataUri = canvas.toDataURL('image/jpeg', 0.8);
+      document.getElementById(`pdf-edit-img${activeImgSlot}`).value = dataUri;
+      showToast(`תמונה ${activeImgSlot} עלתה בהצלחה!`);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
 
 function deletePdfItem(index) {
   if (confirm('למחוק פריט זה?')) {
