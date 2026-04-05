@@ -1185,3 +1185,76 @@ function deletePhoto(i) {
     showToast('תמונה נמחקה');
   }
 }
+
+// ========== PUBLIC PHOTO UPLOAD ==========
+function openPublicPhotoUpload() {
+  document.getElementById('public-photo-modal').style.display = 'flex';
+}
+
+function closePublicPhotoUpload() {
+  document.getElementById('public-photo-modal').style.display = 'none';
+  document.getElementById('public-photo-title').value = '';
+  document.getElementById('public-photo-telegram').value = '';
+  document.getElementById('public-photo-age').value = '';
+  document.getElementById('public-photo-data').value = '';
+  document.getElementById('public-photo-status').style.display = 'none';
+}
+
+function handlePublicPhotoUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  showToast('מעבד תמונה...');
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const MAX_WIDTH = 1000;
+      let width = img.width;
+      let height = img.height;
+      if (width > MAX_WIDTH) {
+        height *= MAX_WIDTH / width;
+        width = MAX_WIDTH;
+      }
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      const dataUri = canvas.toDataURL('image/jpeg', 0.8);
+      document.getElementById('public-photo-data').value = dataUri;
+      document.getElementById('public-photo-status').style.display = 'block';
+      showToast('התמונה מוכנה!');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function submitPublicPhoto() {
+  const title = document.getElementById('public-photo-title').value.trim();
+  const telegram = document.getElementById('public-photo-telegram').value.trim();
+  const age = document.getElementById('public-photo-age').value.trim();
+  const imgData = document.getElementById('public-photo-data').value;
+  
+  if (!imgData) {
+    showToast('❌ חובה לבחור תמונה!');
+    return;
+  }
+  
+  const newItem = {
+    title: title || 'תמונת גולש',
+    telegram: telegram || 'לא צוין',
+    age: age || 'לא צוין',
+    img: imgData
+  };
+  
+  const photos = getViewerPhotos();
+  photos.unshift(newItem);
+  saveViewerPhotos(photos);
+  
+  renderViewerPhotosGrid();
+  renderPhotoAdminList();
+  
+  closePublicPhotoUpload();
+  showToast('🎊 התמונה שלך פורסמה בגלריה!');
+}
