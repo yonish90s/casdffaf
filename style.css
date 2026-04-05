@@ -1491,6 +1491,26 @@ body.dark-theme .pdp-price {
   color: #0a84ff !important;
 }
 
+body.dark-theme .feed-title,
+body.dark-theme .feed-snippet,
+body.dark-theme .meta-date,
+body.dark-theme .meta-sep {
+  color: #ffffff !important;
+}
+
+body.dark-theme .feed-item:hover .feed-title {
+  color: #0a84ff !important;
+}
+
+body.dark-theme .article-intro,
+body.dark-theme .article-body {
+  color: #ffffff !important;
+}
+
+body.dark-theme .sidebar-card p {
+  color: #f5f5f7 !important;
+}
+
 /* ========== IPHONE & MOBILE OPTIMIZATIONS (Premium) ========== */
 @media (max-width: 768px) {
   /* Global Adjustments */
