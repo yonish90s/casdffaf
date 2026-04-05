@@ -281,8 +281,9 @@ body {
 
 /* ========== NEWS LAYOUT ========== */
 .top-news-grid {
-  display: none !important;
-  max-width: 1400px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
   background: var(--border-subtle);
   border-bottom: 2px solid var(--border-subtle);
 }
