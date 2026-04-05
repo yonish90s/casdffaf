@@ -38,6 +38,18 @@ const defaultPdfStoreItems = [
   { title: 'מדריך בניית קהילה באינסטגרם', type: 'PDF', price: '₪60', desc: 'איך להשיג עוקבים אמיתיים ופעילים.', link: '#' }
 ];
 
+const defaultViewerPhotos = [
+  { title: 'תצפית מהחרמון', telegram: '@yoni_s', age: '24', img: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=800' },
+  { title: 'שקיעה בתל אביב', telegram: '@noa_love', age: '19', img: 'https://images.unsplash.com/photo-1544971587-b842c27f8e14?auto=format&fit=crop&q=80&w=800' },
+  { title: 'טיול לנחל דוד', telegram: '@itay_traveler', age: '31', img: 'https://images.unsplash.com/photo-1562141971-85b410787e74?auto=format&fit=crop&q=80&w=800' },
+  { title: 'קפה בבוקר ירושלמי', telegram: '@sarah_k', age: '28', img: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&q=80&w=800' }
+];
+
+let storedViewerPhotos = localStorage.getItem('viewerPhotos');
+if (!storedViewerPhotos || JSON.parse(storedViewerPhotos).length === 0) {
+  localStorage.setItem('viewerPhotos', JSON.stringify(defaultViewerPhotos));
+}
+
 let storedPdfItems = localStorage.getItem('pdfStoreItems');
 if (!storedPdfItems || JSON.parse(storedPdfItems).length === 0) {
   localStorage.setItem('pdfStoreItems', JSON.stringify(defaultPdfStoreItems));
