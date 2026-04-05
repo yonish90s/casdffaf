@@ -76,6 +76,7 @@ function showPage(page) {
   if (page === 'home') renderNewsLayout();
   if (page === 'store') renderStoreLayout();
   if (page === 'pdf-store') renderPdfStoreGrid();
+  if (page === 'comics') renderComicsGrid();
   if (page === 'appointments') initBookingWidget();
   if (page === 'viewer-photos') renderViewerPhotosGrid();
 
@@ -87,6 +88,7 @@ function showPage(page) {
     initAdminDashboard();
   }
 }
+
 
 
 // ========== BOOKING LOGIC ==========
@@ -436,7 +438,9 @@ function switchAdminTab(tabId, btnEl) {
   if (tabId === 'calendar') renderAdminCalendar();
   if (tabId === 'pdfstore') renderPdfAdminList();
   if (tabId === 'viewer-photos') renderPhotoAdminList();
+  if (tabId === 'comics') renderComicAdminList();
 }
+
 
 
 function deleteMessage(index) {
@@ -1262,4 +1266,162 @@ function submitPublicPhoto() {
   
   closePublicPhotoUpload();
   showToast('🎊 התמונה שלך פורסמה בגלריה!');
+}
+
+// ========== COMICS LOGIC ==========
+const defaultComics = [
+  { title: 'הנוקמים: המערכה האחרונה', price: '₪25', desc: 'הקומיקס המקורי של הסרט המצליח.', img: 'https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?auto=format&fit=crop&q=80&w=800', password: '123', link: '#' },
+  { title: 'באטמן: הבדיחה ההורגת', price: '₪19', desc: 'אחד הסיפורים האפלים והמרתקים ביותר.', img: 'https://images.unsplash.com/photo-1541753866388-0b3c701627d3?auto=format&fit=crop&q=80&w=800', password: '999', link: '#' }
+];
+
+function getComics() {
+  const data = localStorage.getItem('comicsStore');
+  if (!data || JSON.parse(data).length === 0) return defaultComics;
+  return JSON.parse(data);
+}
+
+function saveComics(items) {
+  localStorage.setItem('comicsStore', JSON.stringify(items));
+}
+
+function renderComicsGrid() {
+  const grid = document.getElementById('comics-grid');
+  if (!grid) return;
+  const items = getComics();
+  grid.innerHTML = items.map((item, i) => `
+    <div class="pdf-card" onclick="showComicDetail(${i})" style="padding:0; overflow:hidden; border:none; box-shadow:var(--shadow-soft);">
+      <div style="height:320px; overflow:hidden; position:relative;">
+        <img src="${item.img}" style="width:100%; height:100%; object-fit:cover;" />
+        <div style="position:absolute; top:12px; right:12px; background:rgba(0,0,0,0.7); color:white; padding:6px 14px; border-radius:30px; font-size:0.8rem; backdrop-filter:blur(8px); font-weight:700;">🔐 מוגן</div>
+      </div>
+      <div style="padding:20px; background:#fff;">
+        <div class="pdf-card-title" style="margin:0; font-size:1.1rem; font-weight:800;">${escHtml(item.title)}</div>
+        <div class="pdf-card-price" style="margin-top:10px; color:#0071e3; font-weight:700;">${escHtml(item.price)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+let activeComicIndex = null;
+function showComicDetail(index) {
+  const items = getComics();
+  const item = items[index];
+  if (!item) return;
+  activeComicIndex = index;
+  
+  document.getElementById('comic-pdp-title').textContent = item.title;
+  document.getElementById('comic-pdp-price').textContent = item.price || 'חינם';
+  document.getElementById('comic-pdp-desc').textContent = item.desc || '';
+  document.getElementById('comic-pdp-main-image').src = item.img;
+  
+  showPage('comic-detail');
+}
+
+function promptComicDownload() {
+  const items = getComics();
+  const item = items[activeComicIndex];
+  if (!item) return;
+  
+  const pass = prompt('נא להזין סיסמת הורדה:');
+  if (pass === item.password) {
+    showToast('✅ סיסמה נכונה! ההורדה מתחילה...');
+    setTimeout(() => {
+      window.open(item.link || '#', '_blank');
+    }, 1000);
+  } else if (pass !== null) {
+    showToast('❌ סיסמה שגויה. נסה שוב.');
+  }
+}
+
+function renderComicAdminList() {
+  const list = document.getElementById('comic-admin-list');
+  if (!list) return;
+  const items = getComics();
+  if (items.length === 0) {
+    list.innerHTML = '<p style="text-align:center; grid-column:1/-1; padding:20px;">אין קומיקסים.</p>';
+    return;
+  }
+  list.innerHTML = items.map((item, i) => `
+    <div style="background:#f5f5f7; border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px;">
+      <img src="${item.img}" style="width:100%; height:120px; object-fit:cover; border-radius:8px;" />
+      <div style="font-weight:700; font-size:0.85rem; text-align:right;">${escHtml(item.title)}</div>
+      <div style="font-size:0.75rem; color:#86868b; text-align:right;">🔐: ${escHtml(item.password)}</div>
+      <div style="display:flex; gap:6px; justify-content:center; margin-top:4px;">
+        <button class="btn-primary" style="padding:6px 12px; font-size:0.8rem;" onclick="editComic(${i})">ערוך</button>
+        <button class="remove-btn" style="padding:6px 12px; font-size:0.8rem; border:none; background:transparent;" onclick="deleteComic(${i})">מחק</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openComicEditor(index = null) {
+  document.getElementById('comic-editor').classList.remove('hidden');
+  if (index !== null) {
+    const items = getComics();
+    const item = items[index];
+    document.getElementById('comic-edit-id').value = index;
+    document.getElementById('comic-edit-title').value = item.title || '';
+    document.getElementById('comic-edit-desc').value = item.desc || '';
+    document.getElementById('comic-edit-price').value = item.price || '';
+    document.getElementById('comic-edit-password').value = item.password || '';
+    document.getElementById('comic-edit-link').value = item.link || '';
+    document.getElementById('comic-edit-img').value = item.img || '';
+  } else {
+    document.getElementById('comic-edit-id').value = '';
+    document.getElementById('comic-edit-title').value = '';
+    document.getElementById('comic-edit-desc').value = '';
+    document.getElementById('comic-edit-price').value = '';
+    document.getElementById('comic-edit-password').value = '';
+    document.getElementById('comic-edit-link').value = '';
+    document.getElementById('comic-edit-img').value = '';
+  }
+}
+
+function handleComicCoverUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  showToast('טוען כריכה...');
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('comic-edit-img').value = e.target.result;
+    showToast('כריכה נטענה!');
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveComicItem() {
+  const idVal = document.getElementById('comic-edit-id').value;
+  const item = {
+    title: document.getElementById('comic-edit-title').value.trim(),
+    desc: document.getElementById('comic-edit-desc').value.trim(),
+    price: document.getElementById('comic-edit-price').value.trim(),
+    password: document.getElementById('comic-edit-password').value.trim(),
+    link: document.getElementById('comic-edit-link').value.trim(),
+    img: document.getElementById('comic-edit-img').value.trim()
+  };
+  if (!item.title) { showToast('נא להזין שם לקומיקס'); return; }
+  
+  const items = getComics();
+  if (idVal !== '') {
+    items[parseInt(idVal)] = item;
+  } else {
+    items.unshift(item);
+  }
+  saveComics(items);
+  renderComicAdminList();
+  renderComicsGrid();
+  document.getElementById('comic-editor').classList.add('hidden');
+  showToast('הקומיקס נשמר בהצלחה!');
+}
+
+function editComic(i) { openComicEditor(i); }
+function deleteComic(i) {
+  if (confirm('למחוק קומיקס זה?')) {
+    const items = getComics();
+    items.splice(i, 1);
+    saveComics(items);
+    renderComicAdminList();
+    renderComicsGrid();
+    showToast('הקומיקס נמחק');
+  }
 }
