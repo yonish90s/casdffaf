@@ -1316,9 +1316,22 @@ function showComicDetail(index) {
   activeComicIndex = index;
   
   document.getElementById('comic-pdp-title').textContent = item.title;
-  document.getElementById('comic-pdp-price').textContent = item.price || 'חינם';
   document.getElementById('comic-pdp-desc').textContent = item.desc || '';
   document.getElementById('comic-pdp-main-image').src = item.img;
+  
+  const priceContainer = document.getElementById('comic-pdp-price-container');
+  const accessSection = document.getElementById('comic-pdp-access-section');
+  
+  if (item.password) {
+    if (priceContainer) {
+      priceContainer.style.display = 'block';
+      priceContainer.textContent = item.price || '0 ₪';
+    }
+    if (accessSection) accessSection.style.display = 'block';
+  } else {
+    if (priceContainer) priceContainer.style.display = 'none';
+    if (accessSection) accessSection.style.display = 'none';
+  }
   
   showPage('comic-detail');
 }
