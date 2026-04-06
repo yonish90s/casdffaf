@@ -1648,37 +1648,49 @@ async function submitUserPdfItem() {
     return;
   }
   
-  showToast('⌛ מעלה פריט... זה ייקח רגע');
-  
-  // Process images (simple compression/resize via Canvas if needed, 
-  // but for "simple" we'll just use the b64 from selectedUserPdfImages)
-  // To keep localStorage safe, let's at least limit total size
-  
-  const newItem = {
-    title: title,
-    desc: desc,
-    price: price || 'חינם',
-    type: 'תוכן גולשים',
-    images: selectedUserPdfImages,
-    link: '#', // Users can't provide links yet in this version
-    date: new Date().toLocaleDateString('he-IL')
-  };
-  
-  const items = getPdfItems();
-  items.unshift(newItem); // Add to top
-  savePdfItems(items);
-  
-  // Reset form
-  document.getElementById('user-pdf-title').value = '';
-  document.getElementById('user-pdf-desc').value = '';
-  document.getElementById('user-pdf-price').value = '';
-  selectedUserPdfImages = [];
-  renderUserPdfPreviews();
-  
-  // Update view
-  renderPdfStoreGrid();
-  showToast('✅ הפריט שלך פורסם בחנות בהצלחה!');
-  
-  // Scroll back to top of grid
-  document.getElementById('pdf-store-grid').scrollIntoView({ behavior: 'smooth' });
+  // Show loading overlay
+  const loader = document.getElementById('upload-loading-overlay');
+  if (loader) {
+    loader.style.display = 'flex';
+    loader.style.opacity = '1';
+    loader.style.pointerEvents = 'auto';
+  }
+
+  // Simulate upload delay for professional feel
+  setTimeout(() => {
+    const newItem = {
+      title: title,
+      desc: desc,
+      price: price || 'חינם',
+      type: 'תוכן גולשים',
+      images: selectedUserPdfImages,
+      link: '#',
+      date: new Date().toLocaleDateString('he-IL')
+    };
+    
+    const items = getPdfItems();
+    items.unshift(newItem);
+    savePdfItems(items);
+    
+    // Reset form
+    document.getElementById('user-pdf-title').value = '';
+    document.getElementById('user-pdf-desc').value = '';
+    document.getElementById('user-pdf-price').value = '';
+    selectedUserPdfImages = [];
+    renderUserPdfPreviews();
+    
+    // Update view
+    renderPdfStoreGrid();
+    
+    // Hide loading overlay
+    if (loader) {
+      loader.style.opacity = '0';
+      setTimeout(() => {
+        loader.style.display = 'none';
+        loader.style.pointerEvents = 'none';
+        showToast('✅ הפריט שלך פורסם בחנות בהצלחה!');
+        document.getElementById('pdf-store-grid').scrollIntoView({ behavior: 'smooth' });
+      }, 300);
+    }
+  }, 2000);
 }

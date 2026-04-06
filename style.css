@@ -1931,3 +1931,23 @@ body.dark-theme .comment-avatar {
     margin-top: 60px !important;
   }
 }
+
+/* ========== LOADING SPINNER ========== */
+.loading-spinner {
+  width: 64px;
+  height: 64px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-left-color: #fff;
+  border-radius: 50%;
+  animation: spinner 0.8s linear infinite;
+}
+
+@keyframes spinner {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; transform: scale(0.98); }
+  50% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0.6; transform: scale(0.98); }
+}
