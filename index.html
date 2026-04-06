@@ -217,6 +217,42 @@
   <div id="comics-grid" class="pdf-store-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;">
     <!-- Populated by JS -->
   </div>
+
+  <!-- User Upload Section (Comics) -->
+  <div id="user-comic-upload-section" style="margin-top: 100px; padding: 60px; background: #fff; border-radius: 32px; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-soft);">
+    <div style="text-align: center; margin-bottom: 48px;">
+      <div style="width: 72px; height: 72px; background: rgba(0, 113, 227, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 20px;">🎨</div>
+      <h2 style="font-size: 2.5rem; font-weight: 900; letter-spacing: -0.04em; margin-bottom: 8px;">יש לך קומיקס משלך?</h2>
+      <p style="color: #86868b; font-size: 1.15rem; font-weight: 500;">שתף את היצירה שלך עם כולם. העלה עד 4 תמונות וזה יופיע מיידית!</p>
+    </div>
+
+    <div class="form-grid" style="max-width: 800px; margin: 0 auto;">
+      <div class="form-group full">
+        <label>שם הקומיקס</label>
+        <input type="text" id="user-comic-title" placeholder="למשל: הרפתקאות דני בחלל">
+      </div>
+      <div class="form-group full">
+        <label>תיאור קצר</label>
+        <textarea id="user-comic-desc" placeholder="על מה הקומיקס שלך?..." style="min-height: 120px;"></textarea>
+      </div>
+      <div class="form-group full">
+        <label>מחיר או 'חינם'</label>
+        <input type="text" id="user-comic-price" placeholder="למשל: 30 ₪ / חינם">
+      </div>
+      <div class="form-group full">
+        <label>תמונות מהקומיקס (עד 4 תמונות)</label>
+        <div id="user-comic-image-preview" style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; min-height: 80px; align-items: flex-start;">
+          <!-- Previews will appear here -->
+        </div>
+        <input type="file" id="user-comic-files" multiple accept="image/*" onchange="handleUserComicFileSelection(event)" style="display: none;">
+        <button class="btn-secondary" onclick="document.getElementById('user-comic-files').click()" style="width: 100%; border-style: dashed; padding: 24px; border-radius: 16px; font-weight: 600;">📸 בחר תמונות מהגלריה (עד 4)</button>
+      </div>
+      
+      <div class="form-group full" style="margin-top: 32px;">
+        <button class="btn-primary full-width" style="height: 68px; font-size: 1.3rem; font-weight: 800; border-radius: 20px;" onclick="submitUserComicItem()">🚀 שלח ופרסם עכשיו</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- COMIC DETAIL PAGE -->

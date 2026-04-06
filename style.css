@@ -1891,8 +1891,9 @@ body.dark-theme .comment-avatar {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ========== PDF UPLOAD FORM ========== */
-#user-pdf-image-preview img {
+/* ========== UPLOAD FORMS IMAGE PREVIEW ========== */
+#user-pdf-image-preview img, 
+#user-comic-image-preview img {
   width: 80px;
   height: 80px;
   object-fit: cover;

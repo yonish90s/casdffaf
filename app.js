@@ -1297,7 +1297,8 @@ function renderComicsGrid() {
     <div class="pdf-card" onclick="showComicDetail(${i})" style="padding:0; overflow:hidden; border:none; box-shadow:var(--shadow-soft);">
       <div style="height:320px; overflow:hidden; position:relative;">
         <img src="${item.img}" style="width:100%; height:100%; object-fit:cover;" />
-        <div style="position:absolute; top:12px; right:12px; background:rgba(0,0,0,0.7); color:white; padding:6px 14px; border-radius:30px; font-size:0.8rem; backdrop-filter:blur(8px); font-weight:700;">🔐 מוגן</div>
+        ${item.password ? `<div style="position:absolute; top:12px; right:12px; background:rgba(0,0,0,0.7); color:white; padding:6px 14px; border-radius:30px; font-size:0.8rem; backdrop-filter:blur(8px); font-weight:700;">🔐 מוגן</div>` : 
+                          `<div style="position:absolute; top:12px; right:12px; background:rgba(0,128,0,0.7); color:white; padding:6px 14px; border-radius:30px; font-size:0.8rem; backdrop-filter:blur(8px); font-weight:700;">📖 ציבורי</div>`}
       </div>
       <div style="padding:20px; background:#fff;">
         <div class="pdf-card-title" style="margin:0; font-size:1.1rem; font-weight:800;">${escHtml(item.title)}</div>
@@ -1690,6 +1691,101 @@ async function submitUserPdfItem() {
         loader.style.pointerEvents = 'none';
         showToast('✅ הפריט שלך פורסם בחנות בהצלחה!');
         document.getElementById('pdf-store-grid').scrollIntoView({ behavior: 'smooth' });
+      }, 300);
+    }
+  }, 2000);
+}
+
+// ========== USER COMIC UPLOADS ==========
+let selectedUserComicImages = [];
+
+function handleUserComicFileSelection(event) {
+  const files = Array.from(event.target.files);
+  const remaining = 4 - selectedUserComicImages.length;
+  const toProcess = files.slice(0, remaining);
+  
+  toProcess.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      selectedUserComicImages.push(e.target.result);
+      renderUserComicPreviews();
+    };
+    reader.readAsDataURL(file);
+  });
+  event.target.value = '';
+}
+
+function renderUserComicPreviews() {
+  const container = document.getElementById('user-comic-image-preview');
+  if (!container) return;
+  container.innerHTML = selectedUserComicImages.map((img, i) => `
+    <div class="preview-item">
+      <img src="${img}" alt="Preview ${i}" />
+      <button class="remove-img-btn" onclick="removeUserComicImage(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function removeUserComicImage(index) {
+  selectedUserComicImages.splice(index, 1);
+  renderUserComicPreviews();
+}
+
+async function submitUserComicItem() {
+  const titleInput = document.getElementById('user-comic-title');
+  const title = titleInput.value.trim();
+  const desc = document.getElementById('user-comic-desc').value.trim();
+  const price = document.getElementById('user-comic-price').value.trim();
+  
+  if (!title) {
+    showToast('❌ נא להזין שם לקומיקס');
+    return;
+  }
+  
+  if (selectedUserComicImages.length === 0) {
+    showToast('❌ נא לבחור לפחות תמונה אחת להמחשה');
+    return;
+  }
+  
+  const loader = document.getElementById('upload-loading-overlay');
+  if (loader) {
+    loader.style.display = 'flex';
+    loader.style.opacity = '1';
+    loader.style.pointerEvents = 'auto';
+  }
+
+  setTimeout(() => {
+    const newItem = {
+      title: title,
+      desc: desc,
+      price: price || 'חינם',
+      img: selectedUserComicImages[0], // First image as main cover
+      images: selectedUserComicImages,
+      password: '', // User uploads are initially unprotected
+      link: '#',
+      author: currentUser ? currentUser.name : 'גולש אורח'
+    };
+    
+    const items = getComics();
+    items.unshift(newItem);
+    saveComics(items);
+    
+    // Reset form
+    document.getElementById('user-comic-title').value = '';
+    document.getElementById('user-comic-desc').value = '';
+    document.getElementById('user-comic-price').value = '';
+    selectedUserComicImages = [];
+    renderUserComicPreviews();
+    
+    renderComicsGrid();
+    
+    if (loader) {
+      loader.style.opacity = '0';
+      setTimeout(() => {
+        loader.style.display = 'none';
+        loader.style.pointerEvents = 'none';
+        showToast('✅ הקומיקס שלך פורסם בהצלחה!');
+        document.getElementById('comics-grid').scrollIntoView({ behavior: 'smooth' });
       }, 300);
     }
   }, 2000);
