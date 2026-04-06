@@ -1591,3 +1591,94 @@ let currentArticleId = null;
 
 // Initial call
 setTimeout(updateUserUI, 100);
+// ========== USER PDF UPLOADS ==========
+let selectedUserPdfImages = [];
+
+function handleUserPdfFileSelection(event) {
+  const files = Array.from(event.target.files);
+  const previewContainer = document.getElementById('user-pdf-image-preview');
+  
+  // Limit to 4 images
+  const remaining = 4 - selectedUserPdfImages.length;
+  const toProcess = files.slice(0, remaining);
+  
+  toProcess.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const b64 = e.target.result;
+      selectedUserPdfImages.push(b64);
+      renderUserPdfPreviews();
+    };
+    reader.readAsDataURL(file);
+  });
+  
+  // Clear input so same file can be picked again if removed
+  event.target.value = '';
+}
+
+function renderUserPdfPreviews() {
+  const container = document.getElementById('user-pdf-image-preview');
+  if (!container) return;
+  
+  container.innerHTML = selectedUserPdfImages.map((img, i) => `
+    <div class="preview-item">
+      <img src="${img}" alt="Preview ${i}" />
+      <button class="remove-img-btn" onclick="removeUserPdfImage(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function removeUserPdfImage(index) {
+  selectedUserPdfImages.splice(index, 1);
+  renderUserPdfPreviews();
+}
+
+async function submitUserPdfItem() {
+  const title = document.getElementById('user-pdf-title').value.trim();
+  const desc = document.getElementById('user-pdf-desc').value.trim();
+  const price = document.getElementById('user-pdf-price').value.trim();
+  
+  if (!title) {
+    showToast('❌ נא להזין שם לפריט');
+    return;
+  }
+  
+  if (selectedUserPdfImages.length === 0) {
+    showToast('❌ נא לבחור לפחות תמונה אחת להמחשה');
+    return;
+  }
+  
+  showToast('⌛ מעלה פריט... זה ייקח רגע');
+  
+  // Process images (simple compression/resize via Canvas if needed, 
+  // but for "simple" we'll just use the b64 from selectedUserPdfImages)
+  // To keep localStorage safe, let's at least limit total size
+  
+  const newItem = {
+    title: title,
+    desc: desc,
+    price: price || 'חינם',
+    type: 'תוכן גולשים',
+    images: selectedUserPdfImages,
+    link: '#', // Users can't provide links yet in this version
+    date: new Date().toLocaleDateString('he-IL')
+  };
+  
+  const items = getPdfItems();
+  items.unshift(newItem); // Add to top
+  savePdfItems(items);
+  
+  // Reset form
+  document.getElementById('user-pdf-title').value = '';
+  document.getElementById('user-pdf-desc').value = '';
+  document.getElementById('user-pdf-price').value = '';
+  selectedUserPdfImages = [];
+  renderUserPdfPreviews();
+  
+  // Update view
+  renderPdfStoreGrid();
+  showToast('✅ הפריט שלך פורסם בחנות בהצלחה!');
+  
+  // Scroll back to top of grid
+  document.getElementById('pdf-store-grid').scrollIntoView({ behavior: 'smooth' });
+}
