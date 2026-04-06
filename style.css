@@ -264,7 +264,7 @@ body {
   padding: 60px 24px 100px; 
   animation: fadeIn 0.5s ease-out forwards;
 }
-.page.active { display: block; }
+.page.active { display: block !important; }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(15px); }
