@@ -26,6 +26,15 @@
       <button onclick="showPage('appointments')" class="apple-nav-item">קביעת תור</button>
       <button onclick="showPage('viewer-photos')" class="apple-nav-item">תמונות גולשים</button>
       <button id="theme-toggle" onclick="toggleTheme()" style="background:none; border:none; cursor:pointer; font-size:1.2rem; margin-right:16px; padding:8px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition:background 0.3s; width:40px; height:40px;">🌓</button>
+      
+      <!-- User Account Section -->
+      <div id="user-nav-section" style="margin-right: 12px; display: flex; align-items: center;">
+        <button id="btn-join" class="btn-primary" onclick="openJoinModal()" style="font-size: 0.75rem; padding: 6px 16px; height: 30px; min-height: 0;">✨ הצטרף</button>
+        <div id="user-profile-badge" onclick="openJoinModal()" style="display: none; cursor: pointer; border: 1px solid var(--border-subtle); background: var(--bg-main); padding: 4px 10px; border-radius: 980px; align-items: center; gap: 8px;">
+          <span id="user-badge-emoji" style="font-size: 1.1rem;">👤</span>
+          <span id="user-badge-name" style="font-size: 0.85rem; font-weight: 700;"></span>
+        </div>
+      </div>
     </nav>
   </div>
 </header>
@@ -200,6 +209,25 @@
       </div>
     </div>
   </div>
+
+  <!-- Comments Section -->
+  <div id="comic-comments-section" style="margin-top: 60px; max-width: 800px; margin-left: auto; margin-right: auto;">
+    <h3 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 32px; text-align: center;">💬 תגובות הקהילה</h3>
+    <div id="comic-comments-list" style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 40px;">
+      <!-- Populated by JS -->
+    </div>
+    <div id="comic-comment-input-area" style="background: #fff; border-radius: 20px; padding: 24px; border: 1px solid var(--border-subtle); display: none;">
+      <textarea id="comic-new-comment" placeholder="כתוב משהו נחמד על הקומיקס..." style="width: 100%; min-height: 100px; border: none; outline: none; font-size: 1.1rem; resize: none;"></textarea>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #f5f5f7;">
+        <span style="font-size: 0.9rem; color: #86868b;">מגיב כ: <strong id="comic-comment-user-name"></strong></span>
+        <button class="btn-primary" onclick="submitComment('comic')" style="padding: 10px 24px;">פרסם תגובה</button>
+      </div>
+    </div>
+    <div id="comic-comment-join-prompt" style="text-align: center; padding: 40px; background: #fbfbfd; border-radius: 20px; border: 1px dashed #d2d2d7;">
+      <p style="margin-bottom: 16px; color: #86868b;">רוצה להגיב? הצטרף לקהילה בשניות!</p>
+      <button class="btn-primary" onclick="openJoinModal()">✨ הצטרף עכשיו</button>
+    </div>
+  </div>
 </div>
 
 
@@ -265,6 +293,25 @@
 <div id="page-article" class="page" style="max-width: 860px; padding-top: 40px;">
   <button class="back-btn" onclick="goBack()" style="margin-bottom: 30px;">&rarr; חזור</button>
   <article class="article-detail" id="article-content"></article>
+
+  <!-- Comments Section -->
+  <div id="article-comments-section" style="margin-top: 80px; border-top: 1px solid #d2d2d7; padding-top: 60px;">
+    <h3 style="font-size: 2rem; font-weight: 800; margin-bottom: 40px;">🗨️ מה דעתכם?</h3>
+    <div id="article-comments-list" style="display: flex; flex-direction: column; gap: 24px; margin-bottom: 48px;">
+      <!-- Populated by JS -->
+    </div>
+    <div id="article-comment-input-area" style="background: #fff; border-radius: 24px; padding: 32px; border: 1px solid #d2d2d7; display: none; box-shadow: var(--shadow-soft);">
+      <textarea id="article-new-comment" placeholder="מה דעתך על הכתבה?..." style="width: 100%; min-height: 120px; border: none; outline: none; font-size: 1.15rem; resize: none;"></textarea>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #f5f5f7;">
+        <span style="font-size: 0.95rem; color: #86868b;">מגיב כ: <strong id="article-comment-user-name"></strong></span>
+        <button class="btn-primary" onclick="submitComment('article')" style="padding: 12px 32px; font-size: 1.1rem; border-radius: 980px;">פרסם תגובה</button>
+      </div>
+    </div>
+    <div id="article-comment-join-prompt" style="text-align: center; padding: 60px; background: #fbfbfd; border-radius: 24px; border: 1px dashed #d2d2d7;">
+      <p style="margin-bottom: 20px; color: #86868b; font-size: 1.1rem;">הצטרף לדיון ושתף את דעתך!</p>
+      <button class="btn-primary" onclick="openJoinModal()" style="padding: 16px 40px; font-size: 1.1rem; border-radius: 980px;">✨ הצטרף לקהילה</button>
+    </div>
+  </div>
 </div>
 
 <!-- PRODUCT DETAIL PAGE -->
@@ -747,6 +794,39 @@
     </div>
     
     <button class="btn-primary" style="width:100%; height: 56px; font-size: 1.1rem; font-weight:700; border-radius: 14px;" onclick="verifyComicPassword()">🔓 פתח הורדה</button>
+  </div>
+</div>
+
+<!-- JOIN MODAL (USER ACCOUNTS) -->
+<div id="join-modal" class="modal-overlay">
+  <div class="modal-content" style="max-width: 440px; padding: 48px; border-radius: 32px; text-align: center;">
+    <button class="modal-close" onclick="closeJoinModal()" style="background:#f5f5f7; border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:none; position:absolute; top:24px; left:24px; cursor:pointer;">✕</button>
+    <div style="font-size: 4rem; margin-bottom: 24px; animation: bounceIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);">✨</div>
+    <h2 style="font-size:2.2rem; font-weight:900; margin-bottom:12px; letter-spacing: -0.02em;">הצטרף לקהילה</h2>
+    <p style="color: #86868b; margin-bottom: 40px; font-size: 1.1rem; font-weight:500;">בחר כינוי וסמל כדי להגיב ולהיות חלק מהדיון.</p>
+    
+    <div style="display: flex; flex-direction: column; gap: 24px; text-align: right;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <label style="font-size: 0.9rem; font-weight: 700; color: #1d1d1f; margin-right: 4px;">איך לקרוא לך?</label>
+        <input type="text" id="join-name" class="admin-input" placeholder="למשל: דני טק" style="width:100%; border-radius:14px; padding:18px; font-size: 1.1rem;">
+      </div>
+      
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <label style="font-size: 0.9rem; font-weight: 700; color: #1d1d1f; margin-right: 4px;">בחר סמל:</label>
+        <div id="emoji-picker" style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; background: #fbfbfd; padding: 16px; border-radius: 16px; border: 1px solid #d2d2d7;">
+          <div class="emoji-opt active" onclick="selectEmoji(this, '👤')" style="font-size: 2rem; cursor: pointer; padding: 8px; border-radius: 12px; transition: 0.2s;">👤</div>
+          <div class="emoji-opt" onclick="selectEmoji(this, '🚀')" style="font-size: 2rem; cursor: pointer; padding: 8px; border-radius: 12px; transition: 0.2s;">🚀</div>
+          <div class="emoji-opt" onclick="selectEmoji(this, '💡')" style="font-size: 2rem; cursor: pointer; padding: 8px; border-radius: 12px; transition: 0.2s;">💡</div>
+          <div class="emoji-opt" onclick="selectEmoji(this, '🎮')" style="font-size: 2rem; cursor: pointer; padding: 8px; border-radius: 12px; transition: 0.2s;">🎮</div>
+          <div class="emoji-opt" onclick="selectEmoji(this, '💻')" style="font-size: 2rem; cursor: pointer; padding: 8px; border-radius: 12px; transition: 0.2s;">💻</div>
+          <div class="emoji-opt" onclick="selectEmoji(this, '✨')" style="font-size: 2rem; cursor: pointer; padding: 8px; border-radius: 12px; transition: 0.2s;">✨</div>
+        </div>
+        <input type="hidden" id="join-emoji" value="👤">
+      </div>
+    </div>
+    
+    <button class="btn-primary" style="width:100%; height: 64px; font-size: 1.2rem; font-weight:800; border-radius: 18px; margin-top: 40px; box-shadow: 0 12px 24px rgba(0,113,227,0.25);" onclick="saveUserProfile()">💾 שמור והצטרף</button>
+    <button id="btn-logout" class="btn-secondary" style="width:100%; border:none; color:#ef4444; margin-top:16px; font-size:0.9rem; display:none;" onclick="logoutUser()">התנתק מהחשבון</button>
   </div>
 </div>
 

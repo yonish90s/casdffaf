@@ -79,6 +79,10 @@ function showPage(page) {
   if (page === 'comics') renderComicsGrid();
   if (page === 'appointments') initBookingWidget();
   if (page === 'viewer-photos') renderViewerPhotosGrid();
+  
+  // Custom updates for detail pages
+  if (page === 'article') renderComments('article', currentArticleId);
+  if (page === 'comic-detail') renderComments('comic', activeComicIndex);
 
   if (page === 'admin') {
     if (!isAdmin) {
@@ -321,6 +325,7 @@ function filterCategory(cat) {
 }
 
 function showArticle(id) {
+  currentArticleId = id;
   previousPage = document.querySelector('.page.active')?.id?.replace('page-', '') || 'home';
   const a = newsArticles.find(x => x.id === id);
   if (!a) return;
@@ -1446,3 +1451,143 @@ function deleteComic(i) {
     showToast('הקומיקס נמחק');
   }
 }
+
+// ========== USER & COMMENTS LOGIC ==========
+let currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+
+function openJoinModal() {
+  const modal = document.getElementById('join-modal');
+  if (currentUser) {
+    document.getElementById('join-name').value = currentUser.name;
+    document.getElementById('btn-logout').style.display = 'block';
+  } else {
+    document.getElementById('join-name').value = '';
+    document.getElementById('btn-logout').style.display = 'none';
+  }
+  modal.classList.add('active');
+}
+
+function closeJoinModal() {
+  document.getElementById('join-modal').classList.remove('active');
+}
+
+function selectEmoji(el, emoji) {
+  document.querySelectorAll('.emoji-opt').forEach(opt => opt.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('join-emoji').value = emoji;
+}
+
+function saveUserProfile() {
+  const nameInput = document.getElementById('join-name');
+  const name = nameInput.value.trim();
+  const emoji = document.getElementById('join-emoji').value;
+  
+  if (!name) {
+    showToast('❌ נא להזין שם כדי להצטרף');
+    return;
+  }
+  
+  currentUser = { name, emoji };
+  localStorage.setItem('currentUser', JSON.stringify(currentUser));
+  updateUserUI();
+  closeJoinModal();
+  showToast(`✨ ברוך הבא, ${name}!`);
+}
+
+function logoutUser() {
+  if (confirm('בטוח שברצונך להתנתק?')) {
+    currentUser = null;
+    localStorage.removeItem('currentUser');
+    updateUserUI();
+    closeJoinModal();
+    showToast('👋 התנתקת בהצלחה');
+  }
+}
+
+function updateUserUI() {
+  const btnJoin = document.getElementById('btn-join');
+  const profileBadge = document.getElementById('user-profile-badge');
+  
+  if (!btnJoin || !profileBadge) return;
+
+  if (currentUser) {
+    btnJoin.style.display = 'none';
+    profileBadge.style.display = 'flex';
+    document.getElementById('user-badge-emoji').textContent = currentUser.emoji;
+    document.getElementById('user-badge-name').textContent = currentUser.name;
+    
+    // Update comment inputs
+    document.querySelectorAll('[id$="-comment-input-area"]').forEach(el => el.style.display = 'block');
+    document.querySelectorAll('[id$="-comment-join-prompt"]').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('[id$="-comment-user-name"]').forEach(el => el.textContent = currentUser.name);
+  } else {
+    btnJoin.style.display = 'block';
+    profileBadge.style.display = 'none';
+    
+    document.querySelectorAll('[id$="-comment-input-area"]').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('[id$="-comment-join-prompt"]').forEach(el => el.style.display = 'block');
+  }
+}
+
+function submitComment(type) {
+  const textarea = document.getElementById(`${type}-new-comment`);
+  const text = textarea.value.trim();
+  
+  if (!text) {
+    showToast('❌ אי אפשר לפרסם תגובה ריקה');
+    return;
+  }
+  
+  const targetId = type === 'article' ? currentArticleId : activeComicIndex;
+  const comments = JSON.parse(localStorage.getItem(`comments_${type}_${targetId}`) || '[]');
+  
+  const newComment = {
+    userName: currentUser.name,
+    userEmoji: currentUser.emoji,
+    text: text,
+    date: new Date().toLocaleString('he-IL', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' })
+  };
+  
+  comments.push(newComment);
+  localStorage.setItem(`comments_${type}_${targetId}`, JSON.stringify(comments));
+  
+  textarea.value = '';
+  renderComments(type, targetId);
+  showToast('✅ התגובה פורסמה!');
+}
+
+function renderComments(type, targetId) {
+  const list = document.getElementById(`${type}-comments-list`);
+  if (!list) return;
+  
+  if (targetId === null || targetId === undefined) {
+    list.innerHTML = '';
+    return;
+  }
+
+  const comments = JSON.parse(localStorage.getItem(`comments_${type}_${targetId}`) || '[]');
+  
+  if (comments.length === 0) {
+    list.innerHTML = `<div style="text-align:center; color:#86868b; padding:20px;">עוד אין תגובות. תהיו הראשונים להגיב!</div>`;
+    return;
+  }
+  
+  list.innerHTML = comments.map(c => `
+    <div class="comment-card">
+      <div class="comment-avatar">${c.userEmoji || '👤'}</div>
+      <div class="comment-body">
+        <div class="comment-header">
+          <span class="comment-author">${escHtml(c.userName)}</span>
+          <span class="comment-date">${c.date}</span>
+        </div>
+        <div class="comment-text">${escHtml(c.text)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Global variable for current article
+let currentArticleId = null;
+
+// Initial call
+setTimeout(updateUserUI, 100);
