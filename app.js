@@ -1317,20 +1317,41 @@ function showComicDetail(index) {
   showPage('comic-detail');
 }
 
-function promptComicDownload() {
+function openComicPasswordModal() {
+  document.getElementById('comic-access-password').value = '';
+  document.getElementById('comic-password-modal').classList.add('active');
+}
+
+function closeComicPasswordModal() {
+  document.getElementById('comic-password-modal').classList.remove('active');
+}
+
+function verifyComicPassword() {
   const items = getComics();
   const item = items[activeComicIndex];
   if (!item) return;
   
-  const pass = prompt('נא להזין סיסמת הורדה:');
+  const pass = document.getElementById('comic-access-password').value;
   if (pass === item.password) {
     showToast('✅ סיסמה נכונה! ההורדה מתחילה...');
+    closeComicPasswordModal();
     setTimeout(() => {
       window.open(item.link || '#', '_blank');
     }, 1000);
-  } else if (pass !== null) {
+  } else {
     showToast('❌ סיסמה שגויה. נסה שוב.');
   }
+}
+
+function requestComicApproval() {
+  const items = getComics();
+  const item = items[activeComicIndex];
+  if (!item) return;
+
+  // Open contact modal and pre-fill message
+  openContactModal();
+  document.getElementById('contact-body').value = `שלום, אשמח לקבל אישור וסיסמה להורדת הקומיקס: "${item.title}"`;
+  showToast('הודעה הוכנה עבורך! מלא את הפרטים ושלח למנהל.');
 }
 
 function renderComicAdminList() {

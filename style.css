@@ -906,7 +906,8 @@ body {
   pointer-events: none;
   transition: opacity 0.3s ease;
 }
-.modal-overlay.show {
+.modal-overlay.show,
+.modal-overlay.active {
   opacity: 1;
   pointer-events: auto;
 }
@@ -921,7 +922,8 @@ body {
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 20px 60px rgba(0,0,0,0.15);
 }
-.modal-overlay.show .modal-content {
+.modal-overlay.show .modal-content,
+.modal-overlay.active .modal-content {
   transform: translateY(0);
 }
 .modal-close {
