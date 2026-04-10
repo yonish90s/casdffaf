@@ -730,10 +730,14 @@ function handleStoreImageUpload(event) {
 function downloadStorePlatform(platform) {
   showToast(`⚡ מכין הורדה עבור ${platform}...`);
   
-  // Create a temporary link to download the image
   const link = document.createElement('a');
-  link.href = 'software_preview.png';
-  link.download = `Software_Preview_${platform}.png`;
+  if (platform === 'Mac') {
+    link.href = 'https://pub-572449ca23df42e8b074673b3720fb60.r2.dev/app-mac.dmg';
+  } else {
+    link.href = 'https://pub-572449ca23df42e8b074673b3720fb60.r2.dev/image.png';
+  }
+  
+  link.download = platform === 'Mac' ? 'app-mac.dmg' : 'software-preview.png';
   document.body.appendChild(link);
   
   setTimeout(() => {
