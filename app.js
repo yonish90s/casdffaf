@@ -311,12 +311,16 @@ function showArticle(id) {
       <div class="article-category">${escHtml(a.category)}</div>
       <h1 class="article-title-main" id="inline-title" ${isAdmin ? 'contenteditable="true" style="border-bottom: 2px dashed #0071e3;"' : ''}>${escHtml(a.title)}</h1>
       <div class="article-meta-main">
-        מאת <span class="author-name" style="font-weight:700;">${escHtml(a.author)}</span>
+        מאת <span id="inline-author" class="author-name" style="font-weight:700; ${isAdmin ? 'border-bottom: 1px dashed #0071e3; cursor: text;' : ''}" ${isAdmin ? 'contenteditable="true"' : ''}>${escHtml(a.author)}</span>
         <span class="meta-sep">|</span> 
-        <span class="meta-date">${escHtml(a.time)}</span>
+        <span id="inline-time" class="meta-date" style="${isAdmin ? 'border-bottom: 1px dashed #0071e3; cursor: text;' : ''}" ${isAdmin ? 'contenteditable="true"' : ''}>${escHtml(a.time)}</span>
       </div>
     </header>
-    <div class="article-hero-img" style="background-image: url('${a.image}')"></div>
+    <div class="article-hero-img" id="inline-hero-img" style="background-image: url('${a.image}'); position: relative;">
+      ${isAdmin ? `
+        <button onclick="changeArticleHeroImage(${id})" style="position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.9); border: none; padding: 10px 20px; border-radius: 980px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">📷 שנה תמונה</button>
+      ` : ''}
+    </div>
     <div class="article-body">
       <div id="inline-content" ${isAdmin ? 'contenteditable="true" style="padding: 10px; border: 2px dashed #0071e3; border-radius: 12px; margin-top: 10px;"' : ''}>
         ${a.content ? a.content : `
@@ -343,7 +347,13 @@ function saveInlineArticle(id) {
   if (!a) return;
   
   const newTitle = document.getElementById('inline-title').innerText.trim();
+  const newAuthor = document.getElementById('inline-author').innerText.trim();
+  const newTime = document.getElementById('inline-time').innerText.trim();
   const newContent = document.getElementById('inline-content').innerHTML.trim();
+  
+  // Get image from style background-image
+  const heroEl = document.getElementById('inline-hero-img');
+  const bgImg = heroEl.style.backgroundImage.slice(5, -2).replace(/"/g, "");
   
   if (!newTitle) {
     showToast('❌ הכותרת לא יכולה להיות ריקה');
@@ -351,11 +361,21 @@ function saveInlineArticle(id) {
   }
   
   a.title = newTitle;
+  a.author = newAuthor;
+  a.time = newTime;
   a.content = newContent;
+  a.image = bgImg;
   
   localStorage.setItem('newsArticles', JSON.stringify(newsArticles));
   showToast('✅ הכתבה נשמרה בהצלחה!');
   renderNewsLayout(); // Refresh thumbnails/feed
+}
+
+function changeArticleHeroImage(id) {
+  const newUrl = prompt('הכנס כתובת URL לתמונה חדשה או העלה תמונה:');
+  if (newUrl) {
+    document.getElementById('inline-hero-img').style.backgroundImage = `url('${newUrl}')`;
+  }
 }
 
 // ========== ADMIN DASHBOARD ==========
@@ -641,22 +661,56 @@ function handleImageUpload(event) {
 // ========== STORE MANAGEMENT ==========
 function renderStoreLayout() {
   const c = JSON.parse(localStorage.getItem('storeConfig')) || { title: 'התוכנה המקצועית שלי', version: 'גרסה 1.0', desc: 'קבל גישה לכלים המתקדמים ביותר עם התוכנה שלנו. כלי חובה לכל מקצוען שמחפש לייעל עבודה ולחסוך זמן.', image: '', downloadLink: '' };
-  const titleEl = document.getElementById('store-render-title');
-  const versionEl = document.getElementById('store-render-version');
-  const descEl = document.getElementById('store-render-desc');
+  const contentArea = document.getElementById('store-content-area');
+  
+  if (!contentArea) return;
+  
+  contentArea.innerHTML = `
+    <div class="store-hero">
+      <div class="store-visual" style="position: relative;">
+        ${c.image ? `<img src="${c.image}" id="store-render-image" class="store-main-image" style="display: block;">` : `<div id="store-render-emoji" class="store-emoji">🚀</div>`}
+        ${isAdmin ? `<button onclick="changeStoreImage()" style="position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.9); border: none; padding: 6px 14px; border-radius: 980px; font-size: 0.8rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">📷 ערוך תמונה</button>` : ''}
+      </div>
+      <div class="store-details">
+        <div class="store-badge" id="store-render-version" ${isAdmin ? 'contenteditable="true" style="border-bottom: 1px dashed #0071e3;"' : ''}>${escHtml(c.version)}</div>
+        <h1 class="store-title" id="store-render-title" ${isAdmin ? 'contenteditable="true" style="border-bottom: 2px dashed #0071e3;"' : ''}>${escHtml(c.title)}</h1>
+        <p class="store-desc" id="store-render-desc" ${isAdmin ? 'contenteditable="true" style="border: 1px dashed #0071e3; padding: 10px; border-radius: 8px;"' : ''}>${escHtml(c.desc)}</p>
+        
+        <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-top: 24px;">
+          <button id="store-render-btn" class="btn-primary" onclick="downloadStoreSoftware()" style="padding: 16px 40px; font-size: 1.1rem;">הורד עכשיו ⬇️</button>
+          <span style="font-size: 1.4rem; font-weight: 800; color: #1d1d1f;">חינם</span>
+        </div>
+        
+        ${isAdmin ? `
+          <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #eee;">
+            <button class="btn-primary" onclick="saveInlineStoreConfig()" style="background: #34c759; padding: 12px 24px; font-size: 0.95rem; border-radius: 980px;">💾 שמור שינויי חנות</button>
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function saveInlineStoreConfig() {
+  const title = document.getElementById('store-render-title').innerText.trim();
+  const version = document.getElementById('store-render-version').innerText.trim();
+  const desc = document.getElementById('store-render-desc').innerText.trim();
   const imgEl = document.getElementById('store-render-image');
-  const emojiEl = document.getElementById('store-render-emoji');
+  const image = imgEl ? imgEl.src : '';
   
-  if(titleEl) titleEl.textContent = c.title || 'התוכנה המקצועית שלי';
-  if(versionEl) versionEl.textContent = c.version || 'גרסה 1.0';
-  if(descEl) descEl.textContent = c.desc || '';
+  const currentConfig = JSON.parse(localStorage.getItem('storeConfig')) || {};
+  const config = { ...currentConfig, title, version, desc, image };
   
-  if(c.image) {
-    if(imgEl) { imgEl.src = c.image; imgEl.style.display = 'block'; }
-    if(emojiEl) emojiEl.style.display = 'none';
-  } else {
-    if(imgEl) imgEl.style.display = 'none';
-    if(emojiEl) emojiEl.style.display = 'block';
+  localStorage.setItem('storeConfig', JSON.stringify(config));
+  showToast('✅ הגדרות החנות עודכנו בהצלחה!');
+}
+
+function changeStoreImage() {
+  const newUrl = prompt('הכנס כתובת URL לתמונת התוכנה:');
+  if (newUrl) {
+    const visual = document.querySelector('.store-visual');
+    visual.innerHTML = `<img src="${newUrl}" id="store-render-image" class="store-main-image" style="display: block;">
+                        <button onclick="changeStoreImage()" style="position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.9); border: none; padding: 6px 14px; border-radius: 980px; font-size: 0.8rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">📷 ערוך תמונה</button>`;
   }
 }
 
