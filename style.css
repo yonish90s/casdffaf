@@ -40,17 +40,17 @@
 /* ========== DARK THEME OVERRIDES (Ultra Premium) ========== */
 body.dark-theme {
   --bg-main: #000000;
-  --bg-glass: rgba(28, 28, 30, 0.8);
-  --bg-glass-hover: rgba(44, 44, 46, 0.9);
+  --bg-glass: rgba(0, 0, 0, 0.85); /* Deeper black glass */
+  --bg-glass-hover: rgba(28, 28, 30, 0.95);
   
   --border-subtle: rgba(255, 255, 255, 0.1);
-  --border-glow: rgba(0, 113, 227, 0.3);
+  --border-glow: rgba(0, 113, 227, 0.4);
   
-  --text-main: #f5f5f7;
+  --text-main: #ffffff; /* Brighter white for high-end contrast */
   --text-muted: #a1a1a6;
   --text-dim: #86868b;
   
-  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --shadow-soft: 0 8px 64px rgba(0, 0, 0, 0.8);
 }
 
 body.dark-theme .navbar-apple {
@@ -417,11 +417,17 @@ body {
 }
 
 .main-news-layout {
-  max-width: 1200px;
-  margin: 0 auto;
   display: flex;
   gap: 40px;
-  padding: 0 24px;
+  max-width: 1024px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .main-news-layout {
+    flex-direction: column;
+    padding: 0 16px;
+  }
 }
 
 .news-feed {
@@ -445,9 +451,9 @@ body {
 .feed-item {
   display: flex;
   gap: 24px;
+  padding: 32px 0;
   cursor: pointer;
-  padding: 24px 0;
-  border-bottom: 1px solid #e5e5ea;
+  border-bottom: 1px solid var(--border-subtle);
   transition: opacity 0.3s;
 }
 
@@ -459,15 +465,33 @@ body {
   opacity: 0.8;
 }
 
+/* Mobile Side-by-Side optimized for iPhone (Matching Reference Image) */
+@media (max-width: 600px) {
+  .feed-item {
+    flex-direction: row-reverse; /* Text Left, Image Right */
+    gap: 16px;
+    padding: 20px 0;
+    align-items: center;
+  }
+}
+
 .feed-image {
   width: 250px;
   height: 180px;
   flex-shrink: 0;
-  background-size: contain;
+  background-size: cover; /* Changed to cover for full fill like reference */
   background-position: center;
   background-repeat: no-repeat;
-  border-radius: 4px;
+  border-radius: 12px; /* Smoother corner */
   background-color: #f5f5f7;
+}
+
+@media (max-width: 600px) {
+  .feed-image {
+    width: 110px;
+    height: 85px;
+    border-radius: 10px;
+  }
 }
 
 .feed-content {
@@ -478,17 +502,36 @@ body {
 
 .feed-title {
   font-size: 1.3rem;
-  font-weight: 800;
+  font-weight: 850; /* Heavier weight like reference */
   line-height: 1.35;
   color: var(--text-main);
   margin-bottom: 8px;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 600px) {
+  .feed-title {
+    font-size: 1.15rem;
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
 }
 
 .feed-meta {
   font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 12px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 600px) {
+  .feed-meta {
+    margin-bottom: 0;
+    font-size: 0.8rem;
+  }
 }
 
 .author-name {
@@ -508,7 +551,13 @@ body {
 .feed-snippet {
   font-size: 1.05rem;
   line-height: 1.6;
-  color: #444;
+  color: var(--text-muted);
+}
+
+@media (max-width: 600px) {
+  .feed-snippet {
+    display: none; /* Reference image 2 does not show snippets in list */
+  }
 }
 
 /* ========== BROWSE PAGE ========== */
@@ -702,6 +751,42 @@ body {
   border-radius: 980px;
   padding: 6px 16px;
   width: fit-content;
+}
+
+.article-title-main {
+  font-size: 3.2rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 600px) {
+  .article-title-main {
+    font-size: 2.2rem;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+}
+
+.article-body {
+  font-size: 1.35rem;
+  line-height: 1.85; /* Increased for high-end readability like reference 1 */
+  color: #d1d1d6; /* Slightly off-white for reading comfort in dark mode */
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+  .article-body {
+    font-size: 1.25rem;
+    line-height: 1.75;
+    padding: 0 4px;
+  }
+  
+  .article-body p {
+    margin-bottom: 24px;
+  }
 }
 
 .detail-title {
@@ -2173,10 +2258,81 @@ body.dark-theme .btn-download-mac:hover {
   font-weight: 900;
 }
 
-/* DARK MODE ADJUSTMENTS */
-body.dark-theme .checkout-container { background: #1c1c1e; }
-body.dark-theme .checkout-right { background: #151516; }
-body.dark-theme .checkout-left { border-left-color: #2c2c2e; }
-body.dark-theme .checkout-input { background: #2c2c2e; border-color: #3a3a3c; color: #fff; }
-body.dark-theme .pay-btn-google { border-color: #555; }
-body.dark-theme .summary-total, body.dark-theme .checkout-divider::before, body.dark-theme .checkout-divider::after { border-color: #2c2c2e; }
+/* ========== MOBILE-ONLY EXCLUSIVE (iPhone optimization) ========== */
+@media (max-width: 600px) {
+  /* Side-by-Side News Feed */
+  .feed-item {
+    flex-direction: row-reverse !important;
+    gap: 16px !important;
+    padding: 16px 0 !important;
+    align-items: flex-start !important;
+    border-bottom: 0.5px solid var(--border-subtle) !important;
+  }
+
+  .feed-image {
+    width: 110px !important;
+    height: 80px !important;
+    border-radius: 12px !important;
+    margin-bottom: 0 !important;
+  }
+
+  .feed-content {
+    flex: 1 !important;
+    padding-left: 0 !important;
+    text-align: right !important; /* Hebrew RTL */
+  }
+
+  .feed-title {
+    font-size: 1.15rem !important;
+    font-weight: 850 !important;
+    line-height: 1.25 !important;
+    margin-bottom: 6px !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .feed-meta {
+    font-size: 0.8rem !important;
+    margin-top: 4px !important;
+  }
+
+  .feed-snippet {
+    display: none !important;
+  }
+
+  /* Article Reading Premium Feel */
+  .article-title-main {
+    font-size: 2.3rem !important;
+    line-height: 1.15 !important;
+    margin-bottom: 20px !important;
+    font-weight: 900 !important;
+  }
+
+  .article-body {
+    font-size: 1.25rem !important;
+    line-height: 1.8 !important;
+    padding: 0 4px !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  .article-body p {
+    margin-bottom: 28px !important;
+  }
+
+  /* Responsive Navbar Adjustments */
+  .apple-nav-links {
+    gap: 12px !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+  }
+
+  .apple-nav-links::-webkit-scrollbar { display: none; }
+
+  .apple-nav-item {
+    font-size: 0.8rem !important;
+    white-space: nowrap !important;
+  }
+}
