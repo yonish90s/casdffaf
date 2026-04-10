@@ -379,6 +379,14 @@ function showArticle(id) {
         <p>בנוסף, הושם דגש מיוחד על יכולות בינה מלאכותית, פרטיות ואבטחת מידע, עם שיפורים שיהפכו כל פעולה ליעילה, נוחה ומאובטחת יותר מתמיד.</p>
         `}
       </div>
+      
+      <!-- Recommended Articles Section -->
+      <div class="recommendations-wrapper">
+        <h3 class="recommendations-title">אולי יעניין אותך גם</h3>
+        <div class="recommendations-grid">
+          ${renderRecommendations(a.id, a.category)}
+        </div>
+      </div>
     </div>
   `;
 
@@ -387,6 +395,27 @@ function showArticle(id) {
 }
 
 
+
+function renderRecommendations(currentId, category) {
+  // Find articles in the same category, excluding current
+  let recs = newsArticles.filter(art => art.id !== currentId && art.category === category);
+  
+  // If not enough, fill with others
+  if (recs.length < 4) {
+    const others = newsArticles.filter(art => art.id !== currentId && art.category !== category);
+    recs = [...recs, ...others].slice(0, 4);
+  } else {
+    recs = recs.slice(0, 4);
+  }
+
+  return recs.map(r => `
+    <div class="rec-card" onclick="showArticle(${r.id})">
+      <div class="rec-image" style="background-image: url('${r.image}')"></div>
+      <div class="rec-meta">${escHtml(r.category)}</div>
+      <div class="rec-title">${escHtml(r.title)}</div>
+    </div>
+  `).join('');
+}
 
 // ========== ADMIN DASHBOARD ==========
 function adminLogin() {
