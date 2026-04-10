@@ -1892,8 +1892,7 @@ body.dark-theme .comment-avatar {
 }
 
 /* ========== UPLOAD FORMS IMAGE PREVIEW ========== */
-#user-pdf-image-preview img, 
-#user-comic-image-preview img {
+#user-pdf-image-preview img {
   width: 80px;
   height: 80px;
   object-fit: cover;

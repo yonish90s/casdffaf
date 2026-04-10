@@ -11,44 +11,11 @@ const defaultNewsArticles = [
   { id: 8, title: 'טלגרם מציגה: עורך טקסט מבוסס AI, שדרוג לסקרים ותמיכה בתמונות חיים', image: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=800', author: 'יאן לנגרמן', time: 'היום, 09:19', snippet: 'גרסת טלגרם החדשה כוללת חידושים בולטים הנוגעים לכלי הבינה המלאכותית ולנוחות השיתוף בפלטפורמה.', category: 'אפליקציות' }
 ];
 
-const defaultPdfStoreItems = [
-  { title: 'מדריך פייתון למתחילים', type: 'PDF', price: '₪49', desc: 'למד לתכנת מאפס עם דוגמאות מעשיות.', link: '#' },
-  { title: 'ערכת UI בסגנון אפל', type: 'קובץ', price: 'חינם', desc: 'אייקונים, פונטים ותבניות Figma נקיות.', link: '#' },
-  { title: 'קורס וידאו React 2024', type: 'סרטון', price: '₪199', desc: '15 שעות של תוכן מקצועי על פיתוח אפליקציות.', link: '#' },
-  { title: 'מערכת ניהול משימות Pro', type: 'תוכנה', price: '₪89', desc: 'תוכנה לניהול זמן ופרויקטים למקצוענים.', link: '#' },
-  { title: 'מדריך אבטחת מידע', type: 'PDF', price: '₪120', desc: 'כלים ושיטות להגנה על האתר והשרת שלך.', link: '#' },
-  { title: 'ספריית רכיבי CSS', type: 'קובץ', price: '₪29', desc: 'עשרות כפתורים, תפריטים ואנימציות מוכנות.', link: '#' },
-  { title: 'מדריך בניית אתרים ב-Vite', type: 'PDF', price: '₪35', desc: 'המדריך המקיף לפיתוח מהיר ומודרני.', link: '#' },
-  { title: 'צ\'ק ליסט קידום אתרים (SEO)', type: 'מדריך', price: 'חינם', desc: 'כל מה שצריך לעשות כדי להגיע לעמוד הראשון.', link: '#' },
-  { title: 'ערכת כלי סייבר למנהלים', type: 'כלי', price: '₪450', desc: 'חבילת כלים לניטור וניהול איומים ברשת.', link: '#' },
-  { title: 'מדריך פוטושופ למעצבים', type: 'PDF', price: '₪75', desc: 'טיפים וטריקים לעיבוד תמונה מתקדם.', link: '#' },
-  { title: 'תוכנת הקלטת מסך 4K', type: 'תוכנה', price: '₪55', desc: 'הקלטה באיכות גבוהה עם עורך וידאו מובנה.', link: '#' },
-  { title: 'מדריך השקעות בשוק ההון', type: 'PDF', price: '₪150', desc: 'הצעדים הראשונים בדרך לחופש כלכלי.', link: '#' },
-  { title: 'תבנית דף נחיתה לעסקים', type: 'קובץ', price: '₪99', desc: 'תבנית רספונסיבית הממוקדת בהמרות.', link: '#' },
-  { title: 'קורס סקיצות ב-iPad', type: 'סרטון', price: '₪130', desc: 'למד לצייר ולאייר דיגיטלית ב-Procreate.', link: '#' },
-  { title: 'מדריך קריפטו 101', type: 'PDF', price: 'חינם', desc: 'הבנה בסיסית של בלוקצ\'יין ומטבעות דיגיטליים.', link: '#' },
-  { title: 'ערכת פונטים פרימיום', type: 'קובץ', price: '₪45', desc: 'אוסף פונטים בעברית ובאנגלית למעצבים.', link: '#' },
-  { title: 'מדריך ניהול קמפיינים', type: 'PDF', price: '₪110', desc: 'איך לנהל פרסום ממומן בפייסבוק וגוגל.', link: '#' },
-  { title: 'תבנית תיק עבודות (Portfolio)', type: 'קובץ', price: '₪79', desc: 'תבנית דף HTML/CSS נקייה להצגת עבודות.', link: '#' },
-  { title: 'ספריית סאונד ומוזיקה', type: 'קובץ', price: '₪150', desc: 'מאות אפקטים ומוזיקת רקע לסרטונים.', link: '#' },
-  { title: 'מדריך עריכת וידאו ב-Premiere', type: 'PDF', price: '₪85', desc: 'כל הטיפים לעריכה מהירה ומקצועית.', link: '#' },
-  { title: 'תוכנת ניקוי קבצים Pro', type: 'תוכנה', price: '₪30', desc: 'כלי קטן ויעיל לניקוי קבצי זבל מהמחשב.', link: '#' },
-  { title: 'צ\'ק ליסט השקת מוצר', type: 'מדריך', price: 'חינם', desc: 'השלבים הקריטיים לפני שמוציאים מוצר לשוק.', link: '#' },
-  { title: 'מערכת ניהול תקציב משפחתי', type: 'קובץ', price: '₪25', desc: 'טבלת אקסל חכמה לניהול הוצאות והכנסות.', link: '#' },
-  { title: 'מדריך בניית קהילה באינסטגרם', type: 'PDF', price: '₪60', desc: 'איך להשיג עוקבים אמיתיים ופעילים.', link: '#' }
-];
+const defaultPdfStoreItems = [];
 
-const defaultViewerPhotos = [
-  { title: 'תצפית מהחרמון', telegram: '@yoni_s', age: '24', img: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=800' },
-  { title: 'שקיעה בתל אביב', telegram: '@noa_love', age: '19', img: 'https://images.unsplash.com/photo-1544971587-b842c27f8e14?auto=format&fit=crop&q=80&w=800' },
-  { title: 'טיול לנחל דוד', telegram: '@itay_traveler', age: '31', img: 'https://images.unsplash.com/photo-1562141971-85b410787e74?auto=format&fit=crop&q=80&w=800' },
-  { title: 'קפה בבוקר ירושלמי', telegram: '@sarah_k', age: '28', img: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&q=80&w=800' }
-];
 
-let storedViewerPhotos = localStorage.getItem('viewerPhotos');
-if (!storedViewerPhotos || JSON.parse(storedViewerPhotos).length === 0) {
-  localStorage.setItem('viewerPhotos', JSON.stringify(defaultViewerPhotos));
-}
+
+
 
 let storedPdfItems = localStorage.getItem('pdfStoreItems');
 if (!storedPdfItems || JSON.parse(storedPdfItems).length === 0) {
@@ -65,6 +32,11 @@ if (!storedArticles) {
 
 let nextId = newsArticles.length ? Math.max(...newsArticles.map(a => a.id)) + 1 : 1;
 let isAdmin = localStorage.getItem('isAdmin') === 'true';
+// Cleanup obsolete data
+if (localStorage.getItem('viewerPhotos')) localStorage.removeItem('viewerPhotos');
+if (localStorage.getItem('comicsStore')) localStorage.removeItem('comicsStore');
+if (localStorage.getItem('pdfStoreItems')) localStorage.removeItem('pdfStoreItems');
+
 let previousPage = 'home';
 
 // ========== NAVIGATION ==========
@@ -76,14 +48,7 @@ function showPage(page) {
   if (page === 'home') renderNewsLayout();
   if (page === 'store') renderStoreLayout();
   if (page === 'pdf-store') renderPdfStoreGrid();
-  if (page === 'comics') renderComicsGrid();
   if (page === 'appointments') initBookingWidget();
-  if (page === 'viewer-photos') renderViewerPhotosGrid();
-  
-  // Custom updates for detail pages
-  if (page === 'article') renderComments('article', currentArticleId);
-  if (page === 'comic-detail') renderComments('comic', activeComicIndex);
-
   if (page === 'admin') {
     if (!isAdmin) {
       showPage('admin-login');
@@ -442,8 +407,7 @@ function switchAdminTab(tabId, btnEl) {
   }
   if (tabId === 'calendar') renderAdminCalendar();
   if (tabId === 'pdfstore') renderPdfAdminList();
-  if (tabId === 'viewer-photos') renderPhotoAdminList();
-  if (tabId === 'comics') renderComicAdminList();
+
 }
 
 
@@ -747,19 +711,13 @@ function renderPdfStoreGrid() {
   }).join('');
 }
 
-let currentProductBasePrice = 0;
-let currentProductLink = '';
+
 function showProductDetail(index) {
   const items = getPdfItems();
   const item = items[index];
   if (!item) return;
   
-  currentProductLink = item.link || '';
-  const priceStr = (item.price || '0').replace(/[^0-9.]/g, '');
-  currentProductBasePrice = parseFloat(priceStr) || 0;
-  
   document.getElementById('pdp-title').textContent = item.title;
-  document.getElementById('pdp-price').textContent = item.price || 'חינם';
   document.getElementById('pdp-desc').textContent = item.desc || '';
   
   // Gallery Logic
@@ -782,13 +740,7 @@ function showProductDetail(index) {
     thumbList.innerHTML = `<div class="pdp-thumb active"><img src="${fallback}"></div>`;
   }
   
-  // Reset variant chips
-  const variantContainer = document.getElementById('pdp-variant-chips');
-  if (variantContainer) {
-    variantContainer.querySelectorAll('.chip').forEach((c, idx) => {
-      c.classList.toggle('active', idx === 0);
-    });
-  }
+
   
   showPage('product-detail');
 }
@@ -799,24 +751,7 @@ function changePdpImage(el, src) {
   el.classList.add('active');
 }
 
-function updatePdpVariant(el, multiplier) {
-  document.querySelectorAll('#pdp-variant-chips .chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  
-  const totalPrice = Math.round(currentProductBasePrice * multiplier * 100) / 100;
-  const priceEl = document.getElementById('pdp-price');
-  if (priceEl) {
-    priceEl.textContent = totalPrice > 0 ? `₪${totalPrice.toLocaleString()}` : 'חינם';
-  }
-}
 
-function handleDownload() {
-  if (currentProductLink) {
-    window.open(currentProductLink, '_blank');
-  } else {
-    showToast('הקישור עדיין לא הוגדר למוצר זה.');
-  }
-}
 
 function renderPdfAdminList() {
   const list = document.getElementById('pdf-admin-list');
@@ -1063,408 +998,9 @@ function toggleTheme() {
 initTheme();
 showPage('home');
 
-// ========== VIEWER PHOTOS LOGIC ==========
-function getViewerPhotos() {
-  const data = localStorage.getItem('viewerPhotos');
-  if (!data || JSON.parse(data).length === 0) {
-    return defaultViewerPhotos; // Always show defaults if empty
-  }
-  return JSON.parse(data);
-}
 
 
-function saveViewerPhotos(photos) {
-  localStorage.setItem('viewerPhotos', JSON.stringify(photos));
-}
 
-function renderViewerPhotosGrid() {
-  const grid = document.getElementById('viewer-photos-grid');
-  if (!grid) return;
-  const photos = getViewerPhotos();
-  if (photos.length === 0) {
-    grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:80px; color:#86868b; font-size:1.1rem;">אין תמונות גולשים עדיין. המנהל יעלה בקרוב!</div>';
-    return;
-  }
-  grid.innerHTML = photos.map((p, i) => `
-    <div class="pdf-card" onclick="showPhotoDetail(${i})" style="overflow:hidden; padding:0; border:none; box-shadow:var(--shadow-soft); transition:transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
-      <div style="width:100%; height:280px; overflow:hidden;">
-        <img src="${p.img}" style="width:100%; height:100%; object-fit:cover; transition:transform 0.5s;" />
-      </div>
-      <div style="padding:16px; background:#fff;">
-        <div class="pdf-card-title" style="margin:0; text-align:center; font-size:0.95rem;">${escHtml(p.title || 'תמונת גולש')}</div>
-      </div>
-    </div>
-  `).join('');
-}
-
-function showPhotoDetail(index) {
-  const photos = getViewerPhotos();
-  const p = photos[index];
-  if (!p) return;
-  
-  document.getElementById('photo-pdp-title').textContent = p.title || 'תמונת גולש';
-  document.getElementById('photo-pdp-telegram').textContent = p.telegram || 'לא צוין';
-  document.getElementById('photo-pdp-age').textContent = p.age || 'לא צוין';
-  document.getElementById('photo-pdp-main-image').src = p.img;
-  
-  showPage('photo-detail');
-}
-
-// Admin logic for photos
-function renderPhotoAdminList() {
-  const list = document.getElementById('photo-admin-list');
-  if (!list) return;
-  const photos = getViewerPhotos();
-  if (photos.length === 0) {
-    list.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:32px; color:#86868b;">אין תמונות עדיין.</div>';
-    return;
-  }
-  list.innerHTML = photos.map((p, i) => `
-    <div style="background:#f5f5f7; border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px;">
-      <img src="${p.img}" style="width:100%; height:100px; object-fit:cover; border-radius:8px;" />
-      <div style="font-weight:700; font-size:0.8rem; text-align:center; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escHtml(p.title)}</div>
-      <div style="display:flex; gap:4px; justify-content:center;">
-        <button class="btn-primary" style="padding:4px 8px; font-size:0.75rem;" onclick="editPhoto(${i})">ערוך</button>
-        <button class="remove-btn" style="padding:4px 8px; font-size:0.75rem; border:none; background:transparent;" onclick="deletePhoto(${i})">מחק</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function openPhotoEditor(index = null) {
-  const editor = document.getElementById('photo-editor');
-  if(editor) editor.classList.remove('hidden');
-  if (index !== null) {
-    const photos = getViewerPhotos();
-    const p = photos[index];
-    document.getElementById('photo-edit-id').value = index;
-    document.getElementById('photo-edit-title').value = p.title || '';
-    document.getElementById('photo-edit-telegram').value = p.telegram || '';
-    document.getElementById('photo-edit-age').value = p.age || '';
-    document.getElementById('photo-edit-img').value = p.img || '';
-  } else {
-    document.getElementById('photo-edit-id').value = '';
-    document.getElementById('photo-edit-title').value = '';
-    document.getElementById('photo-edit-telegram').value = '';
-    document.getElementById('photo-edit-age').value = '';
-    document.getElementById('photo-edit-img').value = '';
-  }
-}
-
-function handleViewerPhotoUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  showToast('מעבד תמונה...');
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const imgStr = e.target.result;
-    document.getElementById('photo-edit-img').value = imgStr;
-    showToast('תמונה עלתה!');
-  };
-  reader.readAsDataURL(file);
-}
-
-function saveViewerPhoto() {
-  const idValue = document.getElementById('photo-edit-id').value;
-  const photo = {
-    title: document.getElementById('photo-edit-title').value,
-    telegram: document.getElementById('photo-edit-telegram').value,
-    age: document.getElementById('photo-edit-age').value,
-    img: document.getElementById('photo-edit-img').value
-  };
-  if (!photo.img) { showToast('חובה להעלות תמונה'); return; }
-  
-  const photos = getViewerPhotos();
-  if (idValue !== '') {
-    photos[parseInt(idValue)] = photo;
-    showToast('תמונה עודכנה!');
-  } else {
-    photos.unshift(photo);
-    showToast('תמונה נוספה!');
-  }
-  saveViewerPhotos(photos);
-  renderPhotoAdminList();
-  renderViewerPhotosGrid();
-  document.getElementById('photo-editor').classList.add('hidden');
-}
-
-function editPhoto(i) { openPhotoEditor(i); }
-function deletePhoto(i) {
-  if (confirm('למחוק תמונה זו?')) {
-    const photos = getViewerPhotos();
-    photos.splice(i, 1);
-    saveViewerPhotos(photos);
-    renderPhotoAdminList();
-    renderViewerPhotosGrid();
-    showToast('תמונה נמחקה');
-  }
-}
-
-// ========== PUBLIC PHOTO UPLOAD ==========
-function openPublicPhotoUpload() {
-  document.getElementById('public-photo-modal').style.display = 'flex';
-}
-
-function closePublicPhotoUpload() {
-  document.getElementById('public-photo-modal').style.display = 'none';
-  document.getElementById('public-photo-title').value = '';
-  document.getElementById('public-photo-telegram').value = '';
-  document.getElementById('public-photo-age').value = '';
-  document.getElementById('public-photo-data').value = '';
-  document.getElementById('public-photo-status').style.display = 'none';
-}
-
-function handlePublicPhotoUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  showToast('מעבד תמונה...');
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const img = new Image();
-    img.onload = function() {
-      const canvas = document.createElement('canvas');
-      const MAX_WIDTH = 1000;
-      let width = img.width;
-      let height = img.height;
-      if (width > MAX_WIDTH) {
-        height *= MAX_WIDTH / width;
-        width = MAX_WIDTH;
-      }
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, width, height);
-      const dataUri = canvas.toDataURL('image/jpeg', 0.8);
-      document.getElementById('public-photo-data').value = dataUri;
-      document.getElementById('public-photo-status').style.display = 'block';
-      showToast('התמונה מוכנה!');
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
-function submitPublicPhoto() {
-  const title = document.getElementById('public-photo-title').value.trim();
-  const telegram = document.getElementById('public-photo-telegram').value.trim();
-  const age = document.getElementById('public-photo-age').value.trim();
-  const imgData = document.getElementById('public-photo-data').value;
-  
-  if (!imgData) {
-    showToast('❌ חובה לבחור תמונה!');
-    return;
-  }
-  
-  const newItem = {
-    title: title || 'תמונת גולש',
-    telegram: telegram || 'לא צוין',
-    age: age || 'לא צוין',
-    img: imgData
-  };
-  
-  const photos = getViewerPhotos();
-  photos.unshift(newItem);
-  saveViewerPhotos(photos);
-  
-  renderViewerPhotosGrid();
-  renderPhotoAdminList();
-  
-  closePublicPhotoUpload();
-  showToast('🎊 התמונה שלך פורסמה בגלריה!');
-}
-
-// ========== COMICS LOGIC ==========
-const defaultComics = [
-  { title: 'הנוקמים: המערכה האחרונה', price: '₪25', desc: 'הקומיקס המקורי של הסרט המצליח.', img: 'https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?auto=format&fit=crop&q=80&w=800', password: '123', link: '#' },
-  { title: 'באטמן: הבדיחה ההורגת', price: '₪19', desc: 'אחד הסיפורים האפלים והמרתקים ביותר.', img: 'https://images.unsplash.com/photo-1541753866388-0b3c701627d3?auto=format&fit=crop&q=80&w=800', password: '999', link: '#' }
-];
-
-function getComics() {
-  const data = localStorage.getItem('comicsStore');
-  if (!data || JSON.parse(data).length === 0) return defaultComics;
-  return JSON.parse(data);
-}
-
-function saveComics(items) {
-  localStorage.setItem('comicsStore', JSON.stringify(items));
-}
-
-function renderComicsGrid() {
-  const grid = document.getElementById('comics-grid');
-  if (!grid) return;
-  const items = getComics();
-  grid.innerHTML = items.map((item, i) => `
-    <div class="pdf-card" onclick="showComicDetail(${i})" style="padding:0; overflow:hidden; border:none; box-shadow:var(--shadow-soft);">
-      <div style="height:320px; overflow:hidden; position:relative;">
-        <img src="${item.img}" style="width:100%; height:100%; object-fit:cover;" />
-        ${item.password ? `<div style="position:absolute; top:12px; right:12px; background:rgba(0,0,0,0.7); color:white; padding:6px 14px; border-radius:30px; font-size:0.8rem; backdrop-filter:blur(8px); font-weight:700;">🔐 מוגן</div>` : 
-                          `<div style="position:absolute; top:12px; right:12px; background:rgba(0,128,0,0.7); color:white; padding:6px 14px; border-radius:30px; font-size:0.8rem; backdrop-filter:blur(8px); font-weight:700;">📖 ציבורי</div>`}
-      </div>
-      <div style="padding:20px; background:#fff;">
-        <div class="pdf-card-title" style="margin:0; font-size:1.1rem; font-weight:800;">${escHtml(item.title)}</div>
-        <div class="pdf-card-price" style="margin-top:10px; color:#0071e3; font-weight:700;">${escHtml(item.price)}</div>
-      </div>
-    </div>
-  `).join('');
-}
-
-let activeComicIndex = null;
-function showComicDetail(index) {
-  const items = getComics();
-  const item = items[index];
-  if (!item) return;
-  activeComicIndex = index;
-  
-  document.getElementById('comic-pdp-title').textContent = item.title;
-  document.getElementById('comic-pdp-desc').textContent = item.desc || '';
-  document.getElementById('comic-pdp-main-image').src = item.img;
-  
-  const priceContainer = document.getElementById('comic-pdp-price-container');
-  const accessSection = document.getElementById('comic-pdp-access-section');
-  
-  if (item.password) {
-    if (priceContainer) {
-      priceContainer.style.display = 'block';
-      priceContainer.textContent = item.price || '0 ₪';
-    }
-    if (accessSection) accessSection.style.display = 'block';
-  } else {
-    if (priceContainer) priceContainer.style.display = 'none';
-    if (accessSection) accessSection.style.display = 'none';
-  }
-  
-  showPage('comic-detail');
-}
-
-function openComicPasswordModal() {
-  document.getElementById('comic-access-password').value = '';
-  document.getElementById('comic-password-modal').classList.add('active');
-}
-
-function closeComicPasswordModal() {
-  document.getElementById('comic-password-modal').classList.remove('active');
-}
-
-function verifyComicPassword() {
-  const items = getComics();
-  const item = items[activeComicIndex];
-  if (!item) return;
-  
-  const pass = document.getElementById('comic-access-password').value;
-  if (pass === item.password) {
-    showToast('✅ סיסמה נכונה! ההורדה מתחילה...');
-    closeComicPasswordModal();
-    setTimeout(() => {
-      window.open(item.link || '#', '_blank');
-    }, 1000);
-  } else {
-    showToast('❌ סיסמה שגויה. נסה שוב.');
-  }
-}
-
-function requestComicApproval() {
-  const items = getComics();
-  const item = items[activeComicIndex];
-  if (!item) return;
-
-  // Open contact modal and pre-fill message
-  openContactModal();
-  document.getElementById('contact-body').value = `שלום, אשמח לקבל אישור וסיסמה להורדת הקומיקס: "${item.title}"`;
-  showToast('הודעה הוכנה עבורך! מלא את הפרטים ושלח למנהל.');
-}
-
-function renderComicAdminList() {
-  const list = document.getElementById('comic-admin-list');
-  if (!list) return;
-  const items = getComics();
-  if (items.length === 0) {
-    list.innerHTML = '<p style="text-align:center; grid-column:1/-1; padding:20px;">אין קומיקסים.</p>';
-    return;
-  }
-  list.innerHTML = items.map((item, i) => `
-    <div style="background:#f5f5f7; border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px;">
-      <img src="${item.img}" style="width:100%; height:120px; object-fit:cover; border-radius:8px;" />
-      <div style="font-weight:700; font-size:0.85rem; text-align:right;">${escHtml(item.title)}</div>
-      <div style="font-size:0.75rem; color:#86868b; text-align:right;">🔐: ${escHtml(item.password)}</div>
-      <div style="display:flex; gap:6px; justify-content:center; margin-top:4px;">
-        <button class="btn-primary" style="padding:6px 12px; font-size:0.8rem;" onclick="editComic(${i})">ערוך</button>
-        <button class="remove-btn" style="padding:6px 12px; font-size:0.8rem; border:none; background:transparent;" onclick="deleteComic(${i})">מחק</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function openComicEditor(index = null) {
-  document.getElementById('comic-editor').classList.remove('hidden');
-  if (index !== null) {
-    const items = getComics();
-    const item = items[index];
-    document.getElementById('comic-edit-id').value = index;
-    document.getElementById('comic-edit-title').value = item.title || '';
-    document.getElementById('comic-edit-desc').value = item.desc || '';
-    document.getElementById('comic-edit-price').value = item.price || '';
-    document.getElementById('comic-edit-password').value = item.password || '';
-    document.getElementById('comic-edit-link').value = item.link || '';
-    document.getElementById('comic-edit-img').value = item.img || '';
-  } else {
-    document.getElementById('comic-edit-id').value = '';
-    document.getElementById('comic-edit-title').value = '';
-    document.getElementById('comic-edit-desc').value = '';
-    document.getElementById('comic-edit-price').value = '';
-    document.getElementById('comic-edit-password').value = '';
-    document.getElementById('comic-edit-link').value = '';
-    document.getElementById('comic-edit-img').value = '';
-  }
-}
-
-function handleComicCoverUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  showToast('טוען כריכה...');
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    document.getElementById('comic-edit-img').value = e.target.result;
-    showToast('כריכה נטענה!');
-  };
-  reader.readAsDataURL(file);
-}
-
-function saveComicItem() {
-  const idVal = document.getElementById('comic-edit-id').value;
-  const item = {
-    title: document.getElementById('comic-edit-title').value.trim(),
-    desc: document.getElementById('comic-edit-desc').value.trim(),
-    price: document.getElementById('comic-edit-price').value.trim(),
-    password: document.getElementById('comic-edit-password').value.trim(),
-    link: document.getElementById('comic-edit-link').value.trim(),
-    img: document.getElementById('comic-edit-img').value.trim()
-  };
-  if (!item.title) { showToast('נא להזין שם לקומיקס'); return; }
-  
-  const items = getComics();
-  if (idVal !== '') {
-    items[parseInt(idVal)] = item;
-  } else {
-    items.unshift(item);
-  }
-  saveComics(items);
-  renderComicAdminList();
-  renderComicsGrid();
-  document.getElementById('comic-editor').classList.add('hidden');
-  showToast('הקומיקס נשמר בהצלחה!');
-}
-
-function editComic(i) { openComicEditor(i); }
-function deleteComic(i) {
-  if (confirm('למחוק קומיקס זה?')) {
-    const items = getComics();
-    items.splice(i, 1);
-    saveComics(items);
-    renderComicAdminList();
-    renderComicsGrid();
-    showToast('הקומיקס נמחק');
-  }
-}
 
 // ========== USER & COMMENTS LOGIC ==========
 let currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
@@ -1473,9 +1009,11 @@ function openJoinModal() {
   const modal = document.getElementById('join-modal');
   if (currentUser) {
     document.getElementById('join-name').value = currentUser.name;
+    document.getElementById('join-password').value = '';
     document.getElementById('btn-logout').style.display = 'block';
   } else {
     document.getElementById('join-name').value = '';
+    document.getElementById('join-password').value = '';
     document.getElementById('btn-logout').style.display = 'none';
   }
   modal.classList.add('active');
@@ -1492,20 +1030,39 @@ function selectEmoji(el, emoji) {
 }
 
 function saveUserProfile() {
-  const nameInput = document.getElementById('join-name');
-  const name = nameInput.value.trim();
+  const name = document.getElementById('join-name').value.trim();
+  const password = document.getElementById('join-password').value.trim();
   const emoji = document.getElementById('join-emoji').value;
   
-  if (!name) {
-    showToast('❌ נא להזין שם כדי להצטרף');
+  if (!name || !password) {
+    showToast('❌ נא להזין שם וסיסמה כדי להמשיך');
     return;
   }
   
-  currentUser = { name, emoji };
-  localStorage.setItem('currentUser', JSON.stringify(currentUser));
-  updateUserUI();
-  closeJoinModal();
-  showToast(`✨ ברוך הבא, ${name}!`);
+  let registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '{}');
+  
+  if (registeredUsers[name]) {
+    // User exists, check password
+    if (registeredUsers[name].password === password) {
+      currentUser = { name, emoji: registeredUsers[name].emoji };
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      updateUserUI();
+      closeJoinModal();
+      showToast(`👋 ברוך שובך, ${name}!`);
+    } else {
+      showToast('❌ סיסמה שגויה לשם משתמש זה');
+    }
+  } else {
+    // New user, register
+    registeredUsers[name] = { password, emoji };
+    localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+    
+    currentUser = { name, emoji };
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    updateUserUI();
+    closeJoinModal();
+    showToast(`✨ ברוך הבא לקהילה, ${name}!`);
+  }
 }
 
 function logoutUser() {
@@ -1709,97 +1266,4 @@ async function submitUserPdfItem() {
   }, 2000);
 }
 
-// ========== USER COMIC UPLOADS ==========
-let selectedUserComicImages = [];
 
-function handleUserComicFileSelection(event) {
-  const files = Array.from(event.target.files);
-  const remaining = 4 - selectedUserComicImages.length;
-  const toProcess = files.slice(0, remaining);
-  
-  toProcess.forEach(file => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      selectedUserComicImages.push(e.target.result);
-      renderUserComicPreviews();
-    };
-    reader.readAsDataURL(file);
-  });
-  event.target.value = '';
-}
-
-function renderUserComicPreviews() {
-  const container = document.getElementById('user-comic-image-preview');
-  if (!container) return;
-  container.innerHTML = selectedUserComicImages.map((img, i) => `
-    <div class="preview-item">
-      <img src="${img}" alt="Preview ${i}" />
-      <button class="remove-img-btn" onclick="removeUserComicImage(${i})">✕</button>
-    </div>
-  `).join('');
-}
-
-function removeUserComicImage(index) {
-  selectedUserComicImages.splice(index, 1);
-  renderUserComicPreviews();
-}
-
-async function submitUserComicItem() {
-  const titleInput = document.getElementById('user-comic-title');
-  const title = titleInput.value.trim();
-  const desc = document.getElementById('user-comic-desc').value.trim();
-  const price = document.getElementById('user-comic-price').value.trim();
-  
-  if (!title) {
-    showToast('❌ נא להזין שם לקומיקס');
-    return;
-  }
-  
-  if (selectedUserComicImages.length === 0) {
-    showToast('❌ נא לבחור לפחות תמונה אחת להמחשה');
-    return;
-  }
-  
-  const loader = document.getElementById('upload-loading-overlay');
-  if (loader) {
-    loader.style.display = 'flex';
-    loader.style.opacity = '1';
-    loader.style.pointerEvents = 'auto';
-  }
-
-  setTimeout(() => {
-    const newItem = {
-      title: title,
-      desc: desc,
-      price: price || 'חינם',
-      img: selectedUserComicImages[0], // First image as main cover
-      images: selectedUserComicImages,
-      password: '', // User uploads are initially unprotected
-      link: '#',
-      author: currentUser ? currentUser.name : 'גולש אורח'
-    };
-    
-    const items = getComics();
-    items.unshift(newItem);
-    saveComics(items);
-    
-    // Reset form
-    document.getElementById('user-comic-title').value = '';
-    document.getElementById('user-comic-desc').value = '';
-    document.getElementById('user-comic-price').value = '';
-    selectedUserComicImages = [];
-    renderUserComicPreviews();
-    
-    renderComicsGrid();
-    
-    if (loader) {
-      loader.style.opacity = '0';
-      setTimeout(() => {
-        loader.style.display = 'none';
-        loader.style.pointerEvents = 'none';
-        showToast('✅ הקומיקס שלך פורסם בהצלחה!');
-        document.getElementById('comics-grid').scrollIntoView({ behavior: 'smooth' });
-      }, 300);
-    }
-  }, 2000);
-}
