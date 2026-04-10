@@ -160,12 +160,23 @@ function submitBookingDirect() {
   
   showToast('✅ התור נקבע בהצלחה!');
   
+  // Transition to Success View
+  document.getElementById('booking-form-view').style.display = 'none';
+  document.getElementById('booking-success-view').style.display = 'block';
+
   // Clear direct inputs
   document.getElementById('book-name-direct').value = '';
   document.getElementById('book-phone-direct').value = '';
   document.getElementById('book-request-direct').value = '';
   
   initBookingWidget(); // Refresh grid to remove booked slot
+}
+
+function resetBookingView() {
+  document.getElementById('booking-form-view').style.display = 'block';
+  document.getElementById('booking-success-view').style.display = 'none';
+  selectedTime = ''; // Reset selection
+  initBookingWidget();
 }
 
 function submitBooking(e) {
@@ -190,6 +201,14 @@ function submitBooking(e) {
   localStorage.setItem('appointments', JSON.stringify(appts));
   
   showToast('✅ התור נקבע בהצלחה!');
+  
+  // If on appointments page, show success view
+  const formView = document.getElementById('booking-form-view');
+  if (formView && document.getElementById('page-appointments').classList.contains('active')) {
+    formView.style.display = 'none';
+    document.getElementById('booking-success-view').style.display = 'block';
+  }
+
   closeBookingModal();
   e.target.reset();
   initBookingWidget(); // Refresh grid to remove booked slot
