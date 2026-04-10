@@ -129,6 +129,14 @@ function closeBookingModal() {
   document.getElementById('booking-modal').classList.remove('active');
 }
 
+function openCheckoutModal() {
+  document.getElementById('checkout-modal').classList.add('active');
+}
+
+function closeCheckoutModal() {
+  document.getElementById('checkout-modal').classList.remove('active');
+}
+
 function submitBookingDirect() {
   const name = document.getElementById('book-name-direct').value;
   const phone = document.getElementById('book-phone-direct').value;
@@ -631,9 +639,15 @@ function renderStoreLayout() {
         <h1 class="store-title" id="store-render-title" ${isAdmin ? 'contenteditable="true" style="border-bottom: 2px dashed #0071e3;"' : ''}>${escHtml(c.title)}</h1>
         <p class="store-desc" id="store-render-desc" ${isAdmin ? 'contenteditable="true" style="border: 1px dashed #0071e3; padding: 10px; border-radius: 8px;"' : ''}>${escHtml(c.desc)}</p>
         
-        <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-top: 24px;">
-          <button id="store-render-btn" class="btn-primary" onclick="downloadStoreSoftware()" style="padding: 16px 40px; font-size: 1.1rem;">הורד עכשיו ⬇️</button>
-          <span style="font-size: 1.4rem; font-weight: 800; color: #1d1d1f;">חינם</span>
+        <div class="btn-platform-container">
+          <button class="btn-download-mac" onclick="downloadStorePlatform('Mac')">
+            <span class="platform-icon"></span>
+            להורדה ל-Mac
+          </button>
+          <button class="btn-download-android" onclick="downloadStorePlatform('Android')">
+            <span class="platform-icon">🤖</span>
+            להורדה ל-Android
+          </button>
         </div>
         
         ${isAdmin ? `
@@ -713,13 +727,24 @@ function handleStoreImageUpload(event) {
   reader.readAsDataURL(file);
 }
 
+function downloadStorePlatform(platform) {
+  showToast(`⚡ מכין הורדה עבור ${platform}...`);
+  
+  // Create a temporary link to download the image
+  const link = document.createElement('a');
+  link.href = 'software_preview.png';
+  link.download = `Software_Preview_${platform}.png`;
+  document.body.appendChild(link);
+  
+  setTimeout(() => {
+    link.click();
+    document.body.removeChild(link);
+    showToast('✅ ההורדה החלה!');
+  }, 1000);
+}
+
 function downloadStoreSoftware() {
-  const c = JSON.parse(localStorage.getItem('storeConfig')) || {};
-  if(c.downloadLink) {
-    window.open(c.downloadLink, '_blank');
-  } else {
-    showToast('ההורדה תתחיל בקרוב...');
-  }
+  downloadStorePlatform('Default');
 }
 
 // ========== PDF STORE ==========

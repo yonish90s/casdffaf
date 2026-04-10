@@ -29,6 +29,7 @@
       
       <!-- User Account Section -->
       <div id="user-nav-section" style="margin-right: 12px; display: flex; align-items: center;">
+        <button class="btn-orange" onclick="openCheckoutModal()">💳 מנוי חודשי</button>
         <button id="btn-join" class="btn-primary" onclick="showPage('join')" style="font-size: 0.75rem; padding: 6px 16px; height: 30px; min-height: 0;">✨ הצטרף</button>
         <div id="user-profile-badge" onclick="showPage('join')" style="display: none; cursor: pointer; border: 1px solid var(--border-subtle); background: var(--bg-main); padding: 4px 10px; border-radius: 980px; align-items: center; gap: 8px;">
           <span id="user-badge-emoji" style="font-size: 1.1rem;">👤</span>
@@ -191,9 +192,15 @@
       <h3 id="store-render-title" style="font-size: 2.2rem; font-weight: 800; margin-bottom: 16px; color: #1d1d1f; letter-spacing: -0.02em;">התוכנה המקצועית שלי</h3>
       <p id="store-render-desc" style="font-size: 1.1rem; color: #86868b; line-height: 1.6; margin-bottom: 32px; white-space: pre-wrap;">קבל גישה לכלים המתקדמים ביותר עם התוכנה שלנו. כלי חובה לכל מקצוען שמחפש לייעל עבודה ולחסוך זמן.</p>
       
-      <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
-        <button id="store-render-btn" class="btn-primary" onclick="downloadStoreSoftware()" style="padding: 16px 40px; font-size: 1.1rem;">הורד עכשיו ⬇️</button>
-        <span style="font-size: 1.4rem; font-weight: 800; color: #1d1d1f;">חינם</span>
+      <div class="btn-platform-container">
+        <button class="btn-download-mac" onclick="downloadStorePlatform('Mac')">
+          <span class="platform-icon"></span>
+          להורדה ל-Mac
+        </button>
+        <button class="btn-download-android" onclick="downloadStorePlatform('Android')">
+          <span class="platform-icon">🤖</span>
+          להורדה ל-Android
+        </button>
       </div>
     </div>
   </div>
@@ -661,6 +668,107 @@
 
 
 <!-- TOAST NOTIFICATION -->
+<!-- CHECKOUT MODAL -->
+<div id="checkout-modal" class="modal-overlay">
+  <div class="checkout-container">
+    <button class="modal-close" onclick="closeCheckoutModal()" style="top: 24px; left: 24px; z-index: 10;">✕</button>
+    
+    <!-- LEFT: PAYMENT & FORM -->
+    <div class="checkout-left">
+      <div class="billing-badge">
+        <span>🔒 Secure billing</span>
+      </div>
+      <h2 class="checkout-title">הפעל מנוי Premium</h2>
+      
+      <div class="payment-buttons">
+        <button class="pay-btn pay-btn-apple"> Pay</button>
+        <button class="pay-btn pay-btn-google">Buy with G Pay</button>
+        <button class="pay-btn pay-btn-paypal">PayPal</button>
+      </div>
+      
+      <div class="checkout-divider">או שלח פרטי כרטיס</div>
+      
+      <form onsubmit="event.preventDefault(); showToast('💳 נהדר! הפרטים נקלטו במערכת המדמה שלנו.'); closeCheckoutModal();">
+        <div class="billing-grid">
+          <div>
+            <label class="form-label-sub">שם פרטי</label>
+            <input type="text" class="checkout-input" placeholder="ישראל" required>
+          </div>
+          <div>
+            <label class="form-label-sub">שם משפחה</label>
+            <input type="text" class="checkout-input" placeholder="ישראלי" required>
+          </div>
+          
+          <div class="full">
+            <label class="form-label-sub">מדינה</label>
+            <select class="checkout-input">
+              <option>Israel</option>
+              <option>United States</option>
+              <option>United Kingdom</option>
+            </select>
+          </div>
+          
+          <div class="full">
+            <label class="form-label-sub">כתובת</label>
+            <input type="text" class="checkout-input" placeholder="רחוב, מספר בית" required>
+          </div>
+          
+          <div>
+            <label class="form-label-sub">עיר</label>
+            <input type="text" class="checkout-input" placeholder="תל אביב" required>
+          </div>
+          <div>
+            <label class="form-label-sub">מיקוד</label>
+            <input type="text" class="checkout-input" placeholder="1234567" required>
+          </div>
+        </div>
+        
+        <div style="margin-top: 32px; display: flex; flex-direction: column; gap: 12px;">
+          <label style="display: flex; gap: 10px; font-size: 0.85rem; cursor: pointer; color: #86868b;">
+            <input type="checkbox" required style="margin-top: 2px;">
+            אני מסכים לתנאי השימוש ולמדיניות הפרטיות.
+          </label>
+          <label style="display: flex; gap: 10px; font-size: 0.85rem; cursor: pointer; color: #86868b;">
+            <input type="checkbox" required style="margin-top: 2px;">
+            אני מאשר למערכת לחייב את הכרטיס עבור הגישה לתוכן Premium בצורה חודשית.
+          </label>
+        </div>
+        
+        <button type="submit" class="btn-primary full-width" style="margin-top: 32px; height: 56px; font-size: 1.1rem; font-weight: 800; border-radius: 12px;">🚀 התחל מנוי עכשיו</button>
+      </form>
+    </div>
+    
+    <!-- RIGHT: SUMMARY -->
+    <div class="checkout-right">
+      <h3 class="summary-header">סיכום הזמנה</h3>
+      
+      <div class="summary-item">
+        <span>מנוי Premium חודשי</span>
+        <span>₪5 / חודש</span>
+      </div>
+      
+      <p style="font-size: 0.85rem; color: #86868b; margin-top: 8px;">גישה מלאה לכל התוכן המורחב, כולל הורדות PDF ללא הגבלה.</p>
+      
+      <ul class="feature-list">
+        <li>גלישה ללא פרסומות כלל</li>
+        <li>גישה בלעדית לכתבות עומק</li>
+        <li>הורדת קבצי PDF ללא הגבלה</li>
+        <li>תמיכה טכנית מועדפת (24/7)</li>
+        <li>עדכונים לפני כולם</li>
+      </ul>
+      
+      <div class="summary-total">
+        <span>לתשלום היום*</span>
+        <span>₪5 / חודש</span>
+      </div>
+      
+      <p style="font-size: 0.75rem; color: #a1a1a6; margin-top: 16px; line-height: 1.4;">
+        * המחיר כולל מע"מ כחוק. החיוב יתבצע באופן חודשי עד לביטול המנוי. ניתן לבטל בכל עת דרך תפריט הניהול האישי.
+      </p>
+    </div>
+  </div>
+</div>
+
 <div id="toast" class="toast"></div>
 
 <script src="app.js"></script>
