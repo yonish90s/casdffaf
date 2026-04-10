@@ -49,6 +49,17 @@ function showPage(page) {
   if (page === 'store') renderStoreLayout();
   if (page === 'pdf-store') renderPdfStoreGrid();
   if (page === 'appointments') initBookingWidget();
+  if (page === 'join') {
+    if (currentUser) {
+      document.getElementById('join-name').value = currentUser.name;
+      document.getElementById('join-password').value = '';
+      document.getElementById('btn-logout').style.display = 'block';
+    } else {
+      document.getElementById('join-name').value = '';
+      document.getElementById('join-password').value = '';
+      document.getElementById('btn-logout').style.display = 'none';
+    }
+  }
   if (page === 'admin') {
     if (!isAdmin) {
       showPage('admin-login');
@@ -298,7 +309,7 @@ function showArticle(id) {
   document.getElementById('article-content').innerHTML = `
     <header class="article-header">
       <div class="article-category">${escHtml(a.category)}</div>
-      <h1 class="article-title-main">${escHtml(a.title)}</h1>
+      <h1 class="article-title-main" id="inline-title" ${isAdmin ? 'contenteditable="true" style="border-bottom: 2px dashed #0071e3;"' : ''}>${escHtml(a.title)}</h1>
       <div class="article-meta-main">
         מאת <span class="author-name" style="font-weight:700;">${escHtml(a.author)}</span>
         <span class="meta-sep">|</span> 
@@ -307,12 +318,19 @@ function showArticle(id) {
     </header>
     <div class="article-hero-img" style="background-image: url('${a.image}')"></div>
     <div class="article-body">
-      <p class="article-intro">${escHtml(a.snippet || a.title)}</p>
-      ${a.content ? `<div style="white-space: pre-line; margin-top: 20px;">${escHtml(a.content)}</div>` : `
-      <p>זהו טקסט דמה להמחשת הכתבה. במערכת חדשות מלאה, אזור זה יישאב ממסד הנתונים ויכיל פסקאות, ציטוטים מורחבים, גלריות תמונות ואפשרויות לשיתוף ברשתות חברתיות.</p>
-      <p>חברת הטכנולוגיה המובילה חשפה לאחרונה את כל העדכונים של המערכת המיוחלת החדשה. באירוע שערכה, השתתפו אלפי עיתונאי טכנולוגיה מכל העולם, שזכו לראות את כלי התוכנה המתקדמים ואת החומרה.</p>
-      <p>בנוסף, הושם דגש מיוחד על יכולות בינה מלאכותית, פרטיות ואבטחת מידע, עם שיפורים שיהפכו כל פעולה ליעילה, נוחה ומאובטחת יותר מתמיד.</p>
-      `}
+      <div id="inline-content" ${isAdmin ? 'contenteditable="true" style="padding: 10px; border: 2px dashed #0071e3; border-radius: 12px; margin-top: 10px;"' : ''}>
+        ${a.content ? a.content : `
+        <p>זהו טקסט דמה להמחשת הכתבה. במערכת חדשות מלאה, אזור זה יישאב ממסד הנתונים ויכיל פסקאות, ציטוטים מורחבים, גלריות תמונות ואפשרויות לשיתוף ברשתות חברתיות.</p>
+        <p>חברת הטכנולוגיה המובילה חשפה לאחרונה את כל העדכונים של המערכת המיוחלת החדשה. באירוע שערכה, השתתפו אלפי עיתונאי טכנולוגיה מכל העולם, שזכו לראות את כלי התוכנה המתקדמים ואת החומרה.</p>
+        <p>בנוסף, הושם דגש מיוחד על יכולות בינה מלאכותית, פרטיות ואבטחת מידע, עם שיפורים שיהפכו כל פעולה ליעילה, נוחה ומאובטחת יותר מתמיד.</p>
+        `}
+      </div>
+      ${isAdmin ? `
+        <div style="margin-top: 40px; display: flex; gap: 16px;">
+          <button class="btn-primary" onclick="saveInlineArticle(${id})" style="padding: 16px 40px; font-size: 1.1rem; border-radius: 980px;">💾 שמור שינויים</button>
+          <button class="btn-secondary" onclick="openArticleEditor(${id})" style="padding: 16px 40px; font-size: 1.1rem; border-radius: 980px;">⚙️ עורך מתקדם</button>
+        </div>
+      ` : ''}
     </div>
   `;
 
@@ -320,11 +338,31 @@ function showArticle(id) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+function saveInlineArticle(id) {
+  const a = newsArticles.find(x => x.id === id);
+  if (!a) return;
+  
+  const newTitle = document.getElementById('inline-title').innerText.trim();
+  const newContent = document.getElementById('inline-content').innerHTML.trim();
+  
+  if (!newTitle) {
+    showToast('❌ הכותרת לא יכולה להיות ריקה');
+    return;
+  }
+  
+  a.title = newTitle;
+  a.content = newContent;
+  
+  localStorage.setItem('newsArticles', JSON.stringify(newsArticles));
+  showToast('✅ הכתבה נשמרה בהצלחה!');
+  renderNewsLayout(); // Refresh thumbnails/feed
+}
+
 // ========== ADMIN DASHBOARD ==========
 function adminLogin() {
   const user = document.getElementById('admin-user')?.value;
   const pass = document.getElementById('admin-pass')?.value;
-  if (user === 'yoni98321' && pass === '052657yoniWw!') {
+  if (user === '1' && pass === '1') {
     localStorage.setItem('isAdmin', 'true');
     isAdmin = true;
     showToast('✅ מנהל התחבר בהצלחה');
@@ -1005,23 +1043,6 @@ showPage('home');
 // ========== USER & COMMENTS LOGIC ==========
 let currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
 
-function openJoinModal() {
-  const modal = document.getElementById('join-modal');
-  if (currentUser) {
-    document.getElementById('join-name').value = currentUser.name;
-    document.getElementById('join-password').value = '';
-    document.getElementById('btn-logout').style.display = 'block';
-  } else {
-    document.getElementById('join-name').value = '';
-    document.getElementById('join-password').value = '';
-    document.getElementById('btn-logout').style.display = 'none';
-  }
-  modal.classList.add('active');
-}
-
-function closeJoinModal() {
-  document.getElementById('join-modal').classList.remove('active');
-}
 
 function selectEmoji(el, emoji) {
   document.querySelectorAll('.emoji-opt').forEach(opt => opt.classList.remove('active'));
@@ -1047,7 +1068,7 @@ function saveUserProfile() {
       currentUser = { name, emoji: registeredUsers[name].emoji };
       localStorage.setItem('currentUser', JSON.stringify(currentUser));
       updateUserUI();
-      closeJoinModal();
+      goBack();
       showToast(`👋 ברוך שובך, ${name}!`);
     } else {
       showToast('❌ סיסמה שגויה לשם משתמש זה');
@@ -1060,7 +1081,7 @@ function saveUserProfile() {
     currentUser = { name, emoji };
     localStorage.setItem('currentUser', JSON.stringify(currentUser));
     updateUserUI();
-    closeJoinModal();
+    goBack();
     showToast(`✨ ברוך הבא לקהילה, ${name}!`);
   }
 }
@@ -1070,7 +1091,7 @@ function logoutUser() {
     currentUser = null;
     localStorage.removeItem('currentUser');
     updateUserUI();
-    closeJoinModal();
+    goBack();
     showToast('👋 התנתקת בהצלחה');
   }
 }
@@ -1207,7 +1228,6 @@ function removeUserPdfImage(index) {
 async function submitUserPdfItem() {
   const title = document.getElementById('user-pdf-title').value.trim();
   const desc = document.getElementById('user-pdf-desc').value.trim();
-  const price = document.getElementById('user-pdf-price').value.trim();
   
   if (!title) {
     showToast('❌ נא להזין שם לפריט');
@@ -1227,12 +1247,11 @@ async function submitUserPdfItem() {
     loader.style.pointerEvents = 'auto';
   }
 
-  // Simulate upload delay for professional feel
+  // Faster upload simulation for immediate feel
   setTimeout(() => {
     const newItem = {
       title: title,
       desc: desc,
-      price: price || 'חינם',
       type: 'תוכן גולשים',
       images: selectedUserPdfImages,
       link: '#',
@@ -1246,7 +1265,6 @@ async function submitUserPdfItem() {
     // Reset form
     document.getElementById('user-pdf-title').value = '';
     document.getElementById('user-pdf-desc').value = '';
-    document.getElementById('user-pdf-price').value = '';
     selectedUserPdfImages = [];
     renderUserPdfPreviews();
     
@@ -1260,10 +1278,11 @@ async function submitUserPdfItem() {
         loader.style.display = 'none';
         loader.style.pointerEvents = 'none';
         showToast('✅ הפריט שלך פורסם בחנות בהצלחה!');
+        // Quick scroll to the new item
         document.getElementById('pdf-store-grid').scrollIntoView({ behavior: 'smooth' });
-      }, 300);
+      }, 200);
     }
-  }, 2000);
+  }, 400);
 }
 
 

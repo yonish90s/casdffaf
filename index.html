@@ -29,8 +29,8 @@
       
       <!-- User Account Section -->
       <div id="user-nav-section" style="margin-right: 12px; display: flex; align-items: center;">
-        <button id="btn-join" class="btn-primary" onclick="openJoinModal()" style="font-size: 0.75rem; padding: 6px 16px; height: 30px; min-height: 0;">✨ הצטרף</button>
-        <div id="user-profile-badge" onclick="openJoinModal()" style="display: none; cursor: pointer; border: 1px solid var(--border-subtle); background: var(--bg-main); padding: 4px 10px; border-radius: 980px; align-items: center; gap: 8px;">
+        <button id="btn-join" class="btn-primary" onclick="showPage('join')" style="font-size: 0.75rem; padding: 6px 16px; height: 30px; min-height: 0;">✨ הצטרף</button>
+        <div id="user-profile-badge" onclick="showPage('join')" style="display: none; cursor: pointer; border: 1px solid var(--border-subtle); background: var(--bg-main); padding: 4px 10px; border-radius: 980px; align-items: center; gap: 8px;">
           <span id="user-badge-emoji" style="font-size: 1.1rem;">👤</span>
           <span id="user-badge-name" style="font-size: 0.85rem; font-weight: 700;"></span>
         </div>
@@ -120,25 +120,21 @@
   </div>
 
   <!-- User Upload Section (PDF Store) -->
-  <div id="user-pdf-upload-section" style="margin-top: 100px; padding: 60px; background: #fff; border-radius: 32px; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-soft);">
-    <div style="text-align: center; margin-bottom: 48px;">
-      <div style="width: 72px; height: 72px; background: rgba(0, 113, 227, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 20px;">📤</div>
-      <h2 style="font-size: 2.5rem; font-weight: 900; letter-spacing: -0.04em; margin-bottom: 8px;">יש לך מוצר או קובץ למכור?</h2>
-      <p style="color: #86868b; font-size: 1.15rem; font-weight: 500;">העלה את הקובץ שלך לחנות בשניות. זה יופיע מיידית לכולם!</p>
+  <div id="user-pdf-upload-section" style="margin-top: 60px; padding: 32px; background: #fff; border-radius: 24px; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-soft); max-width: 600px; margin-left: auto; margin-right: auto;">
+    <div style="text-align: center; margin-bottom: 32px;">
+      <div style="width: 56px; height: 56px; background: rgba(0, 113, 227, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 16px;">📤</div>
+      <h2 style="font-size: 1.8rem; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 6px;">יש לך מוצר או קובץ למכור?</h2>
+      <p style="color: #86868b; font-size: 1rem; font-weight: 500;">העלה את הקובץ שלך לחנות בשניות.</p>
     </div>
 
     <div class="form-grid" style="max-width: 800px; margin: 0 auto;">
       <div class="form-group full">
         <label>שם הפריט / כותרת</label>
-        <input type="text" id="user-pdf-title" placeholder="למשל: תווים לשיר מוכר / מדריך דיגיטלי">
+        <input type="text" id="user-pdf-title">
       </div>
       <div class="form-group full">
         <label>תיאור הפריט</label>
-        <textarea id="user-pdf-desc" placeholder="ספר בכמה מילים על הקבצים שאתה מוכר..." style="min-height: 120px;"></textarea>
-      </div>
-      <div class="form-group full">
-        <label>מחיר או 'חינם'</label>
-        <input type="text" id="user-pdf-price" placeholder="למשל: 50 ₪ / חינם">
+        <textarea id="user-pdf-desc" style="min-height: 100px;"></textarea>
       </div>
       <div class="form-group full">
         <label>תמונות להמחשה (עד 4 תמונות)</label>
@@ -146,11 +142,11 @@
           <!-- Previews will appear here -->
         </div>
         <input type="file" id="user-pdf-files" multiple accept="image/*" onchange="handleUserPdfFileSelection(event)" style="display: none;">
-        <button class="btn-secondary" onclick="document.getElementById('user-pdf-files').click()" style="width: 100%; border-style: dashed; padding: 24px; border-radius: 16px; font-weight: 600;">📸 בחר תמונות מהגלריה (עד 4)</button>
+        <button class="btn-secondary" onclick="document.getElementById('user-pdf-files').click()" style="width: 100%; border-style: dashed; padding: 18px; border-radius: 12px; font-weight: 600; font-size: 0.9rem;">📸 בחר תמונות מהגלריה (עד 4)</button>
       </div>
       
-      <div class="form-group full" style="margin-top: 32px;">
-        <button class="btn-primary full-width" style="height: 68px; font-size: 1.3rem; font-weight: 800; border-radius: 20px;" onclick="submitUserPdfItem()">🚀 שלח ופרסם בחנות עכשיו</button>
+      <div class="form-group full" style="margin-top: 24px;">
+        <button class="btn-primary full-width" style="height: 56px; font-size: 1.1rem; font-weight: 800; border-radius: 16px;" onclick="submitUserPdfItem()">🚀 שלח ופרסם בחנות עכשיו</button>
       </div>
     </div>
   </div>
@@ -212,8 +208,46 @@
     </div>
     <div id="article-comment-join-prompt" style="text-align: center; padding: 60px; background: #fbfbfd; border-radius: 24px; border: 1px dashed #d2d2d7;">
       <p style="margin-bottom: 20px; color: #86868b; font-size: 1.1rem;">הצטרף לדיון ושתף את דעתך!</p>
-      <button class="btn-primary" onclick="openJoinModal()" style="padding: 16px 40px; font-size: 1.1rem; border-radius: 980px;">✨ הצטרף לקהילה</button>
+      <button class="btn-primary" onclick="showPage('join')" style="padding: 16px 40px; font-size: 1.1rem; border-radius: 980px;">✨ הצטרף לקהילה</button>
     </div>
+  </div>
+</div>
+
+<!-- JOIN PAGE (USER ACCOUNTS) -->
+<div id="page-join" class="page" style="max-width: 600px; padding-top: 60px; margin: 0 auto;">
+  <div style="background: #ffffff; border-radius: 32px; padding: 60px; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-soft); text-align: center; position: relative;">
+    <button class="back-btn" onclick="goBack()" style="position: absolute; top: 30px; left: 30px; border:none; background:none; cursor:pointer; font-weight:700;">&rarr; חזור</button>
+    <div style="font-size: 4.5rem; margin-bottom: 32px;">✨</div>
+    <h2 style="font-size: 2.5rem; font-weight: 900; margin-bottom: 12px;">הצטרף לקהילה</h2>
+    <p style="color: #86868b; margin-bottom: 48px; font-size: 1.2rem;">בחר כינוי, סיסמה וסמל כדי להתחיל להגיב.</p>
+    
+    <div style="display: flex; flex-direction: column; gap: 28px; text-align: right;">
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <label style="font-size: 0.95rem; font-weight: 700; color: #1d1d1f;">איך לקרוא לך?</label>
+        <input type="text" id="join-name" class="admin-input" placeholder="למשל: דני טק" style="width:100%; border-radius:16px; padding:20px; font-size: 1.15rem;">
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <label style="font-size: 0.95rem; font-weight: 700; color: #1d1d1f;">סיסמה (להתחברות חוזרת):</label>
+        <input type="password" id="join-password" class="admin-input" placeholder="הזן סיסמה..." style="width:100%; border-radius:16px; padding:20px; font-size: 1.15rem;">
+      </div>
+      
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <label style="font-size: 0.95rem; font-weight: 700; color: #1d1d1f;">בחר סמל:</label>
+        <div id="emoji-picker" style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; background: #fbfbfd; padding: 20px; border-radius: 20px; border: 1px solid #d2d2d7;">
+          <div class="emoji-opt active" onclick="selectEmoji(this, '👤')" style="font-size: 2.2rem; cursor:pointer;">👤</div>
+          <div class="emoji-opt" onclick="selectEmoji(this, '🚀')" style="font-size: 2.2rem; cursor:pointer;">🚀</div>
+          <div class="emoji-opt" onclick="selectEmoji(this, '💡')" style="font-size: 2.2rem; cursor:pointer;">💡</div>
+          <div class="emoji-opt" onclick="selectEmoji(this, '🎮')" style="font-size: 2.2rem; cursor:pointer;">🎮</div>
+          <div class="emoji-opt" onclick="selectEmoji(this, '💻')" style="font-size: 2.2rem; cursor:pointer;">💻</div>
+          <div class="emoji-opt" onclick="selectEmoji(this, '✨')" style="font-size: 2.2rem; cursor:pointer;">✨</div>
+        </div>
+        <input type="hidden" id="join-emoji" value="👤">
+      </div>
+    </div>
+    
+    <button class="btn-primary" style="width:100%; height: 72px; font-size: 1.3rem; font-weight:800; border-radius: 20px; margin-top: 48px;" onclick="saveUserProfile()">💾 שמור והצטרף לקהילה</button>
+    <button id="btn-logout" class="btn-secondary" style="width:100%; border:none; color:#ef4444; margin-top:24px; font-size:1rem; display:none;" onclick="logoutUser()">התנתק מהחשבון</button>
   </div>
 </div>
 
@@ -613,43 +647,6 @@
   <p style="color: rgba(255,255,255,0.7); font-size: 1.1rem;">אנא המתן רגע, אנחנו מעבדים את התמונות</p>
 </div>
 
-<!-- JOIN MODAL (USER ACCOUNTS) -->
-<div id="join-modal" class="modal-overlay">
-  <div class="modal-content" style="max-width: 440px; padding: 48px; border-radius: 32px; text-align: center;">
-    <button class="modal-close" onclick="closeJoinModal()" style="background:#f5f5f7; border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:none; position:absolute; top:24px; left:24px; cursor:pointer;">✕</button>
-    <div style="font-size: 4rem; margin-bottom: 24px; animation: bounceIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);">✨</div>
-    <h2 style="font-size:2.2rem; font-weight:900; margin-bottom:12px; letter-spacing: -0.02em;">הצטרף לקהילה</h2>
-    <p style="color: #86868b; margin-bottom: 40px; font-size: 1.1rem; font-weight:500;">בחר כינוי וסמל כדי להגיב ולהיות חלק מהדיון.</p>
-    
-    <div style="display: flex; flex-direction: column; gap: 24px; text-align: right;">
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <label style="font-size: 0.9rem; font-weight: 700; color: #1d1d1f; margin-right: 4px;">איך לקרוא לך?</label>
-        <input type="text" id="join-name" class="admin-input" placeholder="למשל: דני טק" style="width:100%; border-radius:14px; padding:18px; font-size: 1.1rem;">
-      </div>
-
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <label style="font-size: 0.9rem; font-weight: 700; color: #1d1d1f; margin-right: 4px;">סיסמה (להתחברות חוזרת):</label>
-        <input type="password" id="join-password" class="admin-input" placeholder="הזן סיסמה..." style="width:100%; border-radius:14px; padding:18px; font-size: 1.1rem;">
-      </div>
-      
-      <div style="display: flex; flex-direction: column; gap: 12px;">
-        <label style="font-size: 0.9rem; font-weight: 700; color: #1d1d1f; margin-right: 4px;">בחר סמל:</label>
-        <div id="emoji-picker" style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; background: #fbfbfd; padding: 16px; border-radius: 16px; border: 1px solid #d2d2d7;">
-          <div class="emoji-opt active" onclick="selectEmoji(this, '👤')" style="font-size: 2rem; cursor: pointer; padding: 8px; border-radius: 12px; transition: 0.2s;">👤</div>
-          <div class="emoji-opt" onclick="selectEmoji(this, '🚀')" style="font-size: 2rem; cursor: pointer; padding: 8px; border-radius: 12px; transition: 0.2s;">🚀</div>
-          <div class="emoji-opt" onclick="selectEmoji(this, '💡')" style="font-size: 2rem; cursor: pointer; padding: 8px; border-radius: 12px; transition: 0.2s;">💡</div>
-          <div class="emoji-opt" onclick="selectEmoji(this, '🎮')" style="font-size: 2rem; cursor: pointer; padding: 8px; border-radius: 12px; transition: 0.2s;">🎮</div>
-          <div class="emoji-opt" onclick="selectEmoji(this, '💻')" style="font-size: 2rem; cursor: pointer; padding: 8px; border-radius: 12px; transition: 0.2s;">💻</div>
-          <div class="emoji-opt" onclick="selectEmoji(this, '✨')" style="font-size: 2rem; cursor: pointer; padding: 8px; border-radius: 12px; transition: 0.2s;">✨</div>
-        </div>
-        <input type="hidden" id="join-emoji" value="👤">
-      </div>
-    </div>
-    
-    <button class="btn-primary" style="width:100%; height: 64px; font-size: 1.2rem; font-weight:800; border-radius: 18px; margin-top: 40px; box-shadow: 0 12px 24px rgba(0,113,227,0.25);" onclick="saveUserProfile()">💾 שמור והצטרף</button>
-    <button id="btn-logout" class="btn-secondary" style="width:100%; border:none; color:#ef4444; margin-top:16px; font-size:0.9rem; display:none;" onclick="logoutUser()">התנתק מהחשבון</button>
-  </div>
-</div>
 
 <!-- TOAST NOTIFICATION -->
 <div id="toast" class="toast"></div>
