@@ -41,8 +41,25 @@ if (localStorage.getItem('pdfStoreItems')) localStorage.removeItem('pdfStoreItem
 
 let previousPage = 'home';
 
+function openCheckoutModal() {
+  const modal = document.getElementById('checkout-modal');
+  if (modal) {
+    modal.classList.add('active');
+    showToast('טוען מערכת תשלום מאובטחת...');
+  }
+}
+
+function closeCheckoutModal() {
+  const modal = document.getElementById('checkout-modal');
+  if (modal) modal.classList.remove('active');
+}
+
 // ========== NAVIGATION ==========
 function showPage(page) {
+  if (page === 'checkout') {
+    openCheckoutModal();
+    return;
+  }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const targetPage = document.getElementById(`page-${page}`);
   if (targetPage) targetPage.classList.add('active');
