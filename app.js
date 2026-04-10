@@ -130,7 +130,14 @@ function closeBookingModal() {
 }
 
 function openCheckoutModal() {
-  document.getElementById('checkout-modal').classList.add('active');
+  console.log('Opening checkout modal...');
+  const modal = document.getElementById('checkout-modal');
+  if (modal) {
+    modal.classList.add('active');
+    showToast('טוען מערכת תשלום מאובטחת...');
+  } else {
+    console.error('Checkout modal not found!');
+  }
 }
 
 function closeCheckoutModal() {
