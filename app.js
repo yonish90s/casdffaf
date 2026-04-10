@@ -22,7 +22,9 @@ if (!storedPdfItems || JSON.parse(storedPdfItems).length === 0) {
   localStorage.setItem('pdfStoreItems', JSON.stringify(defaultPdfStoreItems));
 }
 
-const SERVER_URL = 'http://localhost:4242';
+const SERVER_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+  ? 'http://localhost:4242' 
+  : window.location.origin;
 
 let storedArticles = localStorage.getItem('newsArticles');
 let newsArticles = storedArticles ? JSON.parse(storedArticles) : [...defaultNewsArticles];
@@ -309,32 +311,23 @@ function showArticle(id) {
   document.getElementById('article-content').innerHTML = `
     <header class="article-header">
       <div class="article-category">${escHtml(a.category)}</div>
-      <h1 class="article-title-main" id="inline-title" ${isAdmin ? 'contenteditable="true" style="border-bottom: 2px dashed #0071e3;"' : ''}>${escHtml(a.title)}</h1>
+      <h1 class="article-title-main" id="inline-title">${escHtml(a.title)}</h1>
       <div class="article-meta-main">
-        מאת <span id="inline-author" class="author-name" style="font-weight:700; ${isAdmin ? 'border-bottom: 1px dashed #0071e3; cursor: text;' : ''}" ${isAdmin ? 'contenteditable="true"' : ''}>${escHtml(a.author)}</span>
+        מאת <span id="inline-author" class="author-name" style="font-weight:700;">${escHtml(a.author)}</span>
         <span class="meta-sep">|</span> 
-        <span id="inline-time" class="meta-date" style="${isAdmin ? 'border-bottom: 1px dashed #0071e3; cursor: text;' : ''}" ${isAdmin ? 'contenteditable="true"' : ''}>${escHtml(a.time)}</span>
+        <span id="inline-time" class="meta-date">${escHtml(a.time)}</span>
       </div>
     </header>
     <div class="article-hero-img" id="inline-hero-img" style="background-image: url('${a.image}'); position: relative;">
-      ${isAdmin ? `
-        <button onclick="changeArticleHeroImage(${id})" style="position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.9); border: none; padding: 10px 20px; border-radius: 980px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">📷 שנה תמונה</button>
-      ` : ''}
     </div>
     <div class="article-body">
-      <div id="inline-content" ${isAdmin ? 'contenteditable="true" style="padding: 10px; border: 2px dashed #0071e3; border-radius: 12px; margin-top: 10px;"' : ''}>
+      <div id="inline-content">
         ${a.content ? a.content : `
         <p>זהו טקסט דמה להמחשת הכתבה. במערכת חדשות מלאה, אזור זה יישאב ממסד הנתונים ויכיל פסקאות, ציטוטים מורחבים, גלריות תמונות ואפשרויות לשיתוף ברשתות חברתיות.</p>
         <p>חברת הטכנולוגיה המובילה חשפה לאחרונה את כל העדכונים של המערכת המיוחלת החדשה. באירוע שערכה, השתתפו אלפי עיתונאי טכנולוגיה מכל העולם, שזכו לראות את כלי התוכנה המתקדמים ואת החומרה.</p>
         <p>בנוסף, הושם דגש מיוחד על יכולות בינה מלאכותית, פרטיות ואבטחת מידע, עם שיפורים שיהפכו כל פעולה ליעילה, נוחה ומאובטחת יותר מתמיד.</p>
         `}
       </div>
-      ${isAdmin ? `
-        <div style="margin-top: 40px; display: flex; gap: 16px;">
-          <button class="btn-primary" onclick="saveInlineArticle(${id})" style="padding: 16px 40px; font-size: 1.1rem; border-radius: 980px;">💾 שמור שינויים</button>
-          <button class="btn-secondary" onclick="openArticleEditor(${id})" style="padding: 16px 40px; font-size: 1.1rem; border-radius: 980px;">⚙️ עורך מתקדם</button>
-        </div>
-      ` : ''}
     </div>
   `;
 
@@ -342,41 +335,7 @@ function showArticle(id) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function saveInlineArticle(id) {
-  const a = newsArticles.find(x => x.id === id);
-  if (!a) return;
-  
-  const newTitle = document.getElementById('inline-title').innerText.trim();
-  const newAuthor = document.getElementById('inline-author').innerText.trim();
-  const newTime = document.getElementById('inline-time').innerText.trim();
-  const newContent = document.getElementById('inline-content').innerHTML.trim();
-  
-  // Get image from style background-image
-  const heroEl = document.getElementById('inline-hero-img');
-  const bgImg = heroEl.style.backgroundImage.slice(5, -2).replace(/"/g, "");
-  
-  if (!newTitle) {
-    showToast('❌ הכותרת לא יכולה להיות ריקה');
-    return;
-  }
-  
-  a.title = newTitle;
-  a.author = newAuthor;
-  a.time = newTime;
-  a.content = newContent;
-  a.image = bgImg;
-  
-  localStorage.setItem('newsArticles', JSON.stringify(newsArticles));
-  showToast('✅ הכתבה נשמרה בהצלחה!');
-  renderNewsLayout(); // Refresh thumbnails/feed
-}
 
-function changeArticleHeroImage(id) {
-  const newUrl = prompt('הכנס כתובת URL לתמונה חדשה או העלה תמונה:');
-  if (newUrl) {
-    document.getElementById('inline-hero-img').style.backgroundImage = `url('${newUrl}')`;
-  }
-}
 
 // ========== ADMIN DASHBOARD ==========
 function adminLogin() {
@@ -437,7 +396,6 @@ function initAdminDashboard() {
       <td>${escHtml(a.category)}</td>
       <td>${escHtml(a.author)}</td>
       <td style="display:flex; gap:8px;">
-        <button class="btn-primary" style="padding: 4px 12px; font-size: 0.85rem;" onclick="editArticle(${a.id})">ערוך</button>
         <button class="remove-btn" style="padding: 4px 12px; font-size: 0.85rem; border: none; background: transparent;" onclick="deleteArticle(${a.id})">מחק</button>
       </td>
     </tr>
@@ -522,41 +480,25 @@ function deleteArticle(id) {
   }
 }
 
-function openArticleEditor(id = null) {
+function openArticleEditor() {
   document.getElementById('admin-editor').classList.remove('hidden');
   const editorTitle = document.getElementById('admin-editor').querySelector('h3');
   
-  if (id) {
-    editorTitle.textContent = 'עריכת כתבה - מזהה ' + id;
-    const a = newsArticles.find(x => x.id === id);
-    document.getElementById('edit-id').value = a.id;
-    document.getElementById('edit-title').value = a.title;
-    document.getElementById('edit-category').value = a.category;
-    document.getElementById('edit-author').value = a.author;
-    document.getElementById('edit-time').value = a.time;
-    document.getElementById('edit-image').value = a.image || '';
-    document.getElementById('edit-snippet').value = a.snippet || '';
-    document.getElementById('edit-content').value = a.content || '';
-    document.getElementById('edit-isTop').checked = !!a.isTop;
-  } else {
-    editorTitle.textContent = 'יצירת כתבה חדשה';
-    document.getElementById('edit-id').value = '';
-    document.getElementById('edit-title').value = '';
-    document.getElementById('edit-category').value = '';
-    document.getElementById('edit-author').value = 'מערכת חדשות';
-    document.getElementById('edit-time').value = 'היום, 12:00';
-    document.getElementById('edit-image').value = 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&q=80&w=800';
-    document.getElementById('edit-snippet').value = '';
-    document.getElementById('edit-content').value = '';
-    document.getElementById('edit-isTop').checked = false;
-  }
+  editorTitle.textContent = 'יצירת כתבה חדשה';
+  document.getElementById('edit-id').value = '';
+  document.getElementById('edit-title').value = '';
+  document.getElementById('edit-category').value = '';
+  document.getElementById('edit-author').value = 'מערכת חדשות';
+  document.getElementById('edit-time').value = 'היום, 12:00';
+  document.getElementById('edit-image').value = 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format\u0026fit=crop\u0026q=80\u0026w=800';
+  document.getElementById('edit-snippet').value = '';
+  document.getElementById('edit-content').value = '';
+  document.getElementById('edit-isTop').checked = false;
   
   document.getElementById('admin-editor').scrollIntoView({ behavior: 'smooth' });
 }
 
-function editArticle(id) {
-  openArticleEditor(id);
-}
+
 
 function saveAdminArticle() {
   const idValue = document.getElementById('edit-id').value;
@@ -579,14 +521,8 @@ function saveAdminArticle() {
     return;
   }
 
-  if (idValue) {
-    const idx = newsArticles.findIndex(a => a.id === Number(idValue));
-    newsArticles[idx] = articleObj;
-    showToast('הכתבה עודכנה');
-  } else {
-    newsArticles.unshift(articleObj);
-    showToast('נוצר בהצלחה');
-  }
+  newsArticles.unshift(articleObj);
+  showToast('נוצר בהצלחה');
 
   if (isTop) {
      const topArts = newsArticles.filter(a => a.isTop).sort((a,b) => a.isTop - b.isTop);
@@ -702,7 +638,7 @@ function saveInlineStoreConfig() {
   const config = { ...currentConfig, title, version, desc, image };
   
   localStorage.setItem('storeConfig', JSON.stringify(config));
-  showToast('✅ הגדרות החנות עודכנו בהצלחה!');
+  showToast('✅ הגדרות פרויקט 11 עודכנו בהצלחה!');
 }
 
 function changeStoreImage() {
@@ -725,7 +661,7 @@ function saveStoreConfig() {
   localStorage.setItem('storeConfig', JSON.stringify(config));
   
   renderStoreLayout();
-  showToast('הגדרות החנות נשמרו בהצלחה!');
+  showToast('הגדרות פרויקט 11 נשמרו בהצלחה!');
 }
 
 function handleStoreImageUpload(event) {

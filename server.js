@@ -5,9 +5,10 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 const PORT = process.env.PORT || 4242;
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
+const FRONTEND_URL = process.env.FRONTEND_URL 
+  || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
 
-app.use(cors({ origin: FRONTEND_URL }));
+app.use(cors({ origin: '*' })); // Simplify for deployment, or use FRONTEND_URL
 app.use(express.json());
 
 // Serve static frontend files (HTML/CSS/JS)
@@ -95,3 +96,5 @@ app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
   console.log(`   Frontend expected at: ${FRONTEND_URL}`);
 });
+
+module.exports = app;
