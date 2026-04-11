@@ -2455,6 +2455,10 @@ body.dark-theme .btn-download-mac:hover {
   font-weight: 500;
 }
 
+body.dark-theme .social-description {
+  color: #f5f5f7 !important;
+}
+
 .social-icons {
   display: flex;
   gap: 12px;
