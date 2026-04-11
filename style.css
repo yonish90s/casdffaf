@@ -1158,12 +1158,19 @@ body {
 .footer-content {
   max-width: 980px;
   margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 40px;
 }
-.footer-columns {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-bottom: 32px;
+.social-col {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Align right in the left column for Hebrew flow */
+}
+.social-col h4 {
+  margin-bottom: 0px !important;
 }
 .footer-col h4 {
   color: #1d1d1f;
@@ -2462,8 +2469,7 @@ body.dark-theme .social-description {
 .social-icons {
   display: flex;
   gap: 12px;
-  justify-content: flex-start;
-  flex-direction: row-reverse; /* Icons Right to Left to match Hebrew flow */
+  justify-content: flex-end; /* Align to the right side of the left-aligned column */
 }
 
 .social-icon-btn {
