@@ -39,6 +39,16 @@ if (!storedArticles) {
 }
 
 let nextId = newsArticles.length ? Math.max(...newsArticles.map(a => a.id)) + 1 : 1;
+
+// Physical Products & Cart Initialization
+const defaultPhysicalProducts = [
+  { id: 101, title: 'iPhone 15 Pro', price: 4500, image: 'https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&q=80&w=400' },
+  { id: 102, title: 'Apple Watch Series 9', price: 1800, image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&q=80&w=400' }
+];
+
+let physicalProducts = JSON.parse(localStorage.getItem('physicalProducts') || JSON.stringify(defaultPhysicalProducts));
+let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
 let isAdmin = localStorage.getItem('isAdmin') === 'true';
 // Cleanup obsolete data
 if (localStorage.getItem('viewerPhotos')) localStorage.removeItem('viewerPhotos');
@@ -111,6 +121,8 @@ function showPage(page) {
   if (page === 'home') {
     renderNewsLayout();
     renderSeoPromotions();
+    renderShopSidebar();
+    updateCartBadge();
   }
   if (page === 'store') renderStoreLayout();
   if (page === 'pdf-store') renderPdfStoreGrid();
@@ -547,6 +559,8 @@ function initAdminDashboard() {
     document.getElementById('admin-social-ig').value = sl.ig || '';
     document.getElementById('admin-social-yt').value = sl.yt || '';
   }
+  
+  if (tabId === 'physical-shop') renderAdminPhysicalProducts();
 }
 
 function switchAdminTab(tabId, btnEl) {
@@ -1534,6 +1548,210 @@ function deleteSeoLink(id) {
   }
 }
 
+
+// ========== PHYSICAL SHOP & CART LOGIC ==========
+function renderShopSidebar() {
+  const container = document.getElementById('shop-items-container');
+  if (!container) return;
+  
+  container.innerHTML = physicalProducts.map(p => `
+    <div class="shop-card">
+      <img src="${p.image}" class="shop-card-img" alt="${escHtml(p.title)}">
+      <div class="shop-card-title">${escHtml(p.title)}</div>
+      <div class="shop-card-price">₪${p.price.toLocaleString()}</div>
+      <div class="shop-card-actions">
+        <div class="qty-control">
+          <button class="qty-btn" onclick="updateLocalQty(${p.id}, -1)">-</button>
+          <span class="qty-val" id="qty-${p.id}">1</span>
+          <button class="qty-btn" onclick="updateLocalQty(${p.id}, 1)">+</button>
+        </div>
+        <button class="btn-add-cart" onclick="addProductToCart(${p.id})">הוסף 🛒</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateLocalQty(id, delta) {
+  const el = document.getElementById(`qty-${id}`);
+  if (!el) return;
+  let val = parseInt(el.textContent) + delta;
+  if (val < 1) val = 1;
+  el.textContent = val;
+}
+
+function addProductToCart(id) {
+  const product = physicalProducts.find(p => p.id === id);
+  if (!product) return;
+  
+  const qtyEl = document.getElementById(`qty-${id}`);
+  const qty = qtyEl ? parseInt(qtyEl.textContent) : 1;
+  
+  const existing = cart.find(item => item.id === id);
+  if (existing) {
+    existing.qty += qty;
+  } else {
+    cart.push({ ...product, qty });
+  }
+  
+  saveCart();
+  renderCartUI();
+  updateCartBadge();
+  showToast(`✅ ${product.title} נוסף לסל`);
+  
+  // Reset local qty display
+  if (qtyEl) qtyEl.textContent = '1';
+}
+
+function saveCart() {
+  localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+function toggleCart() {
+  const drawer = document.getElementById('cart-drawer');
+  if (drawer) {
+    drawer.classList.toggle('active');
+    if (drawer.classList.contains('active')) renderCartUI();
+  }
+}
+
+function renderCartUI() {
+  const list = document.getElementById('cart-items-list');
+  const totalEl = document.getElementById('cart-total-price');
+  if (!list || !totalEl) return;
+  
+  if (cart.length === 0) {
+    list.innerHTML = '<div style="text-align:center; padding:40px; color:#86868b;">הסל שלך ריק.</div>';
+    totalEl.textContent = '₪0';
+    return;
+  }
+  
+  let total = 0;
+  list.innerHTML = cart.map((item, index) => {
+    total += item.price * item.qty;
+    return `
+      <div class="cart-item">
+        <img src="${item.image}" class="cart-item-img">
+        <div class="cart-item-info">
+          <div style="font-weight:700; font-size:1rem;">${escHtml(item.title)}</div>
+          <div style="color:var(--text-muted); font-size:0.9rem;">₪${item.price.toLocaleString()} x ${item.qty}</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <button class="qty-btn" onclick="updateCartItemQty(${index}, -1)">-</button>
+          <button class="qty-btn" onclick="updateCartItemQty(${index}, 1)">+</button>
+          <button onclick="removeFromCart(${index})" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:1.1rem; margin-right:8px;">🗑️</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  totalEl.textContent = `₪${total.toLocaleString()}`;
+}
+
+function updateCartItemQty(index, delta) {
+  if (cart[index]) {
+    cart[index].qty += delta;
+    if (cart[index].qty < 1) {
+      removeFromCart(index);
+    } else {
+      saveCart();
+      renderCartUI();
+      updateCartBadge();
+    }
+  }
+}
+
+function removeFromCart(index) {
+  cart.splice(index, 1);
+  saveCart();
+  renderCartUI();
+  updateCartBadge();
+}
+
+function updateCartBadge() {
+  const badge = document.getElementById('cart-count');
+  if (!badge) return;
+  const count = cart.reduce((sum, item) => sum + item.qty, 0);
+  badge.textContent = count;
+}
+
+function checkoutCart() {
+  if (cart.length === 0) {
+    showToast('❌ הסל ריק');
+    return;
+  }
+  toggleCart();
+  openCheckoutModal();
+}
+
+// ========== ADMIN PHYSICAL SHOP ==========
+function renderAdminPhysicalProducts() {
+  const list = document.getElementById('admin-physical-products-list');
+  if (!list) return;
+  
+  list.innerHTML = physicalProducts.map(p => `
+    <div style="background:#f5f5f7; border-radius:12px; padding:16px; border:1px solid var(--border-subtle); display:flex; flex-direction:column; gap:12px;">
+      <img src="${p.image}" style="width:100%; aspect-ratio:1; object-fit:cover; border-radius:8px;">
+      <div style="font-weight:700;">${escHtml(p.title)}</div>
+      <div style="color:var(--primary); font-weight:800;">₪${p.price.toLocaleString()}</div>
+      <button class="remove-btn" onclick="deletePhysicalProduct(${p.id})">מחק מוצר</button>
+    </div>
+  `).join('');
+}
+
+function openPhysicalProductEditor() {
+  document.getElementById('physical-product-editor').classList.remove('hidden');
+  document.getElementById('p-prod-id').value = '';
+  document.getElementById('p-prod-title').value = '';
+  document.getElementById('p-prod-price').value = '';
+  document.getElementById('p-prod-image').value = '';
+}
+
+function handlePhysicalProductImageUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => document.getElementById('p-prod-image').value = e.target.result;
+  reader.readAsDataURL(file);
+}
+
+function savePhysicalProduct() {
+  const title = document.getElementById('p-prod-title').value;
+  const price = parseFloat(document.getElementById('p-prod-price').value);
+  const image = document.getElementById('p-prod-image').value;
+  
+  if (!title || isNaN(price) || !image) {
+    showToast('❌ נא למלא את כל השדות');
+    return;
+  }
+  
+  const newProduct = {
+    id: Date.now(),
+    title,
+    price,
+    image
+  };
+  
+  physicalProducts.push(newProduct);
+  localStorage.setItem('physicalProducts', JSON.stringify(physicalProducts));
+  
+  document.getElementById('physical-product-editor').classList.add('hidden');
+  renderAdminPhysicalProducts();
+  renderShopSidebar();
+  showToast('✅ המוצר נוסף לחנות');
+}
+
+function deletePhysicalProduct(id) {
+  if (confirm('האם אתה בטוח שברצונך למחוק מוצר זה?')) {
+    physicalProducts = physicalProducts.filter(p => p.id !== id);
+    localStorage.setItem('physicalProducts', JSON.stringify(physicalProducts));
+    renderAdminPhysicalProducts();
+    renderShopSidebar();
+    showToast('🗑️ המוצר נמחק');
+  }
+}
+
 // Initial loads
 loadSocialLinks();
 renderSeoPromotions();
+renderShopSidebar();
+updateCartBadge();

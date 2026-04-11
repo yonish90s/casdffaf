@@ -418,15 +418,20 @@ body {
 
 .main-news-layout {
   display: flex;
-  gap: 40px;
-  max-width: 1024px;
+  gap: 32px;
+  max-width: 1400px;
   margin: 0 auto;
+  align-items: flex-start;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1100px) {
   .main-news-layout {
     flex-direction: column;
-    padding: 0 16px;
+    padding: 0 20px;
+    align-items: stretch;
+  }
+  .news-sidebar, .shop-sidebar {
+    width: 100% !important;
   }
 }
 
@@ -2767,4 +2772,205 @@ body.dark-theme .btn-paypal-tier:hover {
 
 body.dark-theme .seo-card {
   box-shadow: 0 8px 32px rgba(255, 159, 10, 0.15);
+}
+
+/* ========== PHYSICAL SHOP & CART ========== */
+.shop-sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.shop-card {
+  background: var(--bg-main);
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid var(--border-subtle);
+  transition: var(--transition-smooth);
+}
+
+.shop-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-soft);
+}
+
+.shop-card-img {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  object-fit: cover;
+  background: #fff;
+  margin-bottom: 12px;
+}
+
+.shop-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--text-main);
+}
+
+.shop-card-price {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+
+.shop-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.qty-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 4px 8px;
+  border: 1px solid var(--border-subtle);
+}
+
+.qty-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-main);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.qty-btn:hover {
+  background: var(--border-subtle);
+}
+
+.qty-val {
+  font-weight: 700;
+  min-width: 20px;
+  text-align: center;
+}
+
+.btn-add-cart {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-add-cart:hover {
+  opacity: 0.8;
+}
+
+/* Cart Drawer */
+.cart-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 400px;
+  height: 100vh;
+  background: #fff;
+  z-index: 2000;
+  box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+  transform: translateX(-100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  padding: 40px 32px;
+}
+
+.cart-drawer.active {
+  transform: translateX(0);
+}
+
+.cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.cart-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cart-item {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.cart-item-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: var(--bg-main);
+}
+
+.cart-item-info {
+  flex: 1;
+}
+
+.cart-footer {
+  padding-top: 24px;
+  border-top: 1px solid var(--border-subtle);
+  margin-top: auto;
+}
+
+.cart-total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 24px;
+}
+
+.cart-badge-nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.cart-count-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #ff3b30;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+}
+
+body.dark-theme .cart-drawer {
+  background: #1c1c1e;
 }
