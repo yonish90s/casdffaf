@@ -105,6 +105,7 @@ function showPage(page) {
   if (page === 'home') renderNewsLayout();
   if (page === 'store') renderStoreLayout();
   if (page === 'pdf-store') renderPdfStoreGrid();
+  if (page === 'subscription') window.scrollTo({ top: 0, behavior: 'smooth' });
   if (page === 'appointments') initBookingWidget();
   if (page === 'join') {
     if (currentUser) {
