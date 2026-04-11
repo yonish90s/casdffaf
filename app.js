@@ -123,6 +123,7 @@ function showPage(page) {
     renderNewsLayout();
     renderSeoPromotions();
     renderShopSidebar();
+    renderQuickAppointments();
     updateCartBadge();
   }
   if (page === 'store') renderStoreLayout();
@@ -1693,6 +1694,27 @@ function updateCartBadge() {
   if (!badge) return;
   const count = cart.reduce((sum, item) => sum + item.qty, 0);
   badge.textContent = count;
+}
+
+// ========== QUICK APPOINTMENT LOGIC ==========
+const quickServices = [
+  { id: 1, title: 'ייעוץ טכני מהיר', duration: '30 דק׳', price: '₪150' },
+  { id: 2, title: 'הדרכת תוכנה אישית', duration: '60 דק׳', price: '₪250' }
+];
+
+function renderQuickAppointments() {
+  const container = document.getElementById('quick-appointment-list');
+  if (!container) return;
+  
+  container.innerHTML = quickServices.map(s => `
+    <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); border-radius:12px; padding:12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition: transform 0.2s;" onclick="showPage('appointments')">
+      <div>
+        <div style="font-weight:700; font-size:0.95rem;">${escHtml(s.title)}</div>
+        <div style="font-size:0.8rem; opacity:0.8;">${s.duration} • ${s.price}</div>
+      </div>
+      <div style="font-size:1.2rem;">⚡</div>
+    </div>
+  `).join('');
 }
 
 function checkoutCart() {
