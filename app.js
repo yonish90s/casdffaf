@@ -41,6 +41,40 @@ if (localStorage.getItem('pdfStoreItems')) localStorage.removeItem('pdfStoreItem
 
 let previousPage = 'home';
 
+// ========== SOCIAL LINKS LOGIC ==========
+const defaultSocialLinks = {
+  x: 'https://x.com',
+  fb: 'https://facebook.com',
+  ig: 'https://instagram.com',
+  yt: 'https://youtube.com'
+};
+
+function loadSocialLinks() {
+  const links = JSON.parse(localStorage.getItem('siteSocialLinks') || JSON.stringify(defaultSocialLinks));
+  applySocialLinksToUI(links);
+  return links;
+}
+
+function applySocialLinksToUI(links) {
+  const ids = { x: 'footer-link-x', fb: 'footer-link-fb', ig: 'footer-link-ig', yt: 'footer-link-yt' };
+  for (const [key, id] of Object.entries(ids)) {
+    const el = document.getElementById(id);
+    if (el) el.href = links[key] || '#';
+  }
+}
+
+function saveSocialLinks() {
+  const links = {
+    x: document.getElementById('admin-social-x').value,
+    fb: document.getElementById('admin-social-fb').value,
+    ig: document.getElementById('admin-social-ig').value,
+    yt: document.getElementById('admin-social-yt').value
+  };
+  localStorage.setItem('siteSocialLinks', JSON.stringify(links));
+  applySocialLinksToUI(links);
+  showToast('✅ הקישורים עודכנו בהצלחה');
+}
+
 function openCheckoutModal() {
   const modal = document.getElementById('checkout-modal');
   if (modal) {
@@ -489,6 +523,15 @@ function initAdminDashboard() {
     document.getElementById('store-edit-desc').value = sc.desc || '';
     document.getElementById('store-edit-image').value = sc.image || '';
     document.getElementById('store-edit-download').value = sc.downloadLink || '';
+  }
+
+  // Populate Social Links inside Admin
+  const sl = loadSocialLinks();
+  if (document.getElementById('admin-social-x')) {
+    document.getElementById('admin-social-x').value = sl.x || '';
+    document.getElementById('admin-social-fb').value = sl.fb || '';
+    document.getElementById('admin-social-ig').value = sl.ig || '';
+    document.getElementById('admin-social-yt').value = sl.yt || '';
   }
 }
 
@@ -1377,3 +1420,5 @@ async function submitUserPdfItem() {
 }
 
 
+// Initial loads
+loadSocialLinks();

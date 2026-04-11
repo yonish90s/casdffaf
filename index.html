@@ -526,6 +526,7 @@
           תיבת הודעות
           <span id="nav-msg-count" style="background: var(--primary); color: white; padding: 2px 8px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">0</span>
         </button>
+        <button class="admin-nav-btn" onclick="switchAdminTab('social', this)">🌐 ניהול רשתות חברתיות</button>
       </div>
       </div>
 
@@ -538,6 +539,38 @@
         </div>
         <div id="admin-calendar-list" style="display: grid; gap: 16px; margin-top: 20px;">
           <!-- Appointments listed here -->
+        </div>
+      </div>
+
+      <!-- SOCIAL LINKS ADMIN TAB -->
+      <div id="admin-section-social" class="admin-section" style="display: none;">
+        <div class="admin-header">
+          <h2>🌐 ניהול רשתות חברתיות</h2>
+        </div>
+        <div style="background: #ffffff; border-radius: 16px; padding: 32px; border: 1px solid var(--border-subtle); display:flex; flex-direction:column; gap:20px;">
+          <p style="color: #86868b; font-size: 0.95rem; margin-bottom: 10px;">הכנס את הקישורים המלאים לפרופילים שלך ברשתות החברתיות (כולל http:// או https://):</p>
+          
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <label style="font-size:0.9rem; font-weight:700; color:#1d1d1f;">🔗 קישור ל-X (טוויטר):</label>
+            <input type="text" id="admin-social-x" placeholder="https://x.com/username" class="admin-input">
+          </div>
+          
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <label style="font-size:0.9rem; font-weight:700; color:#1d1d1f;">🔗 קישור לפייסבוק:</label>
+            <input type="text" id="admin-social-fb" placeholder="https://facebook.com/username" class="admin-input">
+          </div>
+          
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <label style="font-size:0.9rem; font-weight:700; color:#1d1d1f;">🔗 קישור לאינסטגרם:</label>
+            <input type="text" id="admin-social-ig" placeholder="https://instagram.com/username" class="admin-input">
+          </div>
+          
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <label style="font-size:0.9rem; font-weight:700; color:#1d1d1f;">🔗 קישור ליוטיוב:</label>
+            <input type="text" id="admin-social-yt" placeholder="https://youtube.com/@channel" class="admin-input">
+          </div>
+          
+          <button class="btn-primary" onclick="saveSocialLinks()" style="height: 52px; font-size: 1.1rem; border-radius: 12px; margin-top: 12px;">💾 שמור קישורים ועדכן אתר</button>
         </div>
       </div>
 
@@ -568,10 +601,10 @@
           nexvid is your ultimate destination for streaming movies and TV shows. We provide links to high-quality content from various sources.
         </p>
         <div class="social-icons" style="display: flex; gap: 12px; flex-direction: row-reverse;">
-          <a href="#" class="social-icon-btn" target="_blank" title="X (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
-          <a href="#" class="social-icon-btn" target="_blank" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-          <a href="#" class="social-icon-btn" target="_blank" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
-          <a href="#" class="social-icon-btn" target="_blank" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          <a href="#" id="footer-link-x" class="social-icon-btn" target="_blank" title="X (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="#" id="footer-link-fb" class="social-icon-btn" target="_blank" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" id="footer-link-ig" class="social-icon-btn" target="_blank" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" id="footer-link-yt" class="social-icon-btn" target="_blank" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
         </div>
       </div>
     </div>
