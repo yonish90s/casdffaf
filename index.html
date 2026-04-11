@@ -719,6 +719,21 @@
   <div id="cart-items-list" class="cart-list">
     <!-- Populated by JS -->
   </div>
+  
+  <div style="margin-top: 24px;">
+    <h3 style="font-size: 1rem; margin-bottom: 12px;">אמצעי שילוח:</h3>
+    <div class="shipping-selector">
+      <div id="ship-delivery" class="shipping-option active" onclick="setShippingMethod('delivery')">
+        <strong>🚚 משלוח</strong>
+        <span>₪20.00</span>
+      </div>
+      <div id="ship-pickup" class="shipping-option" onclick="setShippingMethod('pickup')">
+        <strong>📦 איסוף עצמי</strong>
+        <span>חינם</span>
+      </div>
+    </div>
+  </div>
+
   <div class="cart-footer">
     <div class="cart-total-row">
       <span>סה״כ לתשלום:</span>

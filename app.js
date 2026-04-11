@@ -48,6 +48,7 @@ const defaultPhysicalProducts = [
 
 let physicalProducts = JSON.parse(localStorage.getItem('physicalProducts') || JSON.stringify(defaultPhysicalProducts));
 let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+let shippingCost = 20; // Default to delivery
 
 let isAdmin = localStorage.getItem('isAdmin') === 'true';
 // Cleanup obsolete data
@@ -1644,7 +1645,27 @@ function renderCartUI() {
     `;
   }).join('');
   
+  // Add shipping cost
+  total += shippingCost;
+  
   totalEl.textContent = `₪${total.toLocaleString()}`;
+}
+
+function setShippingMethod(method) {
+  const delivery = document.getElementById('ship-delivery');
+  const pickup = document.getElementById('ship-pickup');
+  
+  if (method === 'delivery') {
+    shippingCost = 20;
+    delivery?.classList.add('active');
+    pickup?.classList.remove('active');
+  } else {
+    shippingCost = 0;
+    delivery?.classList.remove('active');
+    pickup?.classList.add('active');
+  }
+  
+  renderCartUI();
 }
 
 function updateCartItemQty(index, delta) {
