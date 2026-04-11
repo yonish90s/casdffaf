@@ -2688,3 +2688,83 @@ body.dark-theme .btn-paypal-tier:hover {
     font-size: 0.9rem;
   }
 }
+
+/* ========== SEO PROMOTION (ORANGE THEME) ========== */
+.seo-section {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.seo-card {
+  background: linear-gradient(135deg, #ff9f0a 0%, #ff3b30 100%);
+  border-radius: 16px;
+  padding: 16px;
+  color: #fff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: var(--transition-bounce);
+  box-shadow: 0 8px 20px rgba(255, 159, 10, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.seo-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.seo-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(255, 159, 10, 0.3);
+}
+
+.seo-card:hover::before {
+  opacity: 1;
+}
+
+.seo-card-content {
+  position: relative;
+  z-index: 1;
+}
+
+.seo-card-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.seo-card-url {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  font-weight: 500;
+}
+
+.seo-badge {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  padding: 4px 10px;
+  border-radius: 980px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+body.dark-theme .seo-card {
+  box-shadow: 0 8px 32px rgba(255, 159, 10, 0.15);
+}

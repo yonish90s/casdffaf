@@ -13,6 +13,12 @@ const defaultNewsArticles = [
 
 const defaultPdfStoreItems = [];
 
+const defaultSeoLinks = [
+  { id: Date.now(), title: 'קידום אתרים מקצועי', url: 'https://example.com' }
+];
+
+let seoLinks = JSON.parse(localStorage.getItem('seoLinks') || JSON.stringify(defaultSeoLinks));
+
 
 
 
@@ -102,7 +108,10 @@ function showPage(page) {
   const targetPage = document.getElementById(`page-${page}`);
   if (targetPage) targetPage.classList.add('active');
 
-  if (page === 'home') renderNewsLayout();
+  if (page === 'home') {
+    renderNewsLayout();
+    renderSeoPromotions();
+  }
   if (page === 'store') renderStoreLayout();
   if (page === 'pdf-store') renderPdfStoreGrid();
   if (page === 'subscription') window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -551,7 +560,7 @@ function switchAdminTab(tabId, btnEl) {
   }
   if (tabId === 'calendar') renderAdminCalendar();
   if (tabId === 'pdfstore') renderPdfAdminList();
-
+  if (tabId === 'seo') renderAdminSeoList();
 }
 
 
@@ -1441,5 +1450,90 @@ async function submitUserPdfItem() {
 }
 
 
+// ========== SEO PROMOTION LOGIC ==========
+function renderSeoPromotions() {
+  const container = document.getElementById('seo-promotions-container');
+  if (!container) return;
+  
+  if (seoLinks.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+  
+  container.innerHTML = seoLinks.map(link => `
+    <a href="${escHtml(link.url)}" target="_blank" class="seo-card">
+      <div class="seo-card-content">
+        <div class="seo-card-title">🚀 ${escHtml(link.title)}</div>
+        <div class="seo-card-url">${escHtml(new URL(link.url).hostname)}</div>
+      </div>
+      <div class="seo-badge">Promoted</div>
+    </a>
+  `).join('');
+}
+
+function renderAdminSeoList() {
+  const list = document.getElementById('admin-seo-list');
+  if (!list) return;
+  
+  if (seoLinks.length === 0) {
+    list.innerHTML = '<div style="text-align:center; padding:20px; color:#86868b;">אין אתרים ברשימת הקידום.</div>';
+    return;
+  }
+  
+  list.innerHTML = seoLinks.map(link => `
+    <div style="background:#f5f5f7; border-radius:12px; padding:16px; border:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <div style="font-weight:700; color:#1d1d1f;">${escHtml(link.title)}</div>
+        <div style="font-size:0.85rem; color:#86868b;">${escHtml(link.url)}</div>
+      </div>
+      <button class="remove-btn" onclick="deleteSeoLink(${link.id})" style="color:#ef4444; border:none; background:none; cursor:pointer; font-weight:600;">מחק</button>
+    </div>
+  `).join('');
+}
+
+function addSeoLink() {
+  const title = document.getElementById('seo-new-title').value;
+  const url = document.getElementById('seo-new-url').value;
+  
+  if (!title || !url) {
+    showToast('❌ נא למלא שם וקישור');
+    return;
+  }
+  
+  try {
+    new URL(url); // basic validation
+  } catch(e) {
+    showToast('❌ קישור לא תקין (חייב להתחיל ב-http:// או https://)');
+    return;
+  }
+  
+  const newLink = {
+    id: Date.now(),
+    title: title,
+    url: url
+  };
+  
+  seoLinks.push(newLink);
+  localStorage.setItem('seoLinks', JSON.stringify(seoLinks));
+  
+  document.getElementById('seo-new-title').value = '';
+  document.getElementById('seo-new-url').value = '';
+  
+  renderAdminSeoList();
+  renderSeoPromotions(); // update home sidebar immediately
+  showToast('✅ האתר נוסף לקידום בהצלחה');
+}
+
+function deleteSeoLink(id) {
+  if (confirm('האם אתה בטוח שברצונך להסיר אתר זה מהקידום?')) {
+    seoLinks = seoLinks.filter(l => l.id !== id);
+    localStorage.setItem('seoLinks', JSON.stringify(seoLinks));
+    renderAdminSeoList();
+    renderSeoPromotions();
+    showToast('🗑️ האתר הוסר מהקידום');
+  }
+}
+
 // Initial loads
 loadSocialLinks();
+renderSeoPromotions();
