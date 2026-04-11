@@ -64,6 +64,10 @@ function applySocialLinksToUI(links) {
 }
 
 function saveSocialLinks() {
+  if (!isAdmin) {
+    showToast('❌ אין לך הרשאות לבצע פעולה זו');
+    return;
+  }
   const links = {
     x: document.getElementById('admin-social-x').value,
     fb: document.getElementById('admin-social-fb').value,
@@ -1223,9 +1227,11 @@ function saveUserProfile() {
 function logoutUser() {
   if (confirm('בטוח שברצונך להתנתק?')) {
     currentUser = null;
+    isAdmin = false;
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('isAdmin');
     updateUserUI();
-    goBack();
+    showPage('home');
     showToast('👋 התנתקת בהצלחה');
   }
 }
@@ -1233,22 +1239,36 @@ function logoutUser() {
 function updateUserUI() {
   const btnJoin = document.getElementById('btn-join');
   const profileBadge = document.getElementById('user-profile-badge');
+  const btnLogoutNav = document.getElementById('btn-logout-nav');
   
-  if (!btnJoin || !profileBadge) return;
+  if (!btnJoin || !profileBadge || !btnLogoutNav) return;
 
-  if (currentUser) {
+  const isUserLoggedIn = !!currentUser;
+  const isAdminLoggedIn = !!isAdmin;
+
+  if (isUserLoggedIn || isAdminLoggedIn) {
     btnJoin.style.display = 'none';
     profileBadge.style.display = 'flex';
-    document.getElementById('user-badge-emoji').textContent = currentUser.emoji;
-    document.getElementById('user-badge-name').textContent = currentUser.name;
+    btnLogoutNav.style.display = 'block';
+
+    if (isAdminLoggedIn && !isUserLoggedIn) {
+      document.getElementById('user-badge-emoji').textContent = '🛡️';
+      document.getElementById('user-badge-name').textContent = 'מנהל מערכת';
+    } else if (isUserLoggedIn) {
+      document.getElementById('user-badge-emoji').textContent = currentUser.emoji;
+      document.getElementById('user-badge-name').textContent = currentUser.name;
+    }
     
-    // Update comment inputs
-    document.querySelectorAll('[id$="-comment-input-area"]').forEach(el => el.style.display = 'block');
-    document.querySelectorAll('[id$="-comment-join-prompt"]').forEach(el => el.style.display = 'none');
-    document.querySelectorAll('[id$="-comment-user-name"]').forEach(el => el.textContent = currentUser.name);
+    // Update comment inputs for users
+    if (isUserLoggedIn) {
+      document.querySelectorAll('[id$="-comment-input-area"]').forEach(el => el.style.display = 'block');
+      document.querySelectorAll('[id$="-comment-join-prompt"]').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('[id$="-comment-user-name"]').forEach(el => el.textContent = currentUser.name);
+    }
   } else {
     btnJoin.style.display = 'block';
     profileBadge.style.display = 'none';
+    btnLogoutNav.style.display = 'none';
     
     document.querySelectorAll('[id$="-comment-input-area"]').forEach(el => el.style.display = 'none');
     document.querySelectorAll('[id$="-comment-join-prompt"]').forEach(el => el.style.display = 'block');
