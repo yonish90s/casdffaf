@@ -413,7 +413,7 @@ function showArticle(id) {
     <div class="article-body">
       <div id="inline-content">
         ${a.content ? a.content : `
-        <p>זהו טקסט דמה להמחשת הכתבה. במערכת חדשות מלאה, אזור זה יישאב ממסד הנתונים ויכיל פסקאות, ציטוטים מורחבים, גלריות תמונות ואפשרויות לשיתוף ברשתות חברתיות.</p>
+        <p>זהו טקסט דמה להמחשת הכתבה. במערכת החדשות המלאה, אזור זה יישאב ממסד הנתונים ויכיל פסקאות, ציטוטים מורחבים, גלריות תמונות ואפשרויות לשיתוף ברשתות חברתיות.</p>
         <p>חברת הטכנולוגיה המובילה חשפה לאחרונה את כל העדכונים של המערכת המיוחלת החדשה. באירוע שערכה, השתתפו אלפי עיתונאי טכנולוגיה מכל העולם, שזכו לראות את כלי התוכנה המתקדמים ואת החומרה.</p>
         <p>בנוסף, הושם דגש מיוחד על יכולות בינה מלאכותית, פרטיות ואבטחת מידע, עם שיפורים שיהפכו כל פעולה ליעילה, נוחה ומאובטחת יותר מתמיד.</p>
         `}
@@ -616,7 +616,7 @@ function openArticleEditor() {
   document.getElementById('edit-id').value = '';
   document.getElementById('edit-title').value = '';
   document.getElementById('edit-category').value = '';
-  document.getElementById('edit-author').value = 'מערכת חדשות';
+  document.getElementById('edit-author').value = 'מערכת החדשות';
   document.getElementById('edit-time').value = 'היום, 12:00';
   document.getElementById('edit-image').value = 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format\u0026fit=crop\u0026q=80\u0026w=800';
   document.getElementById('edit-snippet').value = '';
