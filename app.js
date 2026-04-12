@@ -13,12 +13,6 @@ const defaultNewsArticles = [
 
 const defaultPdfStoreItems = [];
 
-const defaultSeoLinks = [
-  { id: Date.now(), title: 'קידום אתרים מקצועי', url: 'https://example.com' }
-];
-
-let seoLinks = JSON.parse(localStorage.getItem('seoLinks') || JSON.stringify(defaultSeoLinks));
-
 
 
 
@@ -39,17 +33,6 @@ if (!storedArticles) {
 }
 
 let nextId = newsArticles.length ? Math.max(...newsArticles.map(a => a.id)) + 1 : 1;
-
-// Physical Products & Cart Initialization
-const defaultPhysicalProducts = [
-  { id: 101, title: 'iPhone 15 Pro', price: 4500, image: 'https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&q=80&w=400' },
-  { id: 102, title: 'Apple Watch Series 9', price: 1800, image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&q=80&w=400' }
-];
-
-let physicalProducts = JSON.parse(localStorage.getItem('physicalProducts') || JSON.stringify(defaultPhysicalProducts));
-let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-let shippingCost = 20; // Default to delivery
-
 let isAdmin = localStorage.getItem('isAdmin') === 'true';
 // Cleanup obsolete data
 if (localStorage.getItem('viewerPhotos')) localStorage.removeItem('viewerPhotos');
@@ -119,13 +102,7 @@ function showPage(page) {
   const targetPage = document.getElementById(`page-${page}`);
   if (targetPage) targetPage.classList.add('active');
 
-  if (page === 'home') {
-    renderNewsLayout();
-    renderSeoPromotions();
-    renderShopSidebar();
-    renderQuickAppointments();
-    updateCartBadge();
-  }
+  if (page === 'home') renderNewsLayout();
   if (page === 'store') renderStoreLayout();
   if (page === 'pdf-store') renderPdfStoreGrid();
   if (page === 'subscription') window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -561,8 +538,6 @@ function initAdminDashboard() {
     document.getElementById('admin-social-ig').value = sl.ig || '';
     document.getElementById('admin-social-yt').value = sl.yt || '';
   }
-  
-  if (tabId === 'physical-shop') renderAdminPhysicalProducts();
 }
 
 function switchAdminTab(tabId, btnEl) {
@@ -576,7 +551,7 @@ function switchAdminTab(tabId, btnEl) {
   }
   if (tabId === 'calendar') renderAdminCalendar();
   if (tabId === 'pdfstore') renderPdfAdminList();
-  if (tabId === 'seo') renderAdminSeoList();
+
 }
 
 
@@ -1466,335 +1441,5 @@ async function submitUserPdfItem() {
 }
 
 
-// ========== SEO PROMOTION LOGIC ==========
-function renderSeoPromotions() {
-  const container = document.getElementById('seo-promotions-container');
-  if (!container) return;
-  
-  if (seoLinks.length === 0) {
-    container.innerHTML = '';
-    return;
-  }
-  
-  container.innerHTML = seoLinks.map(link => `
-    <a href="${escHtml(link.url)}" target="_blank" class="seo-card">
-      <div class="seo-card-content">
-        <div class="seo-card-title">🚀 ${escHtml(link.title)}</div>
-        <div class="seo-card-url">${escHtml(new URL(link.url).hostname)}</div>
-      </div>
-      <div class="seo-badge">Promoted</div>
-    </a>
-  `).join('');
-}
-
-function renderAdminSeoList() {
-  const list = document.getElementById('admin-seo-list');
-  if (!list) return;
-  
-  if (seoLinks.length === 0) {
-    list.innerHTML = '<div style="text-align:center; padding:20px; color:#86868b;">אין אתרים ברשימת הקידום.</div>';
-    return;
-  }
-  
-  list.innerHTML = seoLinks.map(link => `
-    <div style="background:#f5f5f7; border-radius:12px; padding:16px; border:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
-      <div>
-        <div style="font-weight:700; color:#1d1d1f;">${escHtml(link.title)}</div>
-        <div style="font-size:0.85rem; color:#86868b;">${escHtml(link.url)}</div>
-      </div>
-      <button class="remove-btn" onclick="deleteSeoLink(${link.id})" style="color:#ef4444; border:none; background:none; cursor:pointer; font-weight:600;">מחק</button>
-    </div>
-  `).join('');
-}
-
-function addSeoLink() {
-  const title = document.getElementById('seo-new-title').value;
-  const url = document.getElementById('seo-new-url').value;
-  
-  if (!title || !url) {
-    showToast('❌ נא למלא שם וקישור');
-    return;
-  }
-  
-  try {
-    new URL(url); // basic validation
-  } catch(e) {
-    showToast('❌ קישור לא תקין (חייב להתחיל ב-http:// או https://)');
-    return;
-  }
-  
-  const newLink = {
-    id: Date.now(),
-    title: title,
-    url: url
-  };
-  
-  seoLinks.push(newLink);
-  localStorage.setItem('seoLinks', JSON.stringify(seoLinks));
-  
-  document.getElementById('seo-new-title').value = '';
-  document.getElementById('seo-new-url').value = '';
-  
-  renderAdminSeoList();
-  renderSeoPromotions(); // update home sidebar immediately
-  showToast('✅ האתר נוסף לקידום בהצלחה');
-}
-
-function deleteSeoLink(id) {
-  if (confirm('האם אתה בטוח שברצונך להסיר אתר זה מהקידום?')) {
-    seoLinks = seoLinks.filter(l => l.id !== id);
-    localStorage.setItem('seoLinks', JSON.stringify(seoLinks));
-    renderAdminSeoList();
-    renderSeoPromotions();
-    showToast('🗑️ האתר הוסר מהקידום');
-  }
-}
-
-
-// ========== PHYSICAL SHOP & CART LOGIC ==========
-function renderShopSidebar() {
-  const container = document.getElementById('shop-items-container');
-  if (!container) return;
-  
-  container.innerHTML = physicalProducts.map(p => `
-    <div class="shop-card">
-      <img src="${p.image}" class="shop-card-img" alt="${escHtml(p.title)}">
-      <div class="shop-card-title">${escHtml(p.title)}</div>
-      <div class="shop-card-price">₪${p.price.toLocaleString()}</div>
-      <div class="shop-card-actions">
-        <div class="qty-control">
-          <button class="qty-btn" onclick="updateLocalQty(${p.id}, -1)">-</button>
-          <span class="qty-val" id="qty-${p.id}">1</span>
-          <button class="qty-btn" onclick="updateLocalQty(${p.id}, 1)">+</button>
-        </div>
-        <button class="btn-add-cart" onclick="addProductToCart(${p.id})">הוסף 🛒</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function updateLocalQty(id, delta) {
-  const el = document.getElementById(`qty-${id}`);
-  if (!el) return;
-  let val = parseInt(el.textContent) + delta;
-  if (val < 1) val = 1;
-  el.textContent = val;
-}
-
-function addProductToCart(id) {
-  const product = physicalProducts.find(p => p.id === id);
-  if (!product) return;
-  
-  const qtyEl = document.getElementById(`qty-${id}`);
-  const qty = qtyEl ? parseInt(qtyEl.textContent) : 1;
-  
-  const existing = cart.find(item => item.id === id);
-  if (existing) {
-    existing.qty += qty;
-  } else {
-    cart.push({ ...product, qty });
-  }
-  
-  saveCart();
-  renderCartUI();
-  updateCartBadge();
-  showToast(`✅ ${product.title} נוסף לסל`);
-  
-  // Reset local qty display
-  if (qtyEl) qtyEl.textContent = '1';
-}
-
-function saveCart() {
-  localStorage.setItem('cart', JSON.stringify(cart));
-}
-
-function toggleCart() {
-  const drawer = document.getElementById('cart-drawer');
-  if (drawer) {
-    drawer.classList.toggle('active');
-    if (drawer.classList.contains('active')) renderCartUI();
-  }
-}
-
-function renderCartUI() {
-  const list = document.getElementById('cart-items-list');
-  const totalEl = document.getElementById('cart-total-price');
-  if (!list || !totalEl) return;
-  
-  if (cart.length === 0) {
-    list.innerHTML = '<div style="text-align:center; padding:40px; color:#86868b;">הסל שלך ריק.</div>';
-    totalEl.textContent = '₪0';
-    return;
-  }
-  
-  let total = 0;
-  list.innerHTML = cart.map((item, index) => {
-    total += item.price * item.qty;
-    return `
-      <div class="cart-item">
-        <img src="${item.image}" class="cart-item-img">
-        <div class="cart-item-info">
-          <div style="font-weight:700; font-size:1rem;">${escHtml(item.title)}</div>
-          <div style="color:var(--text-muted); font-size:0.9rem;">₪${item.price.toLocaleString()} x ${item.qty}</div>
-        </div>
-        <div style="display:flex; align-items:center; gap:8px;">
-          <button class="qty-btn" onclick="updateCartItemQty(${index}, -1)">-</button>
-          <button class="qty-btn" onclick="updateCartItemQty(${index}, 1)">+</button>
-          <button onclick="removeFromCart(${index})" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:1.1rem; margin-right:8px;">🗑️</button>
-        </div>
-      </div>
-    `;
-  }).join('');
-  
-  // Add shipping cost
-  total += shippingCost;
-  
-  totalEl.textContent = `₪${total.toLocaleString()}`;
-}
-
-function setShippingMethod(method) {
-  const delivery = document.getElementById('ship-delivery');
-  const pickup = document.getElementById('ship-pickup');
-  
-  if (method === 'delivery') {
-    shippingCost = 20;
-    delivery?.classList.add('active');
-    pickup?.classList.remove('active');
-  } else {
-    shippingCost = 0;
-    delivery?.classList.remove('active');
-    pickup?.classList.add('active');
-  }
-  
-  renderCartUI();
-}
-
-function updateCartItemQty(index, delta) {
-  if (cart[index]) {
-    cart[index].qty += delta;
-    if (cart[index].qty < 1) {
-      removeFromCart(index);
-    } else {
-      saveCart();
-      renderCartUI();
-      updateCartBadge();
-    }
-  }
-}
-
-function removeFromCart(index) {
-  cart.splice(index, 1);
-  saveCart();
-  renderCartUI();
-  updateCartBadge();
-}
-
-function updateCartBadge() {
-  const badge = document.getElementById('cart-count');
-  if (!badge) return;
-  const count = cart.reduce((sum, item) => sum + item.qty, 0);
-  badge.textContent = count;
-}
-
-// ========== QUICK APPOINTMENT LOGIC ==========
-const quickServices = [
-  { id: 1, title: 'ייעוץ טכני מהיר', duration: '30 דק׳', price: '₪150' },
-  { id: 2, title: 'הדרכת תוכנה אישית', duration: '60 דק׳', price: '₪250' }
-];
-
-function renderQuickAppointments() {
-  const container = document.getElementById('quick-appointment-list');
-  if (!container) return;
-  
-  container.innerHTML = quickServices.map(s => `
-    <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); border-radius:12px; padding:12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition: transform 0.2s;" onclick="showPage('appointments')">
-      <div>
-        <div style="font-weight:700; font-size:0.95rem;">${escHtml(s.title)}</div>
-        <div style="font-size:0.8rem; opacity:0.8;">${s.duration} • ${s.price}</div>
-      </div>
-      <div style="font-size:1.2rem;">⚡</div>
-    </div>
-  `).join('');
-}
-
-function checkoutCart() {
-  if (cart.length === 0) {
-    showToast('❌ הסל ריק');
-    return;
-  }
-  toggleCart();
-  openCheckoutModal();
-}
-
-// ========== ADMIN PHYSICAL SHOP ==========
-function renderAdminPhysicalProducts() {
-  const list = document.getElementById('admin-physical-products-list');
-  if (!list) return;
-  
-  list.innerHTML = physicalProducts.map(p => `
-    <div style="background:#f5f5f7; border-radius:12px; padding:16px; border:1px solid var(--border-subtle); display:flex; flex-direction:column; gap:12px;">
-      <img src="${p.image}" style="width:100%; aspect-ratio:1; object-fit:cover; border-radius:8px;">
-      <div style="font-weight:700;">${escHtml(p.title)}</div>
-      <div style="color:var(--primary); font-weight:800;">₪${p.price.toLocaleString()}</div>
-      <button class="remove-btn" onclick="deletePhysicalProduct(${p.id})">מחק מוצר</button>
-    </div>
-  `).join('');
-}
-
-function openPhysicalProductEditor() {
-  document.getElementById('physical-product-editor').classList.remove('hidden');
-  document.getElementById('p-prod-id').value = '';
-  document.getElementById('p-prod-title').value = '';
-  document.getElementById('p-prod-price').value = '';
-  document.getElementById('p-prod-image').value = '';
-}
-
-function handlePhysicalProductImageUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => document.getElementById('p-prod-image').value = e.target.result;
-  reader.readAsDataURL(file);
-}
-
-function savePhysicalProduct() {
-  const title = document.getElementById('p-prod-title').value;
-  const price = parseFloat(document.getElementById('p-prod-price').value);
-  const image = document.getElementById('p-prod-image').value;
-  
-  if (!title || isNaN(price) || !image) {
-    showToast('❌ נא למלא את כל השדות');
-    return;
-  }
-  
-  const newProduct = {
-    id: Date.now(),
-    title,
-    price,
-    image
-  };
-  
-  physicalProducts.push(newProduct);
-  localStorage.setItem('physicalProducts', JSON.stringify(physicalProducts));
-  
-  document.getElementById('physical-product-editor').classList.add('hidden');
-  renderAdminPhysicalProducts();
-  renderShopSidebar();
-  showToast('✅ המוצר נוסף לחנות');
-}
-
-function deletePhysicalProduct(id) {
-  if (confirm('האם אתה בטוח שברצונך למחוק מוצר זה?')) {
-    physicalProducts = physicalProducts.filter(p => p.id !== id);
-    localStorage.setItem('physicalProducts', JSON.stringify(physicalProducts));
-    renderAdminPhysicalProducts();
-    renderShopSidebar();
-    showToast('🗑️ המוצר נמחק');
-  }
-}
-
 // Initial loads
 loadSocialLinks();
-renderSeoPromotions();
-renderShopSidebar();
-updateCartBadge();

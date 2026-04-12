@@ -37,12 +37,6 @@
           <span id="user-badge-name" style="font-size: 0.85rem; font-weight: 700;"></span>
         </div>
         <button id="btn-logout-nav" class="btn-secondary" onclick="logoutUser()" style="display: none; font-size: 0.75rem; padding: 6px 12px; height: 30px; margin-right: 8px; color: #ef4444; border-color: rgba(239, 68, 68, 0.2); background: transparent;">התנתק</button>
-        
-        <!-- Cart Badge -->
-        <div class="cart-badge-nav" onclick="toggleCart()" style="margin-right: 16px;">
-          <span style="font-size: 1.4rem;">🛒</span>
-          <span id="cart-count" class="cart-count-badge">0</span>
-        </div>
       </div>
     </nav>
   </div>
@@ -69,29 +63,6 @@
         <h3 style="font-size:1.4rem; font-weight:800; margin-bottom:12px;">שטח פרסום</h3>
         <p style="color:var(--text-muted); font-size:1rem; margin-bottom:24px; line-height: 1.5;">הזדמנות נהדרת להגיע לאלפי קוראים ביום. פנה אלינו לקבלת הצעת מחיר משתלמת.</p>
         <button class="btn-primary" style="margin-top:auto; width:100%; border-radius:980px;" onclick="openContactModal()">פרסם אצלנו למטה</button>
-      </div>
-
-      <!-- SEO Promotions Section -->
-      <div id="seo-promotions-container" class="seo-section">
-        <!-- Populated by JS -->
-      </div>
-    </aside>
-
-    <aside class="shop-sidebar">
-      <div style="background:#fff; border-radius:16px; padding:20px; border:1px solid var(--border-subtle); box-shadow:var(--shadow-soft); margin-bottom: 24px;">
-        <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:16px; display:flex; align-items:center; gap:8px;">🛍️ חנות המוצרים</h3>
-        <div id="shop-items-container" style="display:flex; flex-direction:column; gap:16px;">
-          <!-- Populated by JS -->
-        </div>
-      </div>
-
-      <div style="background: linear-gradient(135deg, #0071e3 0%, #00c7ff 100%); border-radius:16px; padding:20px; color:#fff; box-shadow:var(--shadow-soft);">
-        <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:12px; display:flex; align-items:center; gap:8px;">📅 קביעת תור מהירה</h3>
-        <p style="font-size:0.9rem; opacity:0.9; margin-bottom:16px;">הזמן פגישת ייעוץ או שירות דחוף בקליק אחד.</p>
-        <div id="quick-appointment-list" style="display:flex; flex-direction:column; gap:12px;">
-          <!-- Populated by JS -->
-        </div>
-        <button class="btn-primary" style="margin-top:16px; width:100%; border-radius:980px; background:#fff; color:#0071e3; border:none; font-weight:700;" onclick="showPage('appointments')">לכל התורים</button>
       </div>
     </aside>
   </div>
@@ -607,13 +578,11 @@
         <button class="admin-nav-btn" onclick="switchAdminTab('store', this)">ניהול פרויקט 11</button>
         <button class="admin-nav-btn" onclick="switchAdminTab('pdfstore', this)">ניהול חנות PDF</button>
         <button class="admin-nav-btn" onclick="switchAdminTab('articles', this)">ניהול כתבות</button>
-        <button class="admin-nav-btn" onclick="switchAdminTab('physical-shop', this)">📦 ניהול חנות פיזית</button>
 
         <button class="admin-nav-btn" onclick="switchAdminTab('messages', this)" style="display: flex; justify-content: space-between; align-items: center;">
           תיבת הודעות
           <span id="nav-msg-count" style="background: var(--primary); color: white; padding: 2px 8px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">0</span>
         </button>
-        <button class="admin-nav-btn" onclick="switchAdminTab('seo', this)">🎯 קידום אתרים</button>
         <button class="admin-nav-btn" onclick="switchAdminTab('social', this)">🌐 ניהול רשתות חברתיות</button>
       </div>
       </div>
@@ -627,57 +596,6 @@
         </div>
         <div id="admin-calendar-list" style="display: grid; gap: 16px; margin-top: 20px;">
           <!-- Appointments listed here -->
-        </div>
-      </div>
-
-      <!-- SEO PROMOTIONS ADMIN TAB -->
-      <div id="admin-section-seo" class="admin-section" style="display: none;">
-        <div class="admin-header">
-          <h2>🎯 ניהול קידום אתרים</h2>
-        </div>
-        <div style="background: #ffffff; border-radius: 16px; padding: 24px; border: 1px solid var(--border-subtle); margin-bottom: 24px;">
-          <h3>הוספת אתר לקידום</h3>
-          <div style="display:flex; flex-direction:column; gap:12px; margin-top:16px;">
-            <input type="text" id="seo-new-title" placeholder="שם האתר / כותרת" class="admin-input">
-            <input type="text" id="seo-new-url" placeholder="קישור לאתר (http://...)" class="admin-input">
-            <button class="btn-primary" onclick="addSeoLink()" style="width: fit-content; margin-top: 8px;">➕ הוסף אתר לרשימה</button>
-          </div>
-        </div>
-        
-        <div id="admin-seo-list" style="display: flex; flex-direction: column; gap: 12px;">
-          <!-- Populated by JS -->
-        </div>
-      </div>
-
-      <!-- PHYSICAL SHOP ADMIN TAB -->
-      <div id="admin-section-physical-shop" class="admin-section" style="display: none;">
-        <div class="admin-header">
-          <h2>📦 ניהול חנות פיזית</h2>
-          <button class="btn-primary" onclick="openPhysicalProductEditor()">+ מוצר חדש</button>
-        </div>
-        <div id="admin-physical-products-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px;">
-          <!-- Populated by JS -->
-        </div>
-        
-        <div id="physical-product-editor" class="hidden" style="background: #fff; border-radius: 16px; padding: 24px; border: 1px solid var(--border-subtle); margin-top: 24px;">
-          <h3>עריכת מוצר פיזי</h3>
-          <div style="display:flex; flex-direction:column; gap:14px; margin-top:16px;">
-            <input type="hidden" id="p-prod-id" value="">
-            <input type="text" id="p-prod-title" placeholder="שם המוצר" class="admin-input">
-            <input type="text" id="p-prod-price" placeholder="מחיר (₪)" class="admin-input">
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label style="font-size:0.85rem; font-weight:700;">תמונת מוצר:</label>
-              <div style="display:flex; gap:8px;">
-                <input type="text" id="p-prod-image" placeholder="URL תמונה" class="admin-input" style="flex:1;">
-                <button type="button" class="btn-secondary" onclick="document.getElementById('p-prod-image-upload').click()">🖼️ העלה</button>
-                <input type="file" id="p-prod-image-upload" accept="image/*" style="display:none;" onchange="handlePhysicalProductImageUpload(event)">
-              </div>
-            </div>
-            <div style="display:flex; gap:12px;">
-              <button class="btn-primary" onclick="savePhysicalProduct()">שמור מוצר</button>
-              <button class="btn-secondary" onclick="document.getElementById('physical-product-editor').classList.add('hidden')">ביטול</button>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -715,40 +633,6 @@
 
     </aside>
 
-  </div>
-</div>
-
-<!-- FOOTER -->
-<!-- CART DRAWER -->
-<div id="cart-drawer" class="cart-drawer">
-  <div class="cart-header">
-    <h2 style="font-size: 1.8rem; font-weight: 800; margin: 0;">🛒 סל הקניות</h2>
-    <button onclick="toggleCart()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">✕</button>
-  </div>
-  <div id="cart-items-list" class="cart-list">
-    <!-- Populated by JS -->
-  </div>
-  
-  <div style="margin-top: 24px;">
-    <h3 style="font-size: 1rem; margin-bottom: 12px;">אמצעי שילוח:</h3>
-    <div class="shipping-selector">
-      <div id="ship-delivery" class="shipping-option active" onclick="setShippingMethod('delivery')">
-        <strong>🚚 משלוח</strong>
-        <span>₪20.00</span>
-      </div>
-      <div id="ship-pickup" class="shipping-option" onclick="setShippingMethod('pickup')">
-        <strong>📦 איסוף עצמי</strong>
-        <span>חינם</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="cart-footer">
-    <div class="cart-total-row">
-      <span>סה״כ לתשלום:</span>
-      <span id="cart-total-price">₪0</span>
-    </div>
-    <button class="btn-primary full-width" style="height: 60px; font-size: 1.2rem; border-radius: 16px;" onclick="checkoutCart()">💳 המשך לתשלום מאובטח</button>
   </div>
 </div>
 
@@ -808,7 +692,6 @@
       <button type="submit" class="btn-primary full-width" style="margin-top: 8px;">🚀 שלח מייל למערכת</button>
     </form>
   </div>
-</div>
 
 <!-- MESSAGE VIEW MODAL -->
 <div id="message-view-modal" class="modal-overlay" style="background: rgba(0,0,0,0.5);">
